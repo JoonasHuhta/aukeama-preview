@@ -1,0 +1,23 @@
+## Innehåll – Start och kapitel 1–3
+
+Kirjan luvut, harjoiteltava kieli ja sanasto. PDF-esikatselussa luvun nimen yhteydessä on sen aloitussivu.
+
+:::contents-table
+{"columns":["Luku","Harjoittelet","Sanat ja aiheet","Kieli ja rakenteet"],"rows":[{"marker":"Start","title":"Här finns svenska","href":"#/books/tuta-kor-6/read/u0-kieliymparisto","use":"Tunnista ruotsia ja aloita yksi kielijälkikortti; täydennä ja käytä samaa korttia.","topics":["kielet ja paikat","Pohjoismaat","luvut 0–10; 0–20 tukena"],"concepts":["nimeäminen: Det är…","olemassaolon ilmaus: Här finns…","havaintofraasit: Jag ser/hör…"],"pending":[]},{"marker":"1","title":"Vill du följa med?","href":"#/books/tuta-kor-6/read/u1-kutsu-retkelle","use":"Esittäydy, kysy toisesta, kutsu mukaan ja vastaa.","topics":["nimi, ikä ja asuinpaikka","kiinnostukset","luvut 11–20","viikonpäivät tukena"],"concepts":["persoonapronominit: jag ja du","kysymyssanat: vad, hur ja var mallikysymyksissä","kutsu ja vastaus kokonaisina fraaseina"],"pending":[]},{"marker":"2","title":"Vi byter kaj","href":"#/books/tuta-kor-6/read/u2-lahtoportti","use":"Selvitä lähtöaika ja paikka sekä varmista reittiohje.","topics":["satama ja lautta","suunnat","viikonpäivät","tasa- ja puolitunnit"],"concepts":["aika- ja paikkakysymykset: när ja var","kellonaika: klockan ja halv","järjestys: först ja sedan"],"pending":[]},{"marker":"3","title":"En dag i skolan","href":"#/books/tuta-kor-6/read/u3-saaristokoulu","use":"Kerro pienestä päivästä, kysy parilta ja ehdota yhteistä tekemistä; täydennä samaa päiväkorttia.","topics":["koulu ja oppiaineet","vapaa-aika","tavallinen päivä","kahden nuoren päivien vertailu Suomessa ja Ruotsissa"],"concepts":["preesens eli nykyhetken tekeminen: spelar, cyklar","perusmuoto mallin brukar/ska vi jälkeen","kielto: Jag gillar inte…"],"pending":[]}]}
+:::
+
+:::extra-help Väliosiot ja kertaus
+På nytt A on luvun 2 lopussa ja På nytt B luvun 5 lopussa. På nytt C on Efter resan -loppuosassa: tapaaminen ja reitti sekä eri käyttökerralla tavara ja kahvila.
+
+Fönstret, Du då? ja Pratpaus nivoutuvat tarinaan. Ett steg till on vapaaehtoinen.
+
+Sanasto ja apusivut ovat luonnoksia. Äänitteet ja lopullinen kuvitus puuttuvat.
+:::
+
+**Apusivut:** [Fraser](#/books/tuta-kor-6/read/fraser) · [Röster från resan – lyhyt päätösreitti](#/books/tuta-kor-6/read/kort-slut) · [Grammatik – Kielioppi](#/books/tuta-kor-6/read/sprakstod) · [Ord](#/books/tuta-kor-6/read/ord)
+
+## Innehåll – 4–6 och Efter resan
+
+:::contents-table
+{"columns":["Luku","Harjoittelet","Sanat ja aiheet","Kieli ja rakenteet"],"rows":[{"marker":"4","title":"Vems är ryggsäcken?","href":"#/books/tuta-kor-6/read/u4-kadonnut-reppu","use":"Kuvaile löytötavara, kysy omistajaa, kirjoita löytöviesti ja esittele läheinen tai kuvitteellinen henkilö.","topics":["tavarat ja vaatteet","värit ja ominaisuudet","läheiset valintapankista"],"concepts":["substantiivit: en/ett ja tarvittavat monikkomuodot","omistussanat: min, mitt ja mina","adjektiivit: röd/rött/röda sekä svart/svarta ja vit/vita mallien avulla","är ja har kuvauksessa"],"pending":[]},{"marker":"5","title":"Vi stannar inne","href":"#/books/tuta-kor-6/read/u5-majakkayo","use":"Kuvaa omaa tai keksittyä huonetta, kerro tavaran paikka ja varmista opastus; kertaa arjen kieltä B:ssä.","topics":["sää","huoneet ja tavarat","sijainti","tavallinen tekeminen, läheinen ja omistaja kertauksessa B"],"concepts":["prepositiot eli paikan sanat: i, på, under ja bredvid","Det finns… ja tavaran sijainti","tarvittavat määräiset muodot: köket, bordet ja stolen","Du ska/måste + annetut perusmuotoparit","min/mitt ja arjen fraasit kertauksessa B"],"pending":[]},{"marker":"6","title":"Vår röst hörs","href":"#/books/tuta-kor-6/read/u6-pop-up-fika","use":"Tilaa ja varmista hinta, kysy puuttuvasta tuotetiedosta ja käytä yhtä omaa tuttua lausetta. Tarina päättyy yhteiseen lähetykseen.","topics":["kahvila ja hinnat","oma tai keksitty välipala","mallilähetys ja oma tuttu lause"],"concepts":["kohtelias tilaus: Jag skulle vilja ha…","hintakysymys ja vastattu varmistus","äter/dricker mallissa","aiemman kielen palautus; ei uutta aikamuotoa"],"pending":[]},{"marker":"Efter resan","title":"Vi ses igen","href":"#/books/tuta-kor-6/read/u7-juhla-suorana","use":"Käytä tuttua kieltä viestissä, vastatussa tapaamisehdotuksessa ja kahvilassa. Valitse ja kokeile seuraavaa käyttökertaa.","topics":["oma viesti ja parin vastaus","På nytt C: aika, reitti, tavara ja kahvila","Pohjolan maa- ja kielinimet","oma seuraava käyttökerta"],"concepts":["aiemman arkikielen kertaus","och ja men vaihtoehtona erillisille lauseille","ei uutta pakollista kielioppia tai sanakiintiötä"],"pending":[]}]}
+:::

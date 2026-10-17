@@ -1,0 +1,2643 @@
+{
+  "schemaVersion": 1,
+  "mode": "preview",
+  "books": [
+    {
+      "id": "tuta-kor-6",
+      "title": "Tuta & kör 6 – Saariston ääni",
+      "series": "Tuta & kör",
+      "description": "B1-ruotsin tekstikirja kuudennelle luokalle. Saga, Leo ja Milo kokoavat saaristomatkalla yhteistä äänilähetystä.",
+      "grade": 6,
+      "subject": "ruotsi-b1",
+      "subjectLabel": "Ruotsi (B1)",
+      "language": "fi",
+      "status": "draft",
+      "statusLabel": "Käsikirjoitus",
+      "version": "2.50-textbook-draft",
+      "license": "CC BY-NC-SA 4.0 (suunniteltu, ei vielä myönnetty)",
+      "curriculum": "B1-kielten opetussuunnitelman perusteet 2024",
+      "materials": [
+        {
+          "id": "textbook",
+          "title": "Tekstikirja",
+          "status": "draft",
+          "statusLabel": "Käsikirjoitus",
+          "type": "reader"
+        },
+        {
+          "id": "workbook",
+          "title": "Työkirja",
+          "status": "planned",
+          "statusLabel": "Ei vielä saatavilla"
+        },
+        {
+          "id": "audio",
+          "title": "Äänitteet",
+          "status": "planned",
+          "statusLabel": "Ei vielä saatavilla"
+        },
+        {
+          "id": "teacher-guide",
+          "title": "Opettajan aineisto",
+          "status": "planned",
+          "statusLabel": "Ei vielä saatavilla"
+        }
+      ],
+      "chapters": [
+        {
+          "id": "u0-kieliymparisto",
+          "title": "Här finns svenska",
+          "file": "content/tuta-kor-6/2.50-textbook-draft/u0-kieliymparisto.md",
+          "label": "Start",
+          "sectionIds": [
+            "avausaukeama",
+            "kohtaus-1-ett-sprakspar",
+            "ydinfraasit",
+            "huomaa-kielesta-yksi-asia-on-det-ar",
+            "lukusanat-loyda-oikea-numero",
+            "aani-ja-rohkeus-aakkoset-seka-a-a-ja-o",
+            "kielikartta-norden",
+            "kokeile-opiskelutapaa",
+            "aito-tekstilaji-sataman-opasteet",
+            "kohtaus-2-ett-meddelande",
+            "luvun-tehtava-tee-yksi-kielijalki",
+            "jalki-matkalta"
+          ],
+          "vocabulary": {
+            "sourceLanguage": "sv",
+            "targetLanguage": "fi",
+            "note": "Ydinsanoja harjoitellaan yhdessä. Valittavista sanoista käytät omassa vastauksessasi tarvitsemiasi. Lukemisen tuki auttaa ymmärtämään; kaikkea ei tarvitse tuottaa itse.",
+            "groups": [
+              {
+                "role": "core",
+                "title": "Ydinsanat",
+                "entries": [
+                  {
+                    "form": "hej",
+                    "meaning": "hei"
+                  },
+                  {
+                    "form": "ett land",
+                    "meaning": "maa"
+                  },
+                  {
+                    "form": "ett ord",
+                    "meaning": "sana"
+                  },
+                  {
+                    "form": "svenska",
+                    "meaning": "ruotsi; ruotsin kieli"
+                  },
+                  {
+                    "form": "finska",
+                    "meaning": "suomi; suomen kieli"
+                  }
+                ]
+              },
+              {
+                "role": "recognition",
+                "title": "Lukemisen tuki",
+                "entries": [
+                  {
+                    "form": "ett språk",
+                    "meaning": "kieli"
+                  },
+                  {
+                    "form": "Finland",
+                    "meaning": "Suomi"
+                  },
+                  {
+                    "form": "Sverige",
+                    "meaning": "Ruotsi"
+                  },
+                  {
+                    "form": "Norge",
+                    "meaning": "Norja"
+                  },
+                  {
+                    "form": "Danmark",
+                    "meaning": "Tanska"
+                  },
+                  {
+                    "form": "Island",
+                    "meaning": "Islanti"
+                  },
+                  {
+                    "form": "norska",
+                    "meaning": "norja; norjan kieli"
+                  },
+                  {
+                    "form": "danska",
+                    "meaning": "tanska; tanskan kieli"
+                  },
+                  {
+                    "form": "isländska",
+                    "meaning": "islanti; islannin kieli"
+                  },
+                  {
+                    "form": "Norden",
+                    "meaning": "Pohjoismaat"
+                  },
+                  {
+                    "form": "Åland",
+                    "meaning": "Ahvenanmaa"
+                  },
+                  {
+                    "form": "välkommen",
+                    "meaning": "tervetuloa"
+                  },
+                  {
+                    "form": "avgång",
+                    "meaning": "lähtö"
+                  },
+                  {
+                    "form": "ankomst",
+                    "meaning": "saapuminen"
+                  },
+                  {
+                    "form": "hamnen",
+                    "meaning": "satama; kyseinen satama"
+                  },
+                  {
+                    "form": "biljetter",
+                    "meaning": "liput"
+                  },
+                  {
+                    "form": "kaj två",
+                    "meaning": "laituri kaksi"
+                  },
+                  {
+                    "form": "hör ni det",
+                    "meaning": "kuuletteko sen"
+                  },
+                  {
+                    "form": "en fågel",
+                    "meaning": "lintu"
+                  },
+                  {
+                    "form": "lyssna",
+                    "meaning": "kuuntele"
+                  },
+                  {
+                    "form": "precis",
+                    "meaning": "aivan; juuri niin"
+                  },
+                  {
+                    "form": "ett språkspår",
+                    "meaning": "kielijälki"
+                  },
+                  {
+                    "form": "vi spelar in ljudet",
+                    "meaning": "tallennamme äänen"
+                  },
+                  {
+                    "form": "en sändning",
+                    "meaning": "lähetys"
+                  },
+                  {
+                    "form": "samla",
+                    "meaning": "kerää; kerätkää"
+                  },
+                  {
+                    "form": "röster",
+                    "meaning": "ääniä; tässä ihmisten ääniä"
+                  },
+                  {
+                    "form": "berättelser",
+                    "meaning": "tarinoita"
+                  },
+                  {
+                    "form": "på vägen",
+                    "meaning": "matkalla"
+                  },
+                  {
+                    "form": "på söndag",
+                    "meaning": "sunnuntaina"
+                  },
+                  {
+                    "form": "hälsningar",
+                    "meaning": "terveisin; terveisiä"
+                  },
+                  {
+                    "form": "jag vill inte prata ensam",
+                    "meaning": "en halua puhua yksin"
+                  },
+                  {
+                    "form": "vi gör det tillsammans",
+                    "meaning": "teemme sen yhdessä"
+                  },
+                  {
+                    "form": "vi behöver",
+                    "meaning": "tarvitsemme"
+                  },
+                  {
+                    "form": "en plan",
+                    "meaning": "suunnitelma"
+                  },
+                  {
+                    "form": "musik",
+                    "meaning": "musiikki"
+                  },
+                  {
+                    "form": "en grupp",
+                    "meaning": "ryhmä"
+                  },
+                  {
+                    "form": "först",
+                    "meaning": "ensin"
+                  },
+                  {
+                    "form": "avgångar",
+                    "meaning": "lähdöt (opasteen monikkomuoto)"
+                  },
+                  {
+                    "form": "ankomster",
+                    "meaning": "saapumiset (opasteen monikkomuoto)"
+                  },
+                  {
+                    "form": "kan ni göra",
+                    "meaning": "voitteko tehdä (Saran pyynnön alku)"
+                  },
+                  {
+                    "form": "kort",
+                    "meaning": "lyhyt (lähetyksestä); eri merkitys kuin ett kort, kortti"
+                  },
+                  {
+                    "form": "kaj",
+                    "meaning": "laituri (opasteen muoto)"
+                  },
+                  {
+                    "form": "vi ses",
+                    "meaning": "nähdään"
+                  },
+                  {
+                    "form": "ljudet",
+                    "meaning": "ääni; tässä tallennettava ääni"
+                  },
+                  {
+                    "form": "på svenska",
+                    "meaning": "ruotsiksi"
+                  },
+                  {
+                    "form": "samla ljud",
+                    "meaning": "kerää ääniä; kerätkää ääniä"
+                  },
+                  {
+                    "form": "till vår skärgårdsfest",
+                    "meaning": "saaristojuhlaamme"
+                  },
+                  {
+                    "form": "du är inte ensam",
+                    "meaning": "et ole yksin"
+                  },
+                  {
+                    "form": "jag kan spela in",
+                    "meaning": "voin tallentaa"
+                  },
+                  {
+                    "form": "göra musik",
+                    "meaning": "tehdä musiikkia"
+                  },
+                  {
+                    "form": "Österbotten",
+                    "meaning": "Pohjanmaa (paikannimen ääntämismalli)"
+                  },
+                  {
+                    "form": "och",
+                    "meaning": "ja"
+                  },
+                  {
+                    "form": "men",
+                    "meaning": "mutta"
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "id": "u1-kutsu-retkelle",
+          "title": "Vill du följa med?",
+          "file": "content/tuta-kor-6/2.50-textbook-draft/u1-kutsu-retkelle.md",
+          "number": "1",
+          "sectionIds": [
+            "avausaukeama",
+            "kohtaus-1-forsta-motet",
+            "ydinfraasit",
+            "kerro-itsestasi",
+            "huomaa-kielesta-mina-ja-sina",
+            "aani-ja-rohkeus-jag-ja-dig",
+            "aito-tekstilaji-ryhmaviesti",
+            "kohtaus-2-nar-traffas-vi",
+            "fonstret",
+            "pratpaus"
+          ],
+          "vocabulary": {
+            "sourceLanguage": "sv",
+            "targetLanguage": "fi",
+            "note": "Ydinsanoja harjoitellaan yhdessä. Valittavista sanoista käytät omassa vastauksessasi tarvitsemiasi. Lukemisen tuki auttaa ymmärtämään; kaikkea ei tarvitse tuottaa itse.",
+            "groups": [
+              {
+                "role": "core",
+                "title": "Ydinsanat",
+                "entries": [
+                  {
+                    "form": "jag",
+                    "meaning": "minä"
+                  },
+                  {
+                    "form": "du",
+                    "meaning": "sinä"
+                  },
+                  {
+                    "form": "heter",
+                    "meaning": "on nimeltään"
+                  },
+                  {
+                    "form": "är",
+                    "meaning": "on"
+                  },
+                  {
+                    "form": "bor",
+                    "meaning": "asuu"
+                  },
+                  {
+                    "form": "gillar",
+                    "meaning": "pitää jostakin"
+                  }
+                ]
+              },
+              {
+                "role": "choice",
+                "title": "Valittavat sanat",
+                "entries": [
+                  {
+                    "form": "musik",
+                    "meaning": "musiikki"
+                  },
+                  {
+                    "form": "ett spel",
+                    "meaning": "peli"
+                  },
+                  {
+                    "form": "fotboll",
+                    "meaning": "jalkapallo"
+                  },
+                  {
+                    "form": "en bok",
+                    "meaning": "kirja"
+                  },
+                  {
+                    "form": "ett djur",
+                    "meaning": "eläin"
+                  },
+                  {
+                    "form": "mat",
+                    "meaning": "ruoka"
+                  }
+                ]
+              },
+              {
+                "role": "recognition",
+                "title": "Lukemisen tuki",
+                "entries": [
+                  {
+                    "form": "ett meddelande",
+                    "meaning": "viesti"
+                  },
+                  {
+                    "form": "på morgonen",
+                    "meaning": "aamulla"
+                  },
+                  {
+                    "form": "på eftermiddagen",
+                    "meaning": "iltapäivällä"
+                  },
+                  {
+                    "form": "att träffas",
+                    "meaning": "tavata toisensa"
+                  },
+                  {
+                    "form": "att följa med",
+                    "meaning": "tulla mukaan"
+                  },
+                  {
+                    "form": "måndag",
+                    "meaning": "maanantai"
+                  },
+                  {
+                    "form": "tisdag",
+                    "meaning": "tiistai"
+                  },
+                  {
+                    "form": "onsdag",
+                    "meaning": "keskiviikko"
+                  },
+                  {
+                    "form": "torsdag",
+                    "meaning": "torstai"
+                  },
+                  {
+                    "form": "fredag",
+                    "meaning": "perjantai"
+                  },
+                  {
+                    "form": "lördag",
+                    "meaning": "lauantai"
+                  },
+                  {
+                    "form": "söndag",
+                    "meaning": "sunnuntai"
+                  },
+                  {
+                    "form": "Nagu",
+                    "meaning": "Nauvo"
+                  },
+                  {
+                    "form": "Åbo",
+                    "meaning": "Turku"
+                  },
+                  {
+                    "form": "också",
+                    "meaning": "myös"
+                  },
+                  {
+                    "form": "ljud",
+                    "meaning": "ääni; ääniä"
+                  },
+                  {
+                    "form": "kartor",
+                    "meaning": "karttoja"
+                  },
+                  {
+                    "form": "vi behöver",
+                    "meaning": "tarvitsemme"
+                  },
+                  {
+                    "form": "perfekt",
+                    "meaning": "täydellistä; tässä mainiota"
+                  },
+                  {
+                    "form": "lite",
+                    "meaning": "vähän"
+                  },
+                  {
+                    "form": "det räcker för att börja",
+                    "meaning": "se riittää aloittamiseen"
+                  },
+                  {
+                    "form": "förlåt",
+                    "meaning": "anteeksi"
+                  },
+                  {
+                    "form": "skärgårdsfesten",
+                    "meaning": "saariston juhla; kyseinen juhla"
+                  },
+                  {
+                    "form": "trevligt att träffas",
+                    "meaning": "hauska tavata"
+                  },
+                  {
+                    "form": "trevligt att träffa dig",
+                    "meaning": "hauska tavata sinut"
+                  },
+                  {
+                    "form": "vi träffas",
+                    "meaning": "tapaamme"
+                  },
+                  {
+                    "form": "vid hamnen",
+                    "meaning": "sataman luona"
+                  },
+                  {
+                    "form": "ta med",
+                    "meaning": "ota mukaan; ottakaa mukaan"
+                  },
+                  {
+                    "form": "vatten",
+                    "meaning": "vesi"
+                  },
+                  {
+                    "form": "en jacka",
+                    "meaning": "takki"
+                  },
+                  {
+                    "form": "din telefon",
+                    "meaning": "sinun puhelimesi"
+                  },
+                  {
+                    "form": "svara",
+                    "meaning": "vastaa; vastatkaa"
+                  },
+                  {
+                    "form": "jag kommer",
+                    "meaning": "tulen"
+                  },
+                  {
+                    "form": "jag kan inte komma",
+                    "meaning": "en pääse tulemaan"
+                  },
+                  {
+                    "form": "menar du",
+                    "meaning": "tarkoitatko"
+                  },
+                  {
+                    "form": "jag har kartan",
+                    "meaning": "minulla on kartta"
+                  },
+                  {
+                    "form": "mikrofonen",
+                    "meaning": "mikrofoni; kyseinen mikrofoni"
+                  },
+                  {
+                    "form": "en biljett",
+                    "meaning": "lippu"
+                  },
+                  {
+                    "form": "bra fråga",
+                    "meaning": "hyvä kysymys"
+                  },
+                  {
+                    "form": "tretton",
+                    "meaning": "kolmetoista"
+                  },
+                  {
+                    "form": "vilken tid",
+                    "meaning": "mihin aikaan; mikä kellonaika"
+                  },
+                  {
+                    "form": "år",
+                    "meaning": "vuosi; vuotta (iän ilmauksessa)"
+                  },
+                  {
+                    "form": "spel",
+                    "meaning": "pelit"
+                  },
+                  {
+                    "form": "böcker",
+                    "meaning": "kirjat"
+                  },
+                  {
+                    "form": "djur",
+                    "meaning": "eläimet (Jag gillar djur -mallissa)"
+                  },
+                  {
+                    "form": "vi söker röster",
+                    "meaning": "etsimme ihmisten ääniä (lähetyksen tekijöiden lappu)"
+                  },
+                  {
+                    "form": "röster",
+                    "meaning": "ääniä; tässä ihmisten ääniä"
+                  },
+                  {
+                    "form": "Skärgårdens röst",
+                    "meaning": "Saariston ääni (ryhmän lähetyksen nimi)"
+                  },
+                  {
+                    "form": "och",
+                    "meaning": "ja"
+                  },
+                  {
+                    "form": "men",
+                    "meaning": "mutta"
+                  },
+                  {
+                    "form": "bra",
+                    "meaning": "hyvä; tässä hyvä tai selvä (vastauksena)"
+                  },
+                  {
+                    "form": "precis",
+                    "meaning": "aivan; juuri niin"
+                  },
+                  {
+                    "form": "kartan",
+                    "meaning": "kartta; kyseinen kartta"
+                  },
+                  {
+                    "form": "jag tar med",
+                    "meaning": "otan mukaan"
+                  },
+                  {
+                    "form": "Vasa",
+                    "meaning": "Vaasa"
+                  },
+                  {
+                    "form": "dig",
+                    "meaning": "sinut (tervehdyksessä Trevligt att träffa dig)"
+                  },
+                  {
+                    "form": "igen",
+                    "meaning": "uudelleen"
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "id": "u2-lahtoportti",
+          "title": "Vi byter kaj",
+          "file": "content/tuta-kor-6/2.50-textbook-draft/u2-lahtoportti.md",
+          "number": "2",
+          "sectionIds": [
+            "avausaukeama",
+            "kohtaus-1-fel-kaj",
+            "ydinfraasit",
+            "huomaa-kielesta-kysymys-tarvitsee-avainsanan",
+            "paiva-ja-kellonaika",
+            "aani-ja-rohkeus-numeroiden-rytmi",
+            "aito-tekstilaji-harjoitusaikataulu",
+            "terminaalin-kartta",
+            "kohtaus-2-vagen-till-kaj-fyra",
+            "luvun-tehtava-tietokuilureitti",
+            "pa-nytt-a-en-ny-traff",
+            "jalki-matkalta"
+          ],
+          "vocabulary": {
+            "sourceLanguage": "sv",
+            "targetLanguage": "fi",
+            "note": "Ydinsanoja harjoitellaan yhdessä. Valittavista sanoista käytät omassa vastauksessasi tarvitsemiasi. Lukemisen tuki auttaa ymmärtämään; kaikkea ei tarvitse tuottaa itse.",
+            "groups": [
+              {
+                "role": "core",
+                "title": "Ydinsanat",
+                "entries": [
+                  {
+                    "form": "en färja",
+                    "meaning": "lautta"
+                  },
+                  {
+                    "form": "en kaj",
+                    "meaning": "laituri"
+                  },
+                  {
+                    "form": "en karta",
+                    "meaning": "kartta"
+                  },
+                  {
+                    "form": "en hamn",
+                    "meaning": "satama"
+                  },
+                  {
+                    "form": "en tid",
+                    "meaning": "aika"
+                  },
+                  {
+                    "form": "klockan",
+                    "meaning": "kello; kellonaikaa ilmaisevan fraasin alku"
+                  },
+                  {
+                    "form": "när",
+                    "meaning": "milloin"
+                  },
+                  {
+                    "form": "var",
+                    "meaning": "missä"
+                  },
+                  {
+                    "form": "går",
+                    "meaning": "kulkee; lähtee (lautasta)"
+                  },
+                  {
+                    "form": "ligger",
+                    "meaning": "sijaitsee"
+                  },
+                  {
+                    "form": "först",
+                    "meaning": "ensin"
+                  },
+                  {
+                    "form": "sedan",
+                    "meaning": "sitten"
+                  },
+                  {
+                    "form": "rakt fram",
+                    "meaning": "suoraan eteenpäin"
+                  },
+                  {
+                    "form": "till vänster",
+                    "meaning": "vasemmalle"
+                  },
+                  {
+                    "form": "till höger",
+                    "meaning": "oikealle"
+                  },
+                  {
+                    "form": "till",
+                    "meaning": "johonkin; kohti"
+                  },
+                  {
+                    "form": "måndag",
+                    "meaning": "maanantai"
+                  },
+                  {
+                    "form": "tisdag",
+                    "meaning": "tiistai"
+                  },
+                  {
+                    "form": "onsdag",
+                    "meaning": "keskiviikko"
+                  },
+                  {
+                    "form": "torsdag",
+                    "meaning": "torstai"
+                  },
+                  {
+                    "form": "fredag",
+                    "meaning": "perjantai"
+                  },
+                  {
+                    "form": "lördag",
+                    "meaning": "lauantai"
+                  },
+                  {
+                    "form": "söndag",
+                    "meaning": "sunnuntai"
+                  }
+                ]
+              },
+              {
+                "role": "recognition",
+                "title": "Lukemisen tuki",
+                "entries": [
+                  {
+                    "form": "en avgång",
+                    "meaning": "lähtö"
+                  },
+                  {
+                    "form": "en ankomst",
+                    "meaning": "saapuminen"
+                  },
+                  {
+                    "form": "försenad",
+                    "meaning": "myöhässä; myöhästynyt"
+                  },
+                  {
+                    "form": "inställd",
+                    "meaning": "peruttu"
+                  },
+                  {
+                    "form": "en biljett",
+                    "meaning": "lippu"
+                  },
+                  {
+                    "form": "en terminal",
+                    "meaning": "terminaali"
+                  },
+                  {
+                    "form": "ombord",
+                    "meaning": "laivassa; laivaan"
+                  },
+                  {
+                    "form": "avgår",
+                    "meaning": "lähtee"
+                  },
+                  {
+                    "form": "vänta",
+                    "meaning": "odottaa; odota, hetkinen (pysäytyspyyntönä)"
+                  },
+                  {
+                    "form": "efter",
+                    "meaning": "jälkeen"
+                  },
+                  {
+                    "form": "bredvid",
+                    "meaning": "vieressä"
+                  },
+                  {
+                    "form": "igen",
+                    "meaning": "uudelleen"
+                  },
+                  {
+                    "form": "informationen",
+                    "meaning": "neuvonta (satamassa)"
+                  },
+                  {
+                    "form": "kaféet",
+                    "meaning": "kahvila"
+                  },
+                  {
+                    "form": "gång",
+                    "meaning": "kerta; kulkuväylä (terminaalin kartassa)"
+                  },
+                  {
+                    "form": "ett bibliotek",
+                    "meaning": "kirjasto"
+                  },
+                  {
+                    "form": "i biblioteket",
+                    "meaning": "kirjastossa"
+                  },
+                  {
+                    "form": "klassrum",
+                    "meaning": "luokkahuone"
+                  },
+                  {
+                    "form": "färjan",
+                    "meaning": "lautta; kyseinen lautta"
+                  },
+                  {
+                    "form": "kajen",
+                    "meaning": "laituri; kyseinen laituri"
+                  },
+                  {
+                    "form": "från",
+                    "meaning": "jostakin; lähtien"
+                  },
+                  {
+                    "form": "där",
+                    "meaning": "siellä"
+                  },
+                  {
+                    "form": "vi har tid",
+                    "meaning": "meillä on aikaa"
+                  },
+                  {
+                    "form": "vi tittar på skylten igen",
+                    "meaning": "katsomme kylttiä uudelleen"
+                  },
+                  {
+                    "form": "vi ska till",
+                    "meaning": "olemme menossa johonkin"
+                  },
+                  {
+                    "form": "hur går vi dit",
+                    "meaning": "miten pääsemme sinne"
+                  },
+                  {
+                    "form": "bredvid kaféet",
+                    "meaning": "kahvilan vieressä"
+                  },
+                  {
+                    "form": "vi går tillsammans",
+                    "meaning": "kuljemme yhdessä"
+                  },
+                  {
+                    "form": "halv",
+                    "meaning": "puoli (kellonajassa seuraava tunti)"
+                  },
+                  {
+                    "form": "långsammare",
+                    "meaning": "hitaammin"
+                  },
+                  {
+                    "form": "biblioteket",
+                    "meaning": "kirjasto; kyseinen kirjasto"
+                  },
+                  {
+                    "form": "musikrummet",
+                    "meaning": "musiikkitila; kyseinen musiikkitila"
+                  },
+                  {
+                    "form": "Vasa",
+                    "meaning": "Vaasa"
+                  },
+                  {
+                    "form": "böcker",
+                    "meaning": "kirjat"
+                  },
+                  {
+                    "form": "på eftermiddagen",
+                    "meaning": "iltapäivällä"
+                  },
+                  {
+                    "form": "precis",
+                    "meaning": "aivan; juuri niin"
+                  },
+                  {
+                    "form": "menar du",
+                    "meaning": "tarkoitatko"
+                  },
+                  {
+                    "form": "eller",
+                    "meaning": "tai"
+                  },
+                  {
+                    "form": "den",
+                    "meaning": "se (viittaa en-sanaan, esimerkiksi laituriin, reppuun tai kahvilan tuotteeseen)"
+                  },
+                  {
+                    "form": "jag kan inte komma",
+                    "meaning": "en pääse tulemaan"
+                  },
+                  {
+                    "form": "vi byter kaj",
+                    "meaning": "vaihdamme laituria"
+                  },
+                  {
+                    "form": "fel kaj",
+                    "meaning": "väärä laituri"
+                  },
+                  {
+                    "form": "kaj",
+                    "meaning": "laituri (opasteen muoto)"
+                  },
+                  {
+                    "form": "avgångar",
+                    "meaning": "lähdöt (opasteen monikkomuoto)"
+                  },
+                  {
+                    "form": "jag hör",
+                    "meaning": "kuulen"
+                  },
+                  {
+                    "form": "bra",
+                    "meaning": "hyvä; tässä hyvä tai selvä (vastauksena)"
+                  },
+                  {
+                    "form": "vid kaj tre",
+                    "meaning": "laiturin kolme luona"
+                  },
+                  {
+                    "form": "information",
+                    "meaning": "neuvontapiste (kartan opaste)"
+                  },
+                  {
+                    "form": "kafé",
+                    "meaning": "kahvila (kartan opaste)"
+                  },
+                  {
+                    "form": "vi träffas",
+                    "meaning": "tapaamme"
+                  },
+                  {
+                    "form": "på onsdag",
+                    "meaning": "keskiviikkona"
+                  },
+                  {
+                    "form": "och",
+                    "meaning": "ja"
+                  },
+                  {
+                    "form": "men",
+                    "meaning": "mutta"
+                  },
+                  {
+                    "form": "Vill du följa med?",
+                    "meaning": "Haluatko tulla mukaan?"
+                  },
+                  {
+                    "form": "Ja, gärna.",
+                    "meaning": "Kyllä, mielelläni."
+                  },
+                  {
+                    "form": "Tyvärr, jag kan inte.",
+                    "meaning": "Valitettavasti en voi."
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "id": "u3-saaristokoulu",
+          "title": "En dag i skolan",
+          "file": "content/tuta-kor-6/2.50-textbook-draft/u3-saaristokoulu.md",
+          "number": "3",
+          "sectionIds": [
+            "avausaukeama",
+            "kohtaus-1-vad-gillar-ni",
+            "ydinfraasit",
+            "huomaa-kielesta-tekemisen-sana",
+            "noorin-tavallinen-paiva",
+            "du-da-min-lilla-dag",
+            "aani-ja-rohkeus-sj-tj-ja-sk",
+            "aito-tekstilaji-paivan-lukujarjestys",
+            "kohtaus-2-en-ide-till-festen",
+            "luvun-tehtava-suunnitelkaa-yhteinen-ohjelmanumero",
+            "fonstret-tva-skoldagar",
+            "helppo-lisateksti-efter-skolan",
+            "katso-mita-osaat",
+            "jalki-matkalta"
+          ],
+          "dialogueLanguage": "sv",
+          "vocabulary": {
+            "sourceLanguage": "sv",
+            "targetLanguage": "fi",
+            "note": "Ydinsanoja harjoitellaan yhdessä. Valittavista sanoista käytät omassa vastauksessasi tarvitsemiasi. Lukemisen tuki auttaa ymmärtämään; kaikkea ei tarvitse tuottaa itse.",
+            "groups": [
+              {
+                "role": "core",
+                "title": "Ydinsanat",
+                "entries": [
+                  {
+                    "form": "en skola",
+                    "meaning": "koulu"
+                  },
+                  {
+                    "form": "en lektion",
+                    "meaning": "oppitunti"
+                  },
+                  {
+                    "form": "en rast",
+                    "meaning": "välitunti"
+                  },
+                  {
+                    "form": "börjar",
+                    "meaning": "alkaa"
+                  },
+                  {
+                    "form": "slutar",
+                    "meaning": "loppuu; päättyy"
+                  },
+                  {
+                    "form": "läser",
+                    "meaning": "lukee"
+                  },
+                  {
+                    "form": "skriver",
+                    "meaning": "kirjoittaa"
+                  },
+                  {
+                    "form": "spelar",
+                    "meaning": "pelaa; soittaa"
+                  },
+                  {
+                    "form": "cyklar",
+                    "meaning": "pyöräilee"
+                  },
+                  {
+                    "form": "efter skolan",
+                    "meaning": "koulun jälkeen"
+                  }
+                ]
+              },
+              {
+                "role": "choice",
+                "title": "Valittavat sanat",
+                "entries": [
+                  {
+                    "form": "svenska",
+                    "meaning": "ruotsi; ruotsin kieli"
+                  },
+                  {
+                    "form": "matematik",
+                    "meaning": "matematiikka"
+                  },
+                  {
+                    "form": "musik",
+                    "meaning": "musiikki"
+                  },
+                  {
+                    "form": "idrott",
+                    "meaning": "liikunta; urheilu"
+                  },
+                  {
+                    "form": "bild",
+                    "meaning": "kuva; kuvataide oppiaineena"
+                  },
+                  {
+                    "form": "fotboll",
+                    "meaning": "jalkapallo"
+                  },
+                  {
+                    "form": "spel",
+                    "meaning": "pelit"
+                  },
+                  {
+                    "form": "böcker",
+                    "meaning": "kirjat"
+                  },
+                  {
+                    "form": "göra musik",
+                    "meaning": "tehdä musiikkia"
+                  },
+                  {
+                    "form": "vara hemma",
+                    "meaning": "olla kotona"
+                  }
+                ]
+              },
+              {
+                "role": "recognition",
+                "title": "Lukemisen tuki",
+                "entries": [
+                  {
+                    "form": "ett ämne",
+                    "meaning": "oppiaine; aihe"
+                  },
+                  {
+                    "form": "ett schema",
+                    "meaning": "lukujärjestys; aikataulu"
+                  },
+                  {
+                    "form": "ett klassrum",
+                    "meaning": "luokkahuone"
+                  },
+                  {
+                    "form": "en lärare",
+                    "meaning": "opettaja"
+                  },
+                  {
+                    "form": "en elev",
+                    "meaning": "oppilas"
+                  },
+                  {
+                    "form": "en klubb",
+                    "meaning": "kerho"
+                  },
+                  {
+                    "form": "ett program",
+                    "meaning": "ohjelma"
+                  },
+                  {
+                    "form": "en medieklubb",
+                    "meaning": "mediakerho"
+                  },
+                  {
+                    "form": "tillsammans",
+                    "meaning": "yhdessä"
+                  },
+                  {
+                    "form": "behöver",
+                    "meaning": "tarvitsee"
+                  },
+                  {
+                    "form": "spela in",
+                    "meaning": "tallentaa; nauhoittaa"
+                  },
+                  {
+                    "form": "klart",
+                    "meaning": "valmista; selvä"
+                  },
+                  {
+                    "form": "små låtar",
+                    "meaning": "pienet kappaleet; lyhyet laulut"
+                  },
+                  {
+                    "form": "laga mat",
+                    "meaning": "laittaa ruokaa"
+                  },
+                  {
+                    "form": "reparerar cyklar",
+                    "meaning": "korjaa polkupyöriä"
+                  },
+                  {
+                    "form": "mest",
+                    "meaning": "eniten"
+                  },
+                  {
+                    "form": "eller",
+                    "meaning": "tai"
+                  },
+                  {
+                    "form": "lunch",
+                    "meaning": "lounas"
+                  },
+                  {
+                    "form": "på Björkholm",
+                    "meaning": "Björkholmissa (kirjan kuvitteellisella saarella)"
+                  },
+                  {
+                    "form": "också",
+                    "meaning": "myös"
+                  },
+                  {
+                    "form": "välkomna",
+                    "meaning": "tervetuloa (usealle ihmiselle)"
+                  },
+                  {
+                    "form": "ni",
+                    "meaning": "te"
+                  },
+                  {
+                    "form": "brukar",
+                    "meaning": "on tapana; tekee tavallisesti"
+                  },
+                  {
+                    "form": "cykla",
+                    "meaning": "pyöräillä"
+                  },
+                  {
+                    "form": "spela",
+                    "meaning": "pelata; soittaa"
+                  },
+                  {
+                    "form": "läsa",
+                    "meaning": "lukea"
+                  },
+                  {
+                    "form": "skriva",
+                    "meaning": "kirjoittaa"
+                  },
+                  {
+                    "form": "börja",
+                    "meaning": "alkaa; aloittaa"
+                  },
+                  {
+                    "form": "sluta",
+                    "meaning": "loppua; päättyä; lopettaa"
+                  },
+                  {
+                    "form": "gör",
+                    "meaning": "tekee"
+                  },
+                  {
+                    "form": "göra",
+                    "meaning": "tehdä"
+                  },
+                  {
+                    "form": "att göra",
+                    "meaning": "tehdä"
+                  },
+                  {
+                    "form": "något",
+                    "meaning": "jotakin"
+                  },
+                  {
+                    "form": "intervjuer",
+                    "meaning": "haastattelut; haastatteluja"
+                  },
+                  {
+                    "form": "vi planerar ett program",
+                    "meaning": "suunnittelemme ohjelmaa"
+                  },
+                  {
+                    "form": "en kort intervju",
+                    "meaning": "lyhyt haastattelu"
+                  },
+                  {
+                    "form": "vem pratar",
+                    "meaning": "kuka puhuu"
+                  },
+                  {
+                    "form": "raster",
+                    "meaning": "välitunnit"
+                  },
+                  {
+                    "form": "vara med i medieklubben",
+                    "meaning": "osallistua mediakerhoon"
+                  },
+                  {
+                    "form": "vi behöver",
+                    "meaning": "tarvitsemme"
+                  },
+                  {
+                    "form": "skärgårdsfesten",
+                    "meaning": "saariston juhla; kyseinen juhla"
+                  },
+                  {
+                    "form": "något att äta",
+                    "meaning": "jotakin syötävää"
+                  },
+                  {
+                    "form": "intervjua",
+                    "meaning": "haastatella"
+                  },
+                  {
+                    "form": "vi kan fråga tillsammans",
+                    "meaning": "voimme kysyä yhdessä"
+                  },
+                  {
+                    "form": "kanske",
+                    "meaning": "ehkä"
+                  },
+                  {
+                    "form": "det här är",
+                    "meaning": "tässä on; tässä ovat (esittelymalli)"
+                  },
+                  {
+                    "form": "skolan",
+                    "meaning": "koulu; kyseinen koulu"
+                  },
+                  {
+                    "form": "i skolan",
+                    "meaning": "koulussa"
+                  },
+                  {
+                    "form": "medieklubb",
+                    "meaning": "mediakerho (lukujärjestyksen sana)"
+                  },
+                  {
+                    "form": "till festen",
+                    "meaning": "juhlaa varten"
+                  },
+                  {
+                    "form": "kul",
+                    "meaning": "kivaa; hauskaa"
+                  },
+                  {
+                    "form": "jag gillar att laga mat",
+                    "meaning": "pidän ruoanlaitosta"
+                  },
+                  {
+                    "form": "vad gillar ni att göra",
+                    "meaning": "mitä te tykkäätte tehdä"
+                  },
+                  {
+                    "form": "ska vi göra något tillsammans",
+                    "meaning": "tehdäänkö jotakin yhdessä"
+                  },
+                  {
+                    "form": "kartor",
+                    "meaning": "karttoja"
+                  },
+                  {
+                    "form": "och",
+                    "meaning": "ja"
+                  },
+                  {
+                    "form": "men",
+                    "meaning": "mutta"
+                  },
+                  {
+                    "form": "bra idé",
+                    "meaning": "hyvä ajatus"
+                  },
+                  {
+                    "form": "jag kan spela in",
+                    "meaning": "voin tallentaa"
+                  },
+                  {
+                    "form": "Sverige",
+                    "meaning": "Ruotsi"
+                  },
+                  {
+                    "form": "halv",
+                    "meaning": "puoli (kellonajassa seuraava tunti)"
+                  },
+                  {
+                    "form": "Tack!",
+                    "meaning": "Kiitos!"
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "id": "u4-kadonnut-reppu",
+          "title": "Vems är ryggsäcken?",
+          "file": "content/tuta-kor-6/2.50-textbook-draft/u4-kadonnut-reppu.md",
+          "number": "4",
+          "sectionIds": [
+            "avausaukeama",
+            "kohtaus-1-en-ryggsack-pa-banken",
+            "ydinfraasit",
+            "sanamuodot",
+            "huomaa-kielesta-min-mitt-ja-mina",
+            "aani-ja-rohkeus-u-ja-y",
+            "aito-tekstilaji-loytotavarailmoitus",
+            "kohtaus-2-ar-den-din",
+            "fonstret",
+            "du-da",
+            "luvun-tehtava-tunnista-oikea-tavara",
+            "jalki-matkalta"
+          ],
+          "vocabulary": {
+            "sourceLanguage": "sv",
+            "targetLanguage": "fi",
+            "note": "Ydinsanoja harjoitellaan yhdessä. Valittavista sanoista käytät omassa vastauksessasi tarvitsemiasi. Lukemisen tuki auttaa ymmärtämään; kaikkea ei tarvitse tuottaa itse.",
+            "groups": [
+              {
+                "role": "core",
+                "title": "Ydinsanat",
+                "entries": [
+                  {
+                    "form": "en ryggsäck",
+                    "meaning": "reppu"
+                  },
+                  {
+                    "form": "en mössa",
+                    "meaning": "pipo"
+                  },
+                  {
+                    "form": "ett kort",
+                    "meaning": "kortti"
+                  },
+                  {
+                    "form": "en ficka",
+                    "meaning": "tasku"
+                  },
+                  {
+                    "form": "röd",
+                    "meaning": "punainen"
+                  },
+                  {
+                    "form": "blå",
+                    "meaning": "sininen"
+                  },
+                  {
+                    "form": "grön",
+                    "meaning": "vihreä"
+                  },
+                  {
+                    "form": "svart",
+                    "meaning": "musta"
+                  },
+                  {
+                    "form": "vit",
+                    "meaning": "valkoinen"
+                  },
+                  {
+                    "form": "min",
+                    "meaning": "minun (en-sanan kanssa)"
+                  },
+                  {
+                    "form": "mitt",
+                    "meaning": "minun (ett-sanan kanssa)"
+                  },
+                  {
+                    "form": "mina",
+                    "meaning": "minun (monikon kanssa)"
+                  },
+                  {
+                    "form": "har",
+                    "meaning": "on; omistaa"
+                  },
+                  {
+                    "form": "är",
+                    "meaning": "on"
+                  },
+                  {
+                    "form": "saknar",
+                    "meaning": "kaipaa; on kadottanut (tavaran)"
+                  }
+                ]
+              },
+              {
+                "role": "choice",
+                "title": "Valittavat sanat",
+                "entries": [
+                  {
+                    "form": "en vän",
+                    "meaning": "ystävä"
+                  },
+                  {
+                    "form": "en syster",
+                    "meaning": "sisko"
+                  },
+                  {
+                    "form": "en bror",
+                    "meaning": "veli"
+                  },
+                  {
+                    "form": "en mamma",
+                    "meaning": "äiti"
+                  },
+                  {
+                    "form": "en pappa",
+                    "meaning": "isä"
+                  },
+                  {
+                    "form": "en jacka",
+                    "meaning": "takki"
+                  },
+                  {
+                    "form": "en tröja",
+                    "meaning": "paita; neule"
+                  },
+                  {
+                    "form": "ett namn",
+                    "meaning": "nimi"
+                  }
+                ]
+              },
+              {
+                "role": "recognition",
+                "title": "Lukemisen tuki",
+                "entries": [
+                  {
+                    "form": "upphittad",
+                    "meaning": "löydetty"
+                  },
+                  {
+                    "form": "randig",
+                    "meaning": "raidallinen"
+                  },
+                  {
+                    "form": "med fickor",
+                    "meaning": "jossa on taskuja"
+                  },
+                  {
+                    "form": "en reflex",
+                    "meaning": "heijastin"
+                  },
+                  {
+                    "form": "en stjärna",
+                    "meaning": "tähti"
+                  },
+                  {
+                    "form": "rund",
+                    "meaning": "pyöreä"
+                  },
+                  {
+                    "form": "lillasyster",
+                    "meaning": "pikkusisko"
+                  },
+                  {
+                    "form": "hon",
+                    "meaning": "hän (tytöstä tai naisesta)"
+                  },
+                  {
+                    "form": "han",
+                    "meaning": "hän (pojasta tai miehestä)"
+                  },
+                  {
+                    "form": "lagar mat",
+                    "meaning": "laittaa ruokaa"
+                  },
+                  {
+                    "form": "vi gör musik tillsammans",
+                    "meaning": "teemme musiikkia yhdessä"
+                  },
+                  {
+                    "form": "ryggsäcken",
+                    "meaning": "reppu; kyseinen reppu"
+                  },
+                  {
+                    "form": "ryggsäckar",
+                    "meaning": "reput; reppuja"
+                  },
+                  {
+                    "form": "jackor",
+                    "meaning": "takit; takkeja"
+                  },
+                  {
+                    "form": "tröjor",
+                    "meaning": "paidat; paitoja"
+                  },
+                  {
+                    "form": "mössor",
+                    "meaning": "pipot; pipoja"
+                  },
+                  {
+                    "form": "fickor",
+                    "meaning": "taskut; taskuja"
+                  },
+                  {
+                    "form": "namn",
+                    "meaning": "nimi; nimet (tässä yhden ja kahden nimen mallissa)"
+                  },
+                  {
+                    "form": "rött",
+                    "meaning": "punainen (ett-sanan yhteydessä)"
+                  },
+                  {
+                    "form": "röda",
+                    "meaning": "punaiset; punaisia (tässä monikon mallissa)"
+                  },
+                  {
+                    "form": "svarta",
+                    "meaning": "mustat; mustia (tässä monikon mallissa)"
+                  },
+                  {
+                    "form": "vita",
+                    "meaning": "valkoiset; valkoisia (tässä monikon mallissa)"
+                  },
+                  {
+                    "form": "vems",
+                    "meaning": "kenen"
+                  },
+                  {
+                    "form": "den",
+                    "meaning": "se (viittaa en-sanaan, esimerkiksi laituriin, reppuun tai kahvilan tuotteeseen)"
+                  },
+                  {
+                    "form": "jag vet inte",
+                    "meaning": "en tiedä"
+                  },
+                  {
+                    "form": "här står",
+                    "meaning": "tässä lukee"
+                  },
+                  {
+                    "form": "personalen",
+                    "meaning": "henkilökunta; kyseinen henkilökunta"
+                  },
+                  {
+                    "form": "öppna inte",
+                    "meaning": "älä avaa; älkää avatko"
+                  },
+                  {
+                    "form": "vi frågar personalen",
+                    "meaning": "kysymme henkilökunnalta"
+                  },
+                  {
+                    "form": "vi lämnar den till informationen",
+                    "meaning": "jätämme sen neuvontaan"
+                  },
+                  {
+                    "form": "namnlappen",
+                    "meaning": "nimilappu; kyseinen nimilappu"
+                  },
+                  {
+                    "form": "sidofickan",
+                    "meaning": "sivutasku; kyseinen sivutasku"
+                  },
+                  {
+                    "form": "blåvit",
+                    "meaning": "sinivalkoinen"
+                  },
+                  {
+                    "form": "vid informationen",
+                    "meaning": "neuvonnan luona"
+                  },
+                  {
+                    "form": "mössan",
+                    "meaning": "pipo; kyseinen pipo"
+                  },
+                  {
+                    "form": "en liten stjärna",
+                    "meaning": "pieni tähti"
+                  },
+                  {
+                    "form": "vad står på reflexen",
+                    "meaning": "mitä heijastimessa lukee tai näkyy"
+                  },
+                  {
+                    "form": "hämta den där",
+                    "meaning": "hakea sen sieltä"
+                  },
+                  {
+                    "form": "tack så mycket",
+                    "meaning": "paljon kiitoksia"
+                  },
+                  {
+                    "form": "slutar på",
+                    "meaning": "päättyy johonkin (tässä nimen loppuun)"
+                  },
+                  {
+                    "form": "din",
+                    "meaning": "sinun (en-sanan kanssa)"
+                  },
+                  {
+                    "form": "ny",
+                    "meaning": "uusi (tässä ääntämisen mallisana)"
+                  },
+                  {
+                    "form": "nu",
+                    "meaning": "nyt"
+                  },
+                  {
+                    "form": "också",
+                    "meaning": "myös"
+                  },
+                  {
+                    "form": "plats",
+                    "meaning": "paikka; tila"
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "id": "u5-majakkayo",
+          "title": "Vi stannar inne",
+          "file": "content/tuta-kor-6/2.50-textbook-draft/u5-majakkayo.md",
+          "number": "5",
+          "sectionIds": [
+            "avausaukeama",
+            "sanatuki-kartta",
+            "kohtaus-1-vi-stannar-inne",
+            "ydinfraasit",
+            "huomaa-kielesta-missa-jokin-on",
+            "aani-ja-rohkeus-v-ja-f",
+            "aito-tekstilaji-harjoitussaaennuste",
+            "kohtaus-2-sena-gaster",
+            "du-da-huone",
+            "luvun-tehtava-opasta-turvalliseen-paikkaan",
+            "pa-nytt-b-aineisto",
+            "pa-nytt-b-kokeile",
+            "katso-mita-osaat",
+            "jalki-matkalta"
+          ],
+          "vocabulary": {
+            "sourceLanguage": "sv",
+            "targetLanguage": "fi",
+            "note": "Ydinsanoja harjoitellaan yhdessä. Valittavista sanoista käytät omassa vastauksessasi tarvitsemiasi. Lukemisen tuki auttaa ymmärtämään; kaikkea ei tarvitse tuottaa itse.",
+            "groups": [
+              {
+                "role": "core",
+                "title": "Ydinsanat",
+                "entries": [
+                  {
+                    "form": "kallt",
+                    "meaning": "kylmää; kylmästi"
+                  },
+                  {
+                    "form": "varmt",
+                    "meaning": "lämmintä; lämpimästi"
+                  },
+                  {
+                    "form": "ett rum",
+                    "meaning": "huone"
+                  },
+                  {
+                    "form": "ett kök",
+                    "meaning": "keittiö"
+                  },
+                  {
+                    "form": "ett badrum",
+                    "meaning": "kylpyhuone"
+                  },
+                  {
+                    "form": "en hall",
+                    "meaning": "eteinen"
+                  },
+                  {
+                    "form": "ett vardagsrum",
+                    "meaning": "olohuone"
+                  },
+                  {
+                    "form": "ett bord",
+                    "meaning": "pöytä"
+                  },
+                  {
+                    "form": "en stol",
+                    "meaning": "tuoli"
+                  },
+                  {
+                    "form": "en lampa",
+                    "meaning": "lamppu"
+                  },
+                  {
+                    "form": "i",
+                    "meaning": "jossakin sisällä (esimerkiksi i rummet)"
+                  },
+                  {
+                    "form": "på",
+                    "meaning": "päällä (esimerkiksi på bordet)"
+                  },
+                  {
+                    "form": "under",
+                    "meaning": "alla"
+                  },
+                  {
+                    "form": "bredvid",
+                    "meaning": "vieressä"
+                  }
+                ]
+              },
+              {
+                "role": "choice",
+                "title": "Valittavat sanat",
+                "entries": [
+                  {
+                    "form": "en dörr",
+                    "meaning": "ovi"
+                  },
+                  {
+                    "form": "ett fönster",
+                    "meaning": "ikkuna"
+                  }
+                ]
+              },
+              {
+                "role": "recognition",
+                "title": "Lukemisen tuki",
+                "entries": [
+                  {
+                    "form": "en ficklampa",
+                    "meaning": "taskulamppu"
+                  },
+                  {
+                    "form": "ett sovrum",
+                    "meaning": "makuuhuone"
+                  },
+                  {
+                    "form": "en trappa",
+                    "meaning": "portaat"
+                  },
+                  {
+                    "form": "på övervåningen",
+                    "meaning": "yläkerrassa"
+                  },
+                  {
+                    "form": "i kväll",
+                    "meaning": "tänä iltana"
+                  },
+                  {
+                    "form": "en gäst",
+                    "meaning": "vieras"
+                  },
+                  {
+                    "form": "lugnare",
+                    "meaning": "rauhallisempi; rauhallisemmin"
+                  },
+                  {
+                    "form": "stanna inne",
+                    "meaning": "pysyä sisällä"
+                  },
+                  {
+                    "form": "vänta här",
+                    "meaning": "odota tässä"
+                  },
+                  {
+                    "form": "din",
+                    "meaning": "sinun (en-sanan kanssa)"
+                  },
+                  {
+                    "form": "ditt",
+                    "meaning": "sinun (ett-sanan kanssa)"
+                  },
+                  {
+                    "form": "köket",
+                    "meaning": "keittiö; kyseinen keittiö"
+                  },
+                  {
+                    "form": "badrummet",
+                    "meaning": "kylpyhuone; kyseinen kylpyhuone"
+                  },
+                  {
+                    "form": "hallen",
+                    "meaning": "eteinen; kyseinen eteinen"
+                  },
+                  {
+                    "form": "vardagsrummet",
+                    "meaning": "olohuone; kyseinen olohuone"
+                  },
+                  {
+                    "form": "bordet",
+                    "meaning": "pöytä; kyseinen pöytä"
+                  },
+                  {
+                    "form": "stolen",
+                    "meaning": "tuoli; kyseinen tuoli"
+                  },
+                  {
+                    "form": "lampan",
+                    "meaning": "lamppu; kyseinen lamppu"
+                  },
+                  {
+                    "form": "ficklampan",
+                    "meaning": "taskulamppu; kyseinen taskulamppu"
+                  },
+                  {
+                    "form": "rummet",
+                    "meaning": "huone; kyseinen huone"
+                  },
+                  {
+                    "form": "i rummet",
+                    "meaning": "huoneessa"
+                  },
+                  {
+                    "form": "väntar",
+                    "meaning": "odottaa"
+                  },
+                  {
+                    "form": "stannar",
+                    "meaning": "pysyy; jää"
+                  },
+                  {
+                    "form": "stanna",
+                    "meaning": "pysyä; jäädä"
+                  },
+                  {
+                    "form": "regnar",
+                    "meaning": "sataa vettä"
+                  },
+                  {
+                    "form": "blåser",
+                    "meaning": "tuulee"
+                  },
+                  {
+                    "form": "vädret",
+                    "meaning": "sää"
+                  },
+                  {
+                    "form": "eftermiddag",
+                    "meaning": "iltapäivä"
+                  },
+                  {
+                    "form": "kväll",
+                    "meaning": "ilta"
+                  },
+                  {
+                    "form": "morgon",
+                    "meaning": "aamu"
+                  },
+                  {
+                    "form": "mycket",
+                    "meaning": "paljon"
+                  },
+                  {
+                    "form": "den gula dörren",
+                    "meaning": "keltainen ovi; kyseinen keltainen ovi"
+                  },
+                  {
+                    "form": "går ni in genom den gula dörren",
+                    "meaning": "kuljette sisään keltaisesta ovesta"
+                  },
+                  {
+                    "form": "kommer snart",
+                    "meaning": "tulee pian"
+                  },
+                  {
+                    "form": "de andra gästerna",
+                    "meaning": "muut vieraat"
+                  },
+                  {
+                    "form": "jag hjälper",
+                    "meaning": "autan"
+                  },
+                  {
+                    "form": "till höger om hallen",
+                    "meaning": "eteisen oikealla puolella"
+                  },
+                  {
+                    "form": "ni ska stanna inne",
+                    "meaning": "teidän tulee pysyä sisällä"
+                  },
+                  {
+                    "form": "ni måste vänta här",
+                    "meaning": "teidän täytyy odottaa tässä"
+                  },
+                  {
+                    "form": "går du in i hallen",
+                    "meaning": "menet eteiseen"
+                  },
+                  {
+                    "form": "jag menar",
+                    "meaning": "tarkoitan"
+                  },
+                  {
+                    "form": "kortet",
+                    "meaning": "kortti; kyseinen kortti"
+                  },
+                  {
+                    "form": "vårt rum",
+                    "meaning": "meidän huoneemme"
+                  },
+                  {
+                    "form": "nu",
+                    "meaning": "nyt"
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "id": "u6-pop-up-fika",
+          "title": "Vår röst hörs",
+          "file": "content/tuta-kor-6/2.50-textbook-draft/u6-pop-up-fika.md",
+          "number": "6",
+          "sectionIds": [
+            "avausaukeama",
+            "kohtaus-1-vad-kan-vi-salja",
+            "kohtaus-2-den-forsta-kunden",
+            "luvun-tehtava-avatkaa-harjoituskahvila",
+            "du-da-valipala",
+            "tuotetiedot",
+            "kohtaus-1-vad-ska-vi-valja",
+            "aito-tekstilaji-juhlaohjelma",
+            "kohtaus-2-skargardens-rost",
+            "kohtaus-2-jatkuu-aani-kuuluu",
+            "aani-ja-rohkeus-tauko-auttaa-kuulijaa",
+            "jalki-matkalta"
+          ],
+          "vocabulary": {
+            "sourceLanguage": "sv",
+            "targetLanguage": "fi",
+            "note": "Ydinsanoja harjoitellaan yhdessä. Valittavista sanoista käytät omassa vastauksessasi tarvitsemiasi. Lukemisen tuki auttaa ymmärtämään; kaikkea ei tarvitse tuottaa itse.",
+            "groups": [
+              {
+                "role": "core",
+                "title": "Ydinsanat",
+                "entries": [
+                  {
+                    "form": "kaffe",
+                    "meaning": "kahvi"
+                  },
+                  {
+                    "form": "te",
+                    "meaning": "tee"
+                  },
+                  {
+                    "form": "saft",
+                    "meaning": "mehu"
+                  },
+                  {
+                    "form": "vatten",
+                    "meaning": "vesi"
+                  },
+                  {
+                    "form": "en smörgås",
+                    "meaning": "voileipä"
+                  },
+                  {
+                    "form": "en bulle",
+                    "meaning": "pulla"
+                  },
+                  {
+                    "form": "en meny",
+                    "meaning": "ruokalista"
+                  },
+                  {
+                    "form": "en kund",
+                    "meaning": "asiakas"
+                  },
+                  {
+                    "form": "kostar",
+                    "meaning": "maksaa"
+                  },
+                  {
+                    "form": "euro",
+                    "meaning": "euro"
+                  }
+                ]
+              },
+              {
+                "role": "choice",
+                "title": "Valittavat sanat",
+                "entries": [
+                  {
+                    "form": "en frukt",
+                    "meaning": "hedelmä"
+                  },
+                  {
+                    "form": "yoghurt",
+                    "meaning": "jogurtti"
+                  },
+                  {
+                    "form": "gröt",
+                    "meaning": "puuro"
+                  },
+                  {
+                    "form": "mjölk",
+                    "meaning": "maito"
+                  }
+                ]
+              },
+              {
+                "role": "recognition",
+                "title": "Lukemisen tuki",
+                "entries": [
+                  {
+                    "form": "mjölkfri",
+                    "meaning": "maidoton"
+                  },
+                  {
+                    "form": "ingredienser",
+                    "meaning": "ainesosat"
+                  },
+                  {
+                    "form": "ett paket",
+                    "meaning": "paketti; tuoteyhdistelmä (kahvilan ruokalistassa)"
+                  },
+                  {
+                    "form": "en kaka",
+                    "meaning": "kakku; keksi"
+                  },
+                  {
+                    "form": "innehåller mjölk",
+                    "meaning": "sisältää maitoa"
+                  },
+                  {
+                    "form": "uppgift saknas",
+                    "meaning": "tieto puuttuu"
+                  },
+                  {
+                    "form": "ett mellanmål",
+                    "meaning": "välipala"
+                  },
+                  {
+                    "form": "kommer",
+                    "meaning": "tulee"
+                  },
+                  {
+                    "form": "vi pratar om",
+                    "meaning": "puhumme jostakin"
+                  },
+                  {
+                    "form": "en paus",
+                    "meaning": "tauko"
+                  },
+                  {
+                    "form": "den",
+                    "meaning": "se (viittaa en-sanaan, esimerkiksi laituriin, reppuun tai kahvilan tuotteeseen)"
+                  },
+                  {
+                    "form": "bullar",
+                    "meaning": "pullat; pullia"
+                  },
+                  {
+                    "form": "smörgåsar",
+                    "meaning": "voileivät; voileipiä"
+                  },
+                  {
+                    "form": "menyn",
+                    "meaning": "ruokalista; kyseinen ruokalista"
+                  },
+                  {
+                    "form": "bullen",
+                    "meaning": "pulla; kyseinen pulla"
+                  },
+                  {
+                    "form": "på menyn",
+                    "meaning": "ruokalistalla"
+                  },
+                  {
+                    "form": "hjälper till",
+                    "meaning": "autatte; auttavat"
+                  },
+                  {
+                    "form": "finns det något mjölkfritt",
+                    "meaning": "onko jotakin maidotonta"
+                  },
+                  {
+                    "form": "de här smörgåsarna",
+                    "meaning": "nämä voileivät"
+                  },
+                  {
+                    "form": "bra idé",
+                    "meaning": "hyvä ajatus"
+                  },
+                  {
+                    "form": "en signal",
+                    "meaning": "äänimerkki; merkki"
+                  },
+                  {
+                    "form": "jag skulle vilja ha",
+                    "meaning": "haluaisin saada tai ottaa"
+                  },
+                  {
+                    "form": "kan jag få",
+                    "meaning": "voinko saada"
+                  },
+                  {
+                    "form": "får det vara något annat",
+                    "meaning": "saisiko olla muuta"
+                  },
+                  {
+                    "form": "varsågod",
+                    "meaning": "ole hyvä"
+                  },
+                  {
+                    "form": "vad kostar det",
+                    "meaning": "mitä se maksaa"
+                  },
+                  {
+                    "form": "det kostar",
+                    "meaning": "se maksaa"
+                  },
+                  {
+                    "form": "nej tack, det är bra",
+                    "meaning": "ei kiitos, näin on hyvä"
+                  },
+                  {
+                    "form": "tack själv",
+                    "meaning": "kiitos itsellesi"
+                  },
+                  {
+                    "form": "jag ska kontrollera",
+                    "meaning": "tarkistan"
+                  },
+                  {
+                    "form": "jag ska fråga en vuxen",
+                    "meaning": "kysyn aikuiselta"
+                  },
+                  {
+                    "form": "är den mjölkfri",
+                    "meaning": "onko se maidoton"
+                  },
+                  {
+                    "form": "hur mycket",
+                    "meaning": "kuinka paljon"
+                  },
+                  {
+                    "form": "här är fem euro",
+                    "meaning": "tässä on viisi euroa"
+                  },
+                  {
+                    "form": "två euro tillbaka",
+                    "meaning": "kaksi euroa takaisin"
+                  },
+                  {
+                    "form": "får jag fråga en sak",
+                    "meaning": "saanko kysyä yhden asian"
+                  },
+                  {
+                    "form": "vad gillar du på festen",
+                    "meaning": "mistä pidät juhlassa"
+                  },
+                  {
+                    "form": "fikan",
+                    "meaning": "kahvitauko; kahvilan tarjoilu (tässä tarinan juhlassa)"
+                  },
+                  {
+                    "form": "äta",
+                    "meaning": "syödä"
+                  },
+                  {
+                    "form": "äter",
+                    "meaning": "syö; syön"
+                  },
+                  {
+                    "form": "dricka",
+                    "meaning": "juoda"
+                  },
+                  {
+                    "form": "dricker",
+                    "meaning": "juo; juon"
+                  },
+                  {
+                    "form": "frukt",
+                    "meaning": "hedelmä; hedelmää tai hedelmiä (taukomallissa)"
+                  },
+                  {
+                    "form": "ska vi ta en paus",
+                    "meaning": "pidetäänkö tauko"
+                  },
+                  {
+                    "form": "mjölkfria",
+                    "meaning": "maidottomat; maidottomia (tässä tietyt voileivät)"
+                  },
+                  {
+                    "form": "musiken",
+                    "meaning": "musiikki; kyseinen musiikki"
+                  },
+                  {
+                    "form": "en sändning",
+                    "meaning": "lähetys"
+                  },
+                  {
+                    "form": "ett ljud",
+                    "meaning": "ääni"
+                  },
+                  {
+                    "form": "ett stödkort",
+                    "meaning": "tukikortti"
+                  },
+                  {
+                    "form": "välja",
+                    "meaning": "valita"
+                  },
+                  {
+                    "form": "en del",
+                    "meaning": "osa"
+                  },
+                  {
+                    "form": "plats",
+                    "meaning": "paikka; tila"
+                  },
+                  {
+                    "form": "resan",
+                    "meaning": "matka; kyseinen matka"
+                  },
+                  {
+                    "form": "nervös",
+                    "meaning": "hermostunut; jännittynyt"
+                  },
+                  {
+                    "form": "korta bitar",
+                    "meaning": "lyhyet pätkät"
+                  },
+                  {
+                    "form": "några ord",
+                    "meaning": "muutama sana"
+                  },
+                  {
+                    "form": "allt får inte plats",
+                    "meaning": "kaikki ei mahdu"
+                  },
+                  {
+                    "form": "det hör ihop med",
+                    "meaning": "se liittyy johonkin"
+                  },
+                  {
+                    "form": "efter dig",
+                    "meaning": "sinun jälkeesi"
+                  },
+                  {
+                    "form": "I dag berättar vi om resan.",
+                    "meaning": "Tänään kerromme matkasta."
+                  },
+                  {
+                    "form": "Nu hör vi...",
+                    "meaning": "Nyt kuulemme..."
+                  },
+                  {
+                    "form": "Tack för att ni lyssnade!",
+                    "meaning": "Kiitos, kun kuuntelitte!"
+                  },
+                  {
+                    "form": "i dag",
+                    "meaning": "tänään"
+                  },
+                  {
+                    "form": "svenska",
+                    "meaning": "ruotsi; ruotsin kieli"
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "id": "u7-juhla-suorana",
+          "title": "Vi ses igen",
+          "file": "content/tuta-kor-6/2.50-textbook-draft/u7-juhla-suorana.md",
+          "label": "Efter resan",
+          "sectionIds": [
+            "du-da-viesti",
+            "huomaa-kielesta-tuttu-kieli-voidaan-yhdistaa",
+            "pa-nytt-c-aineisto",
+            "pa-nytt-c-kokeile",
+            "pa-nytt-c-tavarat-ja-tauko",
+            "pa-nytt-c-asiointi",
+            "nayta-ja-suuntaa",
+            "katso-mita-osaat"
+          ],
+          "vocabulary": {
+            "sourceLanguage": "sv",
+            "targetLanguage": "fi",
+            "note": "Ydinsanoja harjoitellaan yhdessä. Valittavista sanoista käytät omassa vastauksessasi tarvitsemiasi. Lukemisen tuki auttaa ymmärtämään; kaikkea ei tarvitse tuottaa itse.",
+            "groups": [
+              {
+                "role": "recognition",
+                "title": "Lukemisen tuki",
+                "entries": [
+                  {
+                    "form": "ett klubbrum",
+                    "meaning": "kerhohuone"
+                  },
+                  {
+                    "form": "i klubbrummet",
+                    "meaning": "kerhohuoneessa"
+                  },
+                  {
+                    "form": "Sams",
+                    "meaning": "Samin"
+                  },
+                  {
+                    "form": "vi ses",
+                    "meaning": "nähdään"
+                  },
+                  {
+                    "form": "Finland",
+                    "meaning": "Suomi"
+                  },
+                  {
+                    "form": "Sverige",
+                    "meaning": "Ruotsi"
+                  },
+                  {
+                    "form": "Norge",
+                    "meaning": "Norja"
+                  },
+                  {
+                    "form": "Danmark",
+                    "meaning": "Tanska"
+                  },
+                  {
+                    "form": "Island",
+                    "meaning": "Islanti"
+                  },
+                  {
+                    "form": "finska",
+                    "meaning": "suomi; suomen kieli"
+                  },
+                  {
+                    "form": "svenska",
+                    "meaning": "ruotsi; ruotsin kieli"
+                  },
+                  {
+                    "form": "norska",
+                    "meaning": "norja; norjan kieli"
+                  },
+                  {
+                    "form": "danska",
+                    "meaning": "tanska; tanskan kieli"
+                  },
+                  {
+                    "form": "isländska",
+                    "meaning": "islanti; islannin kieli"
+                  },
+                  {
+                    "form": "kommer",
+                    "meaning": "tulee"
+                  },
+                  {
+                    "form": "vi pratar om",
+                    "meaning": "puhumme jostakin"
+                  },
+                  {
+                    "form": "frukt",
+                    "meaning": "hedelmä; hedelmää tai hedelmiä (taukomallissa)"
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "sourceDigest": "7dd42cf534e0315335c1c21c57067e6ab09c6d356e2d7fa86f70ff86c134e219",
+      "cover": {
+        "title": "Saariston ääni",
+        "motif": "islands"
+      },
+      "sectionRedirects": [
+        {
+          "chapterId": "u6-pop-up-fika",
+          "sectionId": "sanatuki-menu",
+          "targetChapterId": "u6-pop-up-fika",
+          "targetSectionId": "avausaukeama"
+        },
+        {
+          "chapterId": "u6-pop-up-fika",
+          "sectionId": "ydinfraasit",
+          "targetChapterId": "u6-pop-up-fika",
+          "targetSectionId": "luvun-tehtava-avatkaa-harjoituskahvila"
+        },
+        {
+          "chapterId": "u6-pop-up-fika",
+          "sectionId": "huomaa-kielesta-kan-vill-ja-far-fraaseissa",
+          "targetChapterId": "u6-pop-up-fika",
+          "targetSectionId": "luvun-tehtava-avatkaa-harjoituskahvila"
+        },
+        {
+          "chapterId": "u6-pop-up-fika",
+          "sectionId": "aani-ja-rohkeus-ystavallinen-asiointirytmi",
+          "targetChapterId": "u6-pop-up-fika",
+          "targetSectionId": "luvun-tehtava-avatkaa-harjoituskahvila"
+        },
+        {
+          "chapterId": "u6-pop-up-fika",
+          "sectionId": "aito-tekstilaji-harjoitusruokalista",
+          "targetChapterId": "u6-pop-up-fika",
+          "targetSectionId": "kohtaus-1-vad-kan-vi-salja"
+        },
+        {
+          "chapterId": "u6-pop-up-fika",
+          "sectionId": "fonstret-tauko",
+          "targetChapterId": "u6-pop-up-fika",
+          "targetSectionId": "du-da-valipala"
+        },
+        {
+          "chapterId": "u6-pop-up-fika",
+          "sectionId": "katso-mita-osaat",
+          "targetChapterId": "u6-pop-up-fika",
+          "targetSectionId": "aani-ja-rohkeus-tauko-auttaa-kuulijaa"
+        },
+        {
+          "chapterId": "u7-juhla-suorana",
+          "sectionId": "avausaukeama",
+          "targetChapterId": "u6-pop-up-fika",
+          "targetSectionId": "kohtaus-1-vad-ska-vi-valja"
+        },
+        {
+          "chapterId": "u7-juhla-suorana",
+          "sectionId": "sanatuki-valinta",
+          "targetChapterId": "u6-pop-up-fika",
+          "targetSectionId": "kohtaus-1-vad-ska-vi-valja"
+        },
+        {
+          "chapterId": "u7-juhla-suorana",
+          "sectionId": "kohtaus-1-vad-ska-vi-valja",
+          "targetChapterId": "u6-pop-up-fika",
+          "targetSectionId": "kohtaus-1-vad-ska-vi-valja"
+        },
+        {
+          "chapterId": "u7-juhla-suorana",
+          "sectionId": "ydinfraasit",
+          "targetChapterId": "u6-pop-up-fika",
+          "targetSectionId": "aani-ja-rohkeus-tauko-auttaa-kuulijaa"
+        },
+        {
+          "chapterId": "u7-juhla-suorana",
+          "sectionId": "aani-ja-rohkeus-tauko-auttaa-kuulijaa",
+          "targetChapterId": "u6-pop-up-fika",
+          "targetSectionId": "aani-ja-rohkeus-tauko-auttaa-kuulijaa"
+        },
+        {
+          "chapterId": "u7-juhla-suorana",
+          "sectionId": "aito-tekstilaji-juhlaohjelma",
+          "targetChapterId": "u6-pop-up-fika",
+          "targetSectionId": "aito-tekstilaji-juhlaohjelma"
+        },
+        {
+          "chapterId": "u7-juhla-suorana",
+          "sectionId": "kohtaus-2-skargardens-rost",
+          "targetChapterId": "u6-pop-up-fika",
+          "targetSectionId": "kohtaus-2-skargardens-rost"
+        },
+        {
+          "chapterId": "u7-juhla-suorana",
+          "sectionId": "kohtaus-2-jatkuu-aani-kuuluu",
+          "targetChapterId": "u6-pop-up-fika",
+          "targetSectionId": "kohtaus-2-jatkuu-aani-kuuluu"
+        },
+        {
+          "chapterId": "u7-juhla-suorana",
+          "sectionId": "luvun-tehtava-tehkaa-oma-paatoslahetys",
+          "targetChapterId": "u7-juhla-suorana",
+          "targetSectionId": "katso-mita-osaat"
+        },
+        {
+          "chapterId": "u7-juhla-suorana",
+          "sectionId": "jalki-matkalta",
+          "targetChapterId": "u6-pop-up-fika",
+          "targetSectionId": "jalki-matkalta"
+        }
+      ],
+      "frontMatter": [
+        {
+          "id": "contents",
+          "title": "Innehåll",
+          "kind": "front-matter",
+          "supportType": "contents",
+          "file": "content/tuta-kor-6/2.50-textbook-draft/contents.md",
+          "sectionIds": [
+            "contents-1",
+            "contents-2"
+          ]
+        }
+      ],
+      "backMatter": [
+        {
+          "id": "fraser",
+          "title": "Fraser",
+          "kind": "back-matter",
+          "supportType": "phrase-guide",
+          "file": "content/tuta-kor-6/2.50-textbook-draft/fraser.md",
+          "sectionIds": [
+            "fraser-havainto",
+            "fraser-esittely",
+            "fraser-kutsu",
+            "fraser-arki",
+            "fraser-aika-ja-paikka",
+            "fraser-tavara",
+            "fraser-kahvila",
+            "fraser-korjaus-ja-lopetus"
+          ]
+        },
+        {
+          "id": "kort-slut",
+          "title": "Röster från resan – lyhyt päätösreitti",
+          "kind": "back-matter",
+          "supportType": "markdown",
+          "file": "content/tuta-kor-6/2.50-textbook-draft/kort-slut.md",
+          "sectionIds": [
+            "vi-gor-det-tillsammans",
+            "min-rost-hors",
+            "en-egen-mening",
+            "harjoittelu-jatkuu"
+          ]
+        },
+        {
+          "id": "sprakstod",
+          "title": "Grammatik – Kielioppi",
+          "kind": "back-matter",
+          "supportType": "grammar-guide",
+          "file": "content/tuta-kor-6/2.50-textbook-draft/sprakstod.md",
+          "sectionIds": [
+            "sprakstod-kaytto",
+            "sprakstod-kysymykset",
+            "sprakstod-mina-ja-sina",
+            "sprakstod-aika",
+            "sprakstod-tekeminen",
+            "sprakstod-sanajarjestys",
+            "sprakstod-tavarat",
+            "sprakstod-varit",
+            "sprakstod-paikka",
+            "sprakstod-kokonaiset-fraasit",
+            "sprakstod-yhdistaminen"
+          ]
+        },
+        {
+          "id": "ord",
+          "title": "Ord",
+          "kind": "back-matter",
+          "supportType": "vocabulary-index",
+          "file": "content/tuta-kor-6/2.50-textbook-draft/ord.md",
+          "sectionIds": [
+            "ord-ohje",
+            "ord-letter-41",
+            "ord-letter-42",
+            "ord-letter-43",
+            "ord-letter-44",
+            "ord-letter-45",
+            "ord-letter-46",
+            "ord-letter-47",
+            "ord-letter-48",
+            "ord-letter-49",
+            "ord-letter-4a",
+            "ord-letter-4b",
+            "ord-letter-4c",
+            "ord-letter-4d",
+            "ord-letter-4e",
+            "ord-letter-4f",
+            "ord-letter-50",
+            "ord-letter-52",
+            "ord-letter-53",
+            "ord-letter-54",
+            "ord-letter-55",
+            "ord-letter-56",
+            "ord-letter-59",
+            "ord-letter-c5",
+            "ord-letter-c4",
+            "ord-letter-d6"
+          ]
+        }
+      ],
+      "pdf": {
+        "file": "downloads/tuta-kor-6/2.50-textbook-draft/textbook.pdf",
+        "filename": "tuta-kor-6-tekstikirja.pdf",
+        "title": "PDF-esikatselu"
+      }
+    }
+  ]
+}

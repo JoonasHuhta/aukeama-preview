@@ -1,0 +1,43 @@
+{
+  "kind": "public-draft-preview",
+  "createdAt": "2026-10-17T12:01:37.853Z",
+  "books": [
+    {
+      "id": "tuta-kor-6",
+      "version": "2.50-textbook-draft",
+      "sourceDigest": "7dd42cf534e0315335c1c21c57067e6ab09c6d356e2d7fa86f70ff86c134e219"
+    }
+  ],
+  "files": [
+    "app.js",
+    "assets/aukeama-wordmark-open-book.png",
+    "catalog.json",
+    "content-loader.mjs",
+    "content.mjs",
+    "content/tuta-kor-6/2.50-textbook-draft/contents.md",
+    "content/tuta-kor-6/2.50-textbook-draft/fraser.md",
+    "content/tuta-kor-6/2.50-textbook-draft/kort-slut.md",
+    "content/tuta-kor-6/2.50-textbook-draft/ord.md",
+    "content/tuta-kor-6/2.50-textbook-draft/sprakstod.md",
+    "content/tuta-kor-6/2.50-textbook-draft/u0-kieliymparisto.md",
+    "content/tuta-kor-6/2.50-textbook-draft/u1-kutsu-retkelle.md",
+    "content/tuta-kor-6/2.50-textbook-draft/u2-lahtoportti.md",
+    "content/tuta-kor-6/2.50-textbook-draft/u3-saaristokoulu.md",
+    "content/tuta-kor-6/2.50-textbook-draft/u4-kadonnut-reppu.md",
+    "content/tuta-kor-6/2.50-textbook-draft/u5-majakkayo.md",
+    "content/tuta-kor-6/2.50-textbook-draft/u6-pop-up-fika.md",
+    "content/tuta-kor-6/2.50-textbook-draft/u7-juhla-suorana.md",
+    "cover.mjs",
+    "downloads/tuta-kor-6/2.50-textbook-draft/textbook.pdf",
+    "index.html",
+    "preview-state.json",
+    "preview-updates.mjs",
+    "reading-state.mjs",
+    "role-cards.mjs",
+    "routes.mjs",
+    "styles.css",
+    "views.mjs",
+    "vocabulary-search.mjs",
+    "word-cards.mjs"
+  ]
+}
