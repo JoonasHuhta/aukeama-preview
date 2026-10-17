@@ -62,10 +62,13 @@ export function resumeView(books, state = {}) {
     '">Jatka tästä</a><button type="button" id="clear-reading-position">Tyhjennä lukukohta</button></div></section>';
 }
 export function libraryView(books, query, state) {
-  return '<div class="page"><h1>Kirjasto</h1><form class="search-form" role="search" id="book-search"><label for="search">Hae kirjoja</label>' +
+  const compactSearch = books.length <= 1;
+  return '<div class="page"><h1>Kirjasto</h1><div id="resume-slot">' + resumeView(books, state) + '</div>' +
+    (compactSearch ? '<details class="library-search"' + (query ? ' open' : '') + '><summary>Hae kirjastosta</summary>' : '') +
+    '<form class="search-form" role="search" id="book-search"><label for="search">Hae kirjoja</label>' +
     '<div class="search-row"><input type="search" id="search" name="q" value="' + e(query) +
     '" placeholder="Kirjan nimi, oppiaine tai luokka"><button class="primary" type="submit">Hae</button></div></form>' +
-    '<div id="resume-slot">' + resumeView(books, state) + '</div><p id="library-status" class="muted" role="status"></p>' +
+    (compactSearch ? '</details>' : '') + '<p id="library-status" class="muted" role="status"></p>' +
     '<div id="book-results">' + resultList(books, query) + '</div></div>';
 }
 export function helpView() {
@@ -174,6 +177,8 @@ export function readerView(book, chapter, sections, index, mode, fontSize, selec
     '<p class="reader-status sr-only" id="reader-status" role="status"></p>' +
     '<div class="reader-layout"><nav class="chapter-nav" id="chapter-nav" aria-label="Kirjan sisällysluettelo" hidden>' +
     '<div class="panel-heading"><h2>Sisällysluettelo</h2><button type="button" id="close-contents" aria-label="Sulje sisällysluettelo">Sulje</button></div>' +
+    '<div class="chapter-switch"><a class="button" href="' + bookUrl(book.id) + '">Kirjan tiedot</a>' +
+    '<a class="button" href="#/library">Kirjastoon</a></div>' +
     '<div class="chapter-switch">' +
     (entries[chapterIndex - 1] ? '<a class="button" href="' + readerUrl(book.id, entries[chapterIndex - 1].id, '', mode) + '">' +
       (entries[chapterIndex - 1].kind === 'back-matter' ? 'Edellinen apusivu' : 'Edellinen luku') + '</a>' : '') +
