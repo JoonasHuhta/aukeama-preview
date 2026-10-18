@@ -5,11 +5,13 @@ import { createReadingState } from './reading-state.mjs';
 import { createPreviewGuard } from './preview-updates.mjs';
 import { closeOtherRoleCards } from './role-cards.mjs';
 import { installWordCards } from './word-cards.mjs';
+import { installPrintSupport, focusAfterPositionClear } from './print-support.mjs';
 
 const main = document.querySelector('#main');
+const printSupport = installPrintSupport(main, window);
 const wordCards = installWordCards(main);
 // toggle does not bubble; capture also covers freshly rendered focus-dialog copies.
-main.addEventListener('toggle', event => closeOtherRoleCards(event.target), true);
+main.addEventListener('toggle', event => { if (!printSupport.active) closeOtherRoleCards(event.target); }, true);
 const previewGuard=createPreviewGuard({
   revision:new URL(import.meta.url).searchParams.get('build'),baseUrl:import.meta.url,
   onUpdate:()=>{document.querySelector('#preview-update').hidden=false;}
@@ -211,9 +213,9 @@ async function renderRoute({ initial = false } = {}) {
           const section = sections.find(item => item.id === route.section) || sections[0];
           const index = findSectionIndex(sections, section.id, route.mode, pageSize(chapter));
           reader = { book, chapter, sections, index, section: section.id, mode: route.mode };
-          readingState.save({ schemaVersion: 1, bookId: book.id, version: book.version,
+          const returnTo = readingState.visit(books, { schemaVersion: 1, bookId: book.id, version: book.version,
             chapterId: chapter.id, sectionId: section.id, mode: route.mode });
-          main.innerHTML = readerView(book, chapter, sections, index, route.mode, fontSize, section.id, pageSize(chapter));
+          main.innerHTML = readerView(book, chapter, sections, index, route.mode, fontSize, section.id, pageSize(chapter), returnTo);
           syncFullscreenControls();
           setTitle(chapter.title + ' – ' + book.series + ' ' + book.grade);
           if (route.section && !focusAfterRoute) {
@@ -341,7 +343,7 @@ main.addEventListener('click', event => {
     document.querySelector('#resume-slot').innerHTML = resumeView(books, readingState.get());
     document.querySelector('#library-status').textContent = cleared ? 'Lukukohta tyhjennetty.' :
       'Lukukohta poistettiin tästä näkymästä. Selaimen tallennusta ei voitu tyhjentää.';
-    document.querySelector('#search').focus({ preventScroll: true });
+    focusAfterPositionClear(main);
     return;
   }
   if (!reader) return;

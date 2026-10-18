@@ -141,6 +141,7 @@ body.is-reader #main { height: 100%; }
 .reader-book-link { min-width: 0; flex: 1 1 160px; max-width: 224px; display: grid; align-content: center; min-height: 44px; color: var(--ink); text-decoration: none; line-height: 1.25; }
 .reader-book-link span { font-size: 12px; color: var(--muted); }
 .reader-book-link strong { font-size: 16px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.reader-book-link .reader-book-short { display: none; }
 #section-select { flex: 1 1 180px; min-width: 0; width: 180px; max-width: 320px; background: white; color: var(--ink); }
 #reading-mode { width: 130px; background: white; color: var(--ink); }
 .reader-options { display: flex; gap: 8px; align-items: center; margin-left: auto; }
@@ -200,6 +201,9 @@ body.is-reader #main { height: 100%; }
   .scene-main { grid-row: 1 / span 3; grid-column: 1; }
   .word-help { grid-column: 2; }
   .extra-help { grid-column: 2; }
+}
+@container reader-page (max-width: 480px) {
+  .paper-section .dialogue-turn { grid-template-columns: minmax(0,1fr); gap: 4px; }
 }
 .paper-section[data-focus-section] { position: relative; padding-top: 64px; }
 .section-open { position: absolute; top: 8px; right: 16px; min-height: 44px; font-size: 14px; padding: 8px 12px; }
@@ -349,7 +353,7 @@ progress::-moz-progress-bar { background: var(--accent); }
 .error-state { padding: 24px 0; }
 @media (max-width: 1199px) {
   #toggle-options { display: inline-flex; }
-  .reader-options { display: none; position: absolute; right: 16px; top: 56px; width: min(360px, calc(100% - 32px)); padding: 16px; border: 1px solid var(--line); background: white; flex-wrap: wrap; z-index: 6; }
+  .reader-options { display: none; position: absolute; right: 16px; top: 56px; width: min(360px, calc(100% - 32px)); max-height: calc(100dvh - 72px); overflow-y: auto; padding: 16px; border: 1px solid var(--line); background: white; flex-wrap: wrap; z-index: 6; }
   .reader-page.is-options-open .reader-options { display: flex; }
 }
 @media (max-width: 899px) {
@@ -387,8 +391,10 @@ progress::-moz-progress-bar { background: var(--accent); }
   .book-body { grid-template-columns: 1fr; gap: 32px; }
   .reader-controls { gap: 4px; padding-inline: 8px; }
   .reader-book-link { flex: 0 1 56px; min-width: 44px; }
+  .reader-book-link.is-reader-return { flex-basis: 64px; min-width: 64px; }
   .reader-book-link span { display: none; }
-  .reader-book-link strong { font-size: 14px; }
+  .reader-book-link strong { display: none; }
+  .reader-book-link .reader-book-short { display: block; color: var(--accent); font-size: 16px; text-decoration: underline; text-underline-offset: 3px; }
   #section-select { flex-basis: 100px; }
   .reader-controls button { padding-inline: 8px; }
   .reader-navigation { gap: 8px; padding-inline: 8px; }

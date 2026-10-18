@@ -1,6 +1,6 @@
 {
   "kind": "public-draft-preview",
-  "createdAt": "2026-10-17T12:15:39.980Z",
+  "createdAt": "2026-10-18T08:25:02.646Z",
   "books": [
     {
       "id": "tuta-kor-6",
@@ -32,6 +32,7 @@
     "index.html",
     "preview-state.json",
     "preview-updates.mjs",
+    "print-support.mjs",
     "reading-state.mjs",
     "role-cards.mjs",
     "routes.mjs",

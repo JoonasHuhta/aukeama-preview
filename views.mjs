@@ -77,6 +77,8 @@ export function helpView() {
     'Kirjan tiedoista löydät sisällysluettelon ja materiaalien saatavuuden.</p>' +
     '<p>PDF-esikatselun voi ladata, kun linkki näkyy kirjan kohdalla. Materiaalien saatavuus näkyy kirjan tiedoissa. ' +
     'Käsikirjoitusmerkintä tarkoittaa keskeneräistä oppimateriaalia, ei hyväksyttyä julkaisua.</p>' +
+    '<p>Tulosta koko kirja PDF-esikatselusta. Selaimen tulostus tulostaa vain näkyvissä olevat sisältösivut ' +
+    'tai Koko luku -tilan luvun. Näiden sivujen lisätuet ja roolikortit avataan tulostukseen automaattisesti.</p>' +
     '<h2>Lue ja selaa</h2><p>Luvut-painike avaa sisällysluettelon. Luvun osan voi valita myös yläpalkista. ' +
     'Edellinen ja Seuraava selaavat saman luvun sivuja. Tietokoneella voit käyttää myös nuolinäppäimiä, ' +
     'puhelimella vaakapyyhkäisyä. Pitkää sivua vieritetään sivun sisällä.</p>' +
@@ -87,7 +89,10 @@ export function helpView() {
     '<h2>Lukukohta ja selaimen tallennus</h2><p>Viimeksi avattu lukukohta ja tekstikoko tallennetaan vain ' +
     'tähän selaimeen, jos selain sallii tallennuksen. Tietoja ei lähetetä palvelimelle eikä synkronoida ' +
     'eri laitteisiin. Oppilaan vastauksia tai henkilötietoja ei tallenneta tähän lukukohtatoimintoon.</p>' +
-    '<p>Jatka tästä avaa viimeksi käytetyn kirjan, luvun ja sisältöosan samalla lukutavalla. ' +
+    '<p>Jatka tästä avaa viimeksi käytetyn luvun ja sisältöosan samalla lukutavalla. ' +
+    'Saman kirjan sisällysluettelossa, kieliopissa tai muulla apusivulla käyminen ei korvaa luvun lukukohtaa. ' +
+    'Apusivun Lukuun-linkki palauttaa samaan kohtaan ja lukutapaan, myös sivun päivittämisen jälkeen, jos tallennus on sallittu. ' +
+    'Ilman aiempaa lukukohtaa myös apusivua voi jatkaa myöhemmin. ' +
     'Jos kirja, painos tai osio ei enää löydy, jatkamispainiketta ei näytetä.</p>' +
     '<p>Yhteiskäyttöisellä koneella valitse kirjastosta Tyhjennä lukukohta. Tämä poistaa vain lukukohdan, ' +
     'ei tekstikoon asetusta. Jos tallennus on estetty, lukija toimii silti.</p>' +
@@ -147,7 +152,7 @@ export function readerInfoView(book, chapter) {
       '<li>' + e(material.title) + ' — ' + e(material.statusLabel) + '</li>').join('') + '</ul>' +
     '<p><a href="' + bookUrl(book.id) + '">Kirjan tiedot ja lisenssi' + (book.status === 'published' ? '' : 'suunnitelma') + '</a></p></aside>';
 }
-export function readerView(book, chapter, sections, index, mode, fontSize, selectedSection = sections[index].id, pageSize = 2) {
+export function readerView(book, chapter, sections, index, mode, fontSize, selectedSection = sections[index].id, pageSize = 2, returnTo = null) {
   pageSize = readerPageSize(chapter, pageSize === 1);
   const isSpread = mode === 'spread';
   const visible = isSpread ? sections.slice(index, index + pageSize) : sections;
@@ -155,6 +160,13 @@ export function readerView(book, chapter, sections, index, mode, fontSize, selec
   const chapterIndex = entries.findIndex(item => item.id === chapter.id);
   const openingVisible = visible.some(section => section.id === sections[0].id);
   const marker = chapter.label ?? chapter.number;
+  const bookLink = returnTo ? {
+    href: readerUrl(returnTo.book.id, returnTo.chapter.id, returnTo.sectionId, returnTo.mode),
+    label: 'Lukuun – palaa lukukohtaan: ' + returnTo.chapter.title,
+    subtitle: 'Palaa lukukohtaan', title: returnTo.chapter.title, short: 'Lukuun'
+  } : {href: bookUrl(book.id), label: 'Kirjan tiedot: ' + book.title,
+    subtitle: book.series + ' ' + book.grade,
+    title: (marker !== undefined ? marker + ' · ' : '') + chapter.title, short: 'Kirja'};
   const options = '<div class="reader-options" id="reader-options">' +
     '<label class="sr-only" for="reading-mode">Lukutapa</label><select id="reading-mode"><option value="spread"' + (isSpread ? ' selected' : '') +
     '>Aukeama</option><option value="chapter"' + (!isSpread ? ' selected' : '') + '>Koko luku</option></select>' +
@@ -167,8 +179,8 @@ export function readerView(book, chapter, sections, index, mode, fontSize, selec
     (book.pdf ? '<a class="button" href="' + e(book.pdf.file) + '" download="' + e(book.pdf.filename) + '">PDF</a>' : '') + '</div>';
   return '<div class="reader-page" data-page-size="' + pageSize + '">' +
     (!openingVisible ? '<h1 class="sr-only">' + (marker !== undefined ? e(marker) + (chapter.label ? ' – ' : '. ') : '') + e(chapter.title) + '</h1>' : '') +
-    '<header class="reader-controls"><a class="reader-book-link" href="' + bookUrl(book.id) + '" aria-label="Kirjan tiedot: ' + e(book.title) +
-    '"><span>' + e(book.series) + ' ' + e(book.grade) + '</span><strong>' + (marker !== undefined ? e(marker) + ' · ' : '') + e(chapter.title) + '</strong></a>' +
+    '<header class="reader-controls"><a class="reader-book-link' + (returnTo ? ' is-reader-return' : '') + '" href="' + e(bookLink.href) + '" aria-label="' + e(bookLink.label) +
+    '"><span>' + e(bookLink.subtitle) + '</span><strong>' + e(bookLink.title) + '</strong><span class="reader-book-short" aria-hidden="true">' + bookLink.short + '</span></a>' +
     '<button type="button" id="toggle-contents" aria-controls="chapter-nav" aria-expanded="false">Luvut</button>' +
     '<label class="sr-only" for="section-select">Luvun osa</label><select id="section-select">' +
     sections.map(section => '<option value="' + e(section.id) + '"' + (section.id === selectedSection ? ' selected' : '') + '>' +

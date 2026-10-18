@@ -30,14 +30,26 @@ export function createReadingState(getStorage) {
       if (valid(value)) position = fields(value);
     }
   } catch { persistent = false; }
+  function save(value) {
+    if (!valid(value)) return false;
+    position = fields(value);
+    try { getStorage().setItem(readingPositionKey, JSON.stringify(position)); persistent = true; }
+    catch { persistent = false; }
+    return persistent;
+  }
   return {
     get: () => ({ position, persistent }),
-    save(value) {
-      if (!valid(value)) return false;
-      position = fields(value);
-      try { getStorage().setItem(readingPositionKey, JSON.stringify(position)); persistent = true; }
-      catch { persistent = false; }
-      return persistent;
+    save,
+    visit(books, value) {
+      const current = resolveReadingPosition(books, value);
+      if (!current) return null;
+      const previous = resolveReadingPosition(books, position);
+      const support = [...(current.book.frontMatter || []), ...(current.book.backMatter || [])]
+        .some(part => part.id === current.chapter.id);
+      if (support && previous?.book.id === current.book.id &&
+          current.book.chapters.some(part => part.id === previous.chapter.id)) return previous;
+      save(value);
+      return null;
     },
     clear() {
       position = null;
