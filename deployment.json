@@ -1,6 +1,6 @@
 {
   "kind": "public-draft-preview",
-  "createdAt": "2026-11-07T12:36:05.722Z",
+  "createdAt": "2026-11-07T13:05:19.068Z",
   "learnerMaterials": true,
   "books": [
     {
@@ -727,6 +727,7 @@
     "role-cards.mjs",
     "route-diagrams.mjs",
     "routes.mjs",
+    "site-info.mjs",
     "spatial-model.mjs",
     "styles.css",
     "views.mjs",

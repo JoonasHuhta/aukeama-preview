@@ -16,6 +16,7 @@ import {practiceActivities} from './practice-state.mjs';
 import {createExamWorkspace} from './exam-ui.mjs';
 import {createChapterBrowser} from './reader-previews.mjs';
 import {createWorkbookPageViewer,installPageTextLoader} from './workbook-page.mjs';
+import {authorsView} from './site-info.mjs';
 import {createReturnMarks} from './return-marks.mjs';
 import {printedPages,hasPrintedSpreads,spreadPages,turnedPage,printedSpreadUrl,partOfPage,sectionPage,sectionsOnPages,PAGE_ZOOMS,zoomStep,zoomLabel,workbookTaskUrl} from './printed-spread.mjs';
 
@@ -227,7 +228,8 @@ async function renderRoute({ initial = false } = {}) {
   lastRoute = route;
   for (const link of document.querySelectorAll('.site-header nav a')) {
     if ((route.view === 'library' && link.getAttribute('href') === '#/library') ||
-        (route.view === 'help' && link.getAttribute('href') === '#/help')) link.setAttribute('aria-current', 'page');
+        (route.view === 'help' && link.getAttribute('href') === '#/help') ||
+        (route.view === 'authors' && link.getAttribute('href') === '#/tekijat')) link.setAttribute('aria-current', 'page');
     else link.removeAttribute('aria-current');
   }
   reader = null;
@@ -242,6 +244,9 @@ async function renderRoute({ initial = false } = {}) {
   } else if (route.view === 'help') {
     main.innerHTML = helpView();
     setTitle('Ohje');
+  } else if (route.view === 'authors') {
+    main.innerHTML = authorsView();
+    setTitle('Tekijät');
   } else {
     let book = books.find(item => item.id === route.bookId);
     if (!book) {

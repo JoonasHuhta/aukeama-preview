@@ -208,6 +208,28 @@ input::placeholder { color: var(--muted); opacity: 1; }
 /* Front page: the promise on white, the book's own spread beside it. One brand colour. */
 .library-hero { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,45%); gap: 48px; align-items: center; margin: 8px 0 56px; }
 .hero-page { min-width: 0; }
+.hero-eyebrow { margin: 0 0 10px; font-size: 15px; font-weight: 600; color: var(--brand); }
+.book-kit { margin: -16px 0 48px; }
+.book-kit h2 { margin: 0 0 16px; color: var(--brand); }
+.book-kit ul { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; list-style: none; padding: 0; margin: 0; }
+.book-kit li { padding: 18px 20px; border: 1px solid var(--line); border-top: 3px solid var(--brand); border-radius: 8px; background: white; }
+.book-kit h3 { margin: 0 0 6px; font-size: 17px; color: var(--brand); }
+.book-kit p { margin: 0; font-size: 15px; line-height: 1.5; }
+.footer-links { display: flex; flex-wrap: wrap; gap: 4px 24px; }
+.authors-page { max-width: 760px; }
+.authors-page h1 { color: var(--brand); font-size: clamp(30px, 3.4vw, 40px); }
+.authors-lead { font-size: 19px; line-height: 1.55; }
+.authors-page section { margin-top: 36px; }
+.authors-page h2 { color: var(--brand); }
+.author-card { padding: 24px; border: 1px solid var(--line); border-left: 4px solid var(--brand); border-radius: 8px; }
+.author-card h2 { margin: 0 0 2px; font-size: 24px; }
+.author-role { margin: 0 0 12px; color: var(--muted); }
+.author-links { display: flex; flex-wrap: wrap; gap: 8px 24px; align-items: center; margin-bottom: 0; }
+.why-note { display: grid; grid-template-columns: minmax(0, 220px) minmax(0, 1fr); gap: 8px 48px; margin: 0 0 56px; padding: 28px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.why-note h2 { margin: 0; font-size: 20px; color: var(--brand); }
+.why-note p { margin: 0 0 12px; font-size: 17px; line-height: 1.6; max-width: 62ch; grid-column: 2; }
+.why-note p:last-child { margin-bottom: 0; }
+@media (max-width: 899px) { .why-note { grid-template-columns: minmax(0,1fr); margin-top: 0; } .why-note p { grid-column: 1; } }
 .library-hero h1 { margin: 0 0 16px; font-size: clamp(32px, 3.6vw, 46px); line-height: 1.1; font-weight: 700; color: var(--brand); letter-spacing: -.01em; }
 .hero-lead { margin: 0 0 20px; font-size: 19px; line-height: 1.55; max-width: 40ch; }
 .hero-facts { display: grid; gap: 8px; list-style: none; padding: 0; margin: 0 0 28px; }

@@ -42,6 +42,7 @@ export function parseRoute(hash) {
   const params = new URLSearchParams(query);
   if (!path || path === '/' || path === '/library' || path === 'main') return { view: 'library', query: params.get('q') || '' };
   if (path === '/help') return { view: 'help' };
+  if (path === '/tekijat') return { view: 'authors' };
   try {
     const parts = path.split('/').filter(Boolean).map(decodeURIComponent);
     if (parts[0] === 'books' && parts.length === 2) {

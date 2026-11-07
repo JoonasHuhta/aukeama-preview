@@ -11,6 +11,7 @@ import {examLink} from './exam-ui.mjs';
 import {languageName, capitalize} from './language-names.mjs';
 import {chapterBrowserView} from './reader-previews.mjs';
 import {returnMarksEnabled,returnMarkControl} from './return-marks.mjs';
+import {FEEDBACK_URL,external} from './site-info.mjs';
 import {printedSpreadHtml,printedNavigation,printedPosition,sectionTitles,printedPages,spreadPages,pageLabel,printedThumbnailHtml,workbookPosition,workbookTaskAreas,workbookTaskUrl,printedTaskImage,pageZoomControl,printedSpreadUrl,partOfPage,sectionPage} from './printed-spread.mjs';
 
 // The book page's centre: each chapter's textbook, workbook pages and practice in one row.
@@ -225,17 +226,21 @@ export function libraryHero(books, state = {}) {
   const resume = resolveReadingPosition(books, state.position);
   const pages = frontSpread(book, resume);
   const chapter = readingOrder(book)[0];
-  const facts = ['Ei kirjautumista', 'Puhelimella ja tietokoneella']
-    .concat(drillsOf(book).length || practiceActivities(book).length ? ['Tehtävät tarkistuvat heti'] : []);
+  // Only what is true of this book today; the aims are said as aims in the note below.
+  const practice = drillsOf(book).length || practiceActivities(book).length;
+  const facts = [
+    book.localProofs?.workbook ? 'Koko lukuvuoden kaari: tekstikirja, työkirja' + (practice ? ' ja sähköiset harjoitukset' : '') : '',
+    'Avaa linkistä ilman tunnuksia',
+    pages ? 'Tulosta mitä tarvitset: paperilla ja ruudulla samat sivut' : ''].filter(Boolean);
   const right = pages
     ? '<a class="hero-spread" href="' + e(printedSpreadUrl(book.id, partOfPage(book, pages[0]) || chapter.id, pages[0])) + '">' +
       printedThumbnailHtml(book, pages) + '<span class="hero-spread-label">Selaa tekstikirjaa<small>' + e(pageLabel(pages)) + '</small></span></a>'
     : '<a class="hero-spread hero-spread-cover" href="' + e(readerUrl(book.id, chapter.id)) + '">' + cover(book) +
       '<span class="hero-spread-label">Selaa tekstikirjaa<small>' + e(book.title) + '</small></span></a>';
   return '<section class="library-hero" aria-labelledby="hero-title">' +
-    '<div class="hero-page hero-text">' +
-    '<h1 id="hero-title">Oppikirja aukeaa selaimessa</h1>' +
-    '<p class="hero-lead">Tekstikirja ja työkirja samoina aukeamina kuin painettuna, ja saman sivun tehtävät sähköisinä. Avaa linkistä ja lue.</p>' +
+    '<div class="hero-page hero-text"><p class="hero-eyebrow">Opettajalta opettajille</p>' +
+    '<h1 id="hero-title">Oppikirja ilman välimatkaa</h1>' +
+    '<p class="hero-lead">Sähköinen oppimateriaali jää helposti etäälle: tunnusten taakse, valikoiden sisään ja kauas siitä, mitä lapsi ja nuori oikeasti elää. Teen kielten oppikirjoja, jotka toimisivat toisin. Ensimmäisenä kuudennen luokan ruotsi.</p>' +
     '<ul class="hero-facts">' + facts.map(fact => '<li>' + e(fact) + '</li>').join('') + '</ul>' +
     '<div id="resume-slot">' + resumeView(books, state) + '</div>' +
     // With a reading position, "Jatka tästä" is the one main action on the page.
@@ -243,7 +248,26 @@ export function libraryHero(books, state = {}) {
     (book.localProofs?.workbook ? '<a class="button" href="' + e(workbookUrl(book.id)) + '">Avaa työkirja</a>' : '') +
     '<a href="' + e(bookUrl(book.id)) + '">Kaikki materiaalit</a></div>' +
     '<p class="hero-stage muted">' + e(book.series + ' ' + book.grade + ' · ' + book.statusLabel) + '</p></div>' +
-    '<div class="hero-page hero-figure">' + right + '</div></section>';
+    '<div class="hero-page hero-figure">' + right + '</div></section>' + bookKit(book, practice) + whyNote();
+}
+/** What the book consists of, each part said as it is today. */
+export function bookKit(book, practice) {
+  const parts = [
+    ['Tekstikirja', 'Luvut painettuina aukeamina ja luettavana tekstinä, sanakortit mukana.'],
+    book.localProofs?.workbook && ['Työkirja', 'Tehtävät samoilla sivuilla paperilla ja ruudulla. Jokaisen tehtävän voi avata isona taululle.'],
+    practice && ['Sähköiset harjoitukset', 'Luvun sanat ja rakenteet harjoiteltavina, palaute heti.'],
+    ['Opettajalle', 'Opettajan ohjeet, ratkaisut ja koetyökalu ovat kehitteillä.'],
+  ].filter(Boolean);
+  return '<section class="book-kit" aria-labelledby="kit-title"><h2 id="kit-title">Mitä kirjaan kuuluu</h2><ul>' +
+    parts.map(([title, text]) => '<li><h3>' + e(title) + '</h3><p>' + e(text) + '</p></li>').join('') + '</ul></section>';
+}
+/** The author's own reason, in the first person: the part a service cannot copy. */
+export function whyNote() {
+  return '<section class="why-note" aria-labelledby="why-title"><h2 id="why-title">Miksi teen tätä</h2>' +
+    '<p>Kouluilla on nyt kovat säästöpaineet. Tavoitteeni on kokonainen oppikirja koko lukuvuodeksi, josta koulu ei maksa joka vuosi uudelleen, jotta raha jää siihen, mitä kukin koulu kipeimmin tarvitsee.</p>' +
+    '<p>Haluan, että kirjan saa auki heti ja tulostettua juuri sen, mitä tunnilla tarvitaan. Selvitän luokassa, mikä toimii ja mikä ei, ja korjaan kirjaa sen mukaan.</p>' +
+    '<p>Kirja on koottu osista, joten palaute muuttuu korjaukseksi nopeasti, ja kokonaisuutta voi sovittaa koulun tai alueen tarpeisiin. ' +
+    'Kerro, mikä toimi ja mikä ei: ' + external('palaute Discordissa', FEEDBACK_URL) + '. <a href="#/tekijat">Kuka tätä tekee?</a></p></section>';
 }
 export function libraryView(books, query, state) {
   const compactSearch = books.length <= 1;
