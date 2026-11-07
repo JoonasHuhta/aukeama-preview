@@ -1,6 +1,6 @@
 import {createContentLoader, fetchCatalog} from './content-loader.mjs';
 import { parseRoute, libraryUrl, bookUrl, readerUrl, readerReferenceUrl, readerPageSize, findSectionIndex, readingOrder, textbookPageTarget, workbookUrl, textbookUrl, textbookPageSpan, textbookSectionPages } from './routes.mjs';
-import { libraryView, resultList, resumeView, helpView, bookView, readerView, focusedSectionView, errorView, vocabularyResultsView, paperPageView, readerSectionsHtml, readerNavigationView, teacherGuideView, workbookReaderView, workbookChapterRanges } from './views.mjs';
+import { libraryView, resultList, resumeView, helpView, bookView, readerView, focusedSectionView, errorView, vocabularyResultsView, paperPageView, readerSectionsHtml, readerNavigationView, teacherGuideView, workbookReaderView, workbookChapterRanges, workbookTaskView } from './views.mjs';
 import { createReadingState, readingSourcePosition } from './reading-state.mjs';
 import { createPreviewGuard } from './preview-updates.mjs';
 import { closeOtherRoleCards } from './role-cards.mjs';
@@ -17,7 +17,7 @@ import {createExamWorkspace} from './exam-ui.mjs';
 import {createChapterBrowser} from './reader-previews.mjs';
 import {createWorkbookPageViewer,installPageTextLoader} from './workbook-page.mjs';
 import {createReturnMarks} from './return-marks.mjs';
-import {printedPages,hasPrintedSpreads,spreadPages,turnedPage,printedSpreadUrl,partOfPage,sectionPage,sectionsOnPages} from './printed-spread.mjs';
+import {printedPages,hasPrintedSpreads,spreadPages,turnedPage,printedSpreadUrl,partOfPage,sectionPage,sectionsOnPages,PAGE_ZOOMS,zoomStep,zoomLabel,workbookTaskUrl} from './printed-spread.mjs';
 
 const drillStorages={getLocal:()=>localStorage,getSession:()=>sessionStorage};
 const main = document.querySelector('#main');
@@ -99,6 +99,37 @@ function openFocusedSection(id, trigger) {
   document.querySelector('#close-focused-section').focus({ preventScroll: true });
   dialog.oncancel = event => { event.preventDefault(); closeFocusedSection(); };
 }
+/** One printed workbook task, enlarged over its spread. The address stays shareable. */
+function openTaskDialog(page, number) {
+  const dialog = document.querySelector('#focused-section');
+  const html = reader?.kind === 'workbook' ? workbookTaskView(reader.book, reader.printed, page, number) : '';
+  if (!dialog || !html) return false;
+  if (typeof dialog.showModal !== 'function') {
+    document.querySelector('#reader-status').textContent = 'Selain ei tue tehtävän suurennusta. Suurenna sivua alapalkin painikkeilla.';
+    return false;
+  }
+  for (const kind of ['contents', 'workbook']) toggleReaderPanel(kind, false);
+  closeOptions();
+  dialog.innerHTML = html;
+  if (!dialog.open) dialog.showModal();
+  reader.task = {page, number};
+  document.querySelector('#focused-title').focus({preventScroll: true});
+  dialog.oncancel = event => { event.preventDefault(); closeTaskDialog(); };
+  return true;
+}
+function closeTaskDialog() {
+  const dialog = document.querySelector('#focused-section');
+  const open = reader?.task;
+  if (dialog?.open) dialog.close();
+  if (reader) reader.task = undefined;
+  if (!open) return;
+  // The spread stays where it was; only the task leaves the address.
+  const url = workbookUrl(reader.book.id, lastRoute?.page || reader.printed?.[0]);
+  if (location.hash !== url) history.replaceState(null, '', url);
+  const area = [...document.querySelectorAll('a.printed-task')]
+    .find(link => link.getAttribute('href') === workbookTaskUrl(reader.book.id, open.page, open.number));
+  (area || document.querySelector('#reader-content'))?.focus?.({preventScroll: true});
+}
 function changeFocusedSection(id) {
   const dialog = document.querySelector('#focused-section');
   const section = reader?.sections.find(item => item.id === id);
@@ -110,10 +141,9 @@ function changeFocusedSection(id) {
   dialog.querySelector('#focused-title').focus({ preventScroll: true });
 }
 let fontSize = 16;
-// Enlargement of printed pages, kept apart from the text size.
-const PAGE_ZOOMS = [100, 125, 150, 175, 200];
+// Enlargement of printed pages, kept apart from the text size. 'fit' fills the window width.
 let pageZoom = 100;
-try { const saved = Number(localStorage.getItem('aukeama.printed-zoom')); if (PAGE_ZOOMS.includes(saved)) pageZoom = saved; } catch { /* Optional preference. */ }
+try { const saved = localStorage.getItem('aukeama.printed-zoom'); if (saved === 'fit' || PAGE_ZOOMS.includes(Number(saved))) pageZoom = saved === 'fit' ? 'fit' : Number(saved); } catch { /* Optional preference. */ }
 let fullscreenReading = false;
 let pageLayout = 'auto';
 const singlePage = window.matchMedia('(max-width: 899px)');
@@ -183,6 +213,7 @@ async function renderRoute({ initial = false } = {}) {
   request?.abort();
   if (await previewGuard.check() || token!==generation) return;
   wordCards.close({ restore: false });
+  if (reader) reader.task = undefined;
   closeFocusedSection({ restore: false });
   chapterBrowser.clear();
   returnMarks.clear();
@@ -240,6 +271,7 @@ async function renderRoute({ initial = false } = {}) {
       document.body.classList.add('is-reader');
       main.innerHTML = workbookReaderView(book, pages, {single, pageZoom, pageLayout, page: opened});
       fillDrillProgress(main, book, drillStorages);
+      if (route.task) openTaskDialog(opened, route.task);
       syncFullscreenControls();
       setTitle('Työkirja s. ' + pages.join('–') + ' – ' + book.series + ' ' + book.grade);
     } else if (route.view === 'workbook' || route.view === 'textbook') {
@@ -608,7 +640,24 @@ main.addEventListener('click', event => {
   }
   // Re-render after the outside-click check, which would treat the replaced button as outside the panel.
   if (event.target.closest?.('#vocabulary-reshuffle')) { setTimeout(() => { updateVocabularySearch(); focusControl('vocabulary-reshuffle'); }); return; }
+  const taskLink = event.target.closest('a.printed-task, a.task-link');
+  if (reader?.kind === 'workbook' && taskLink && event.button === 0 && !event.ctrlKey && !event.metaKey && !event.altKey && !event.shiftKey) {
+    const route = parseRoute(taskLink.getAttribute('href'));
+    if (route.view === 'workbook' && route.task && openTaskDialog(route.page, route.task)) {
+      event.preventDefault();
+      history.replaceState(null, '', taskLink.getAttribute('href'));
+      return;
+    }
+  }
   const dialog = document.querySelector('#focused-section');
+  if (dialog?.open && reader?.task) {
+    if (event.target.closest('#close-focused-section')) closeTaskDialog();
+    else if (event.target === dialog) {
+      const bounds = dialog.getBoundingClientRect();
+      if (event.clientX < bounds.left || event.clientX > bounds.right || event.clientY < bounds.top || event.clientY > bounds.bottom) closeTaskDialog();
+    }
+    return;
+  }
   if (dialog?.open) {
     if (event.target.closest('#close-focused-section')) closeFocusedSection();
     else if (event.target.closest('button[data-focused-section]:not(:disabled)')) {
@@ -686,14 +735,15 @@ main.addEventListener('click', event => {
   } else if (button.dataset.mode) {
     changeReadingMode(button.dataset.mode === 'spread' ? pageLayout : button.dataset.mode, 'reader-content');
   } else if (button.dataset.zoom) {
-    const at = PAGE_ZOOMS.indexOf(pageZoom) + Number(button.dataset.zoom);
-    if (at < 0 || at >= PAGE_ZOOMS.length) return;
-    pageZoom = PAGE_ZOOMS[at];
+    const next = button.dataset.zoom === 'fit' ? (pageZoom === 'fit' ? 100 : 'fit') : zoomStep(pageZoom, Number(button.dataset.zoom));
+    if (next === null) return;
+    pageZoom = next;
     try { localStorage.setItem('aukeama.printed-zoom', String(pageZoom)); } catch { /* Optional preference. */ }
     document.querySelector('.reader-pages.is-printed')?.setAttribute('data-zoom', String(pageZoom));
-    document.querySelector('#page-zoom-label').textContent = pageZoom + '%';
-    document.querySelector('[data-zoom="-1"]').disabled = pageZoom === 100;
-    document.querySelector('[data-zoom="1"]').disabled = pageZoom === 200;
+    document.querySelector('.page-zoom-label').textContent = zoomLabel(pageZoom);
+    document.querySelector('[data-zoom="-1"]').disabled = zoomStep(pageZoom, -1) === null;
+    document.querySelector('[data-zoom="1"]').disabled = zoomStep(pageZoom, 1) === null;
+    document.querySelector('[data-zoom="fit"]').setAttribute('aria-pressed', String(pageZoom === 'fit'));
     if (button.disabled) document.querySelector('[data-zoom="' + (button.dataset.zoom === '1' ? '-1' : '1') + '"]').focus();
   } else if (button.dataset.font) {
     fontSize = Math.max(16, Math.min(24, fontSize + Number(button.dataset.font) * 2));
@@ -721,7 +771,7 @@ document.addEventListener('fullscreenchange', () => {
 document.addEventListener('keydown', event => {
   const focusedDialog = document.querySelector('#focused-section');
   if (focusedDialog?.open) {
-    if (event.key === 'Escape') { event.preventDefault(); closeFocusedSection(); }
+    if (event.key === 'Escape') { event.preventDefault(); if (reader?.task) closeTaskDialog(); else closeFocusedSection(); }
     if (event.key === 'Tab') {
       const controls = [...focusedDialog.querySelectorAll('button:not(:disabled), a[href], summary, input:not(:disabled), select:not(:disabled), textarea:not(:disabled), [tabindex]:not([tabindex="-1"])')]
         .filter(element => element.getClientRects().length);

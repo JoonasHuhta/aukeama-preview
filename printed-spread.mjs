@@ -29,6 +29,14 @@ export function turnedPage(total, pages, direction, single = false) {
 export function printedSpreadUrl(bookId, chapterId, page) {
   return bookUrl(bookId) + '/read/' + encodeURIComponent(chapterId) + '?sivu=' + page;
 }
+/** One numbered task of the printed workbook, shown enlarged over its page. */
+export function workbookTaskUrl(bookId, page, number) {
+  return workbookUrl(bookId, page) + '&tehtava=' + encodeURIComponent(number);
+}
+export function workbookTaskAreas(book, page) {
+  const areas = printedPages(book, 'workbook')?.taskRegions?.[page];
+  return Array.isArray(areas) ? areas : [];
+}
 
 /** First and last printed page of each reader part, as the printed book lays them out. */
 export function partPageRanges(book) {
@@ -85,8 +93,16 @@ function image(proof, page, side, lazy = false, kind = 'textbook') {
 export function printedRegionsHtml(book, page, titles = {}, kind = 'textbook') {
   const proof = printedPages(book, kind);
   const regions = kind === 'textbook' && Array.isArray(proof?.pageRegions?.[page]) ? proof.pageRegions[page] : [];
+  const tasks = kind === 'workbook' ? workbookTaskAreas(book, page) : [];
   const links = Array.isArray(proof?.pageLinks?.[page]) ? proof.pageLinks[page] : [];
-  if (!regions.length && !links.length) return '';
+  if (!regions.length && !links.length && !tasks.length) return '';
+  // Each printed task is its own area: pointing at it shows the area, opening it enlarges the task.
+  const taskAreas = tasks.map(area => {
+    const label = 'Avaa tehtävä ' + area.number + ' suurempana (s. ' + page + ')';
+    return '<a class="printed-region printed-task" href="' + e(workbookTaskUrl(book.id, page, area.number)) + '" aria-label="' + e(label) + '">' +
+      '<title>' + e(label) + '</title><rect x="' + Math.round(area.left * 1000) + '" y="' + Math.round(area.top * 1000) +
+      '" width="' + Math.max(1, Math.round((area.right - area.left) * 1000)) + '" height="' + Math.max(1, Math.round((area.bottom - area.top) * 1000)) + '" rx="6"/></a>';
+  }).join('');
   // The printed page's own page references ("s. 84") stay links, on top of the section areas.
   const pageLinks = links.map(link => {
     const label = 'Siirry sivulle ' + link.page;
@@ -95,7 +111,7 @@ export function printedRegionsHtml(book, page, titles = {}, kind = 'textbook') {
       '<rect x="' + Math.round(link.left * 1000) + '" y="' + Math.round(link.top * 1000) + '" width="' + Math.max(1, Math.round(link.width * 1000)) +
       '" height="' + Math.max(1, Math.round(link.height * 1000)) + '"/></a>';
   }).join('');
-  return '<svg class="printed-regions" viewBox="0 0 1000 1000" preserveAspectRatio="none" focusable="false">' + regions.map(region => {
+  return '<svg class="printed-regions" viewBox="0 0 1000 1000" preserveAspectRatio="none" focusable="false">' + taskAreas + regions.map(region => {
     const label = 'Lue tekstinä: ' + (titles[region.chapter + '/' + region.section] || 'tämä kohta') + ' (s. ' + page + ')';
     const top = Math.round(region.top * 1000), bottom = Math.round(region.bottom * 1000);
     return '<a class="printed-region" href="' + e(readerUrl(book.id, region.chapter, region.section, 'chapter')) + '" aria-label="' + e(label) + '">' +
@@ -140,7 +156,8 @@ export function printedNavigation(book, chapterId, pages, single = false, kind =
     (target ? '' : ' disabled') + '><svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="' +
     (direction < 0 ? 'm15 6-6 6 6 6' : 'm9 6 6 6-6 6') + '"/></svg></button>';
   return '<footer class="reader-navigation printed-navigation">' + arrow(-1, previous) +
-    '<div class="reading-position">' + (kind === 'workbook' ? workbookPosition(pages) : printedPosition(book, chapterId, pages)) + '</div>' + arrow(1, next) + '</footer>';
+    '<div class="reading-position">' + (kind === 'workbook' ? workbookPosition(pages) : printedPosition(book, chapterId, pages)) + '</div>' +
+    arrow(1, next) + '</footer>';
 }
 /** "Työkirja s. 12–13": the same top-bar position as in the textbook. */
 export function workbookPosition(pages) {
@@ -152,4 +169,32 @@ export function printedPosition(book, chapterId, pages) {
   const text = first ? '<a class="printed-text-link" href="' + e(readerUrl(book.id, first.chapter, first.section, 'chapter')) + '">Lue tekstinä</a>' : '';
   return '<p><span class="printed-position">' + e(pageLabel(pages)) + '</span>' +
     (text ? '<span class="paper-separator" aria-hidden="true"> · </span>' + text : '') + '</p>';
+}
+
+/** The printed task alone, cropped from its page image and scaled to the view. */
+export function printedTaskImage(book, page, area, label) {
+  const image = printedPages(book, 'workbook')?.pageImages?.[page - 1];
+  if (!image) return '';
+  const box = [area.left * image.width, area.top * image.height,
+    (area.right - area.left) * image.width, (area.bottom - area.top) * image.height].map(value => Math.round(value));
+  return '<svg class="printed-task-image" viewBox="' + box.join(' ') + '" preserveAspectRatio="xMidYMin meet" role="img" aria-label="' + e(label) + '">' +
+    '<image href="' + e(image.file) + '" x="0" y="0" width="' + image.width + '" height="' + image.height + '"/></svg>';
+}
+
+/** Page size control of the printed views: steps, and fitting the width of the window. */
+export const PAGE_ZOOMS = [100, 125, 150, 175, 200];
+export function zoomLabel(zoom) { return zoom === 'fit' ? 'Leveys' : zoom + ' %'; }
+export function zoomStep(zoom, direction) {
+  // Fitting the width is its own setting; a step from it lands on the nearest size.
+  const base = PAGE_ZOOMS.indexOf(zoom === 'fit' ? 100 : zoom);
+  const at = zoom === 'fit' ? (direction > 0 ? base + 1 : base) : base + direction;
+  return at < 0 || at >= PAGE_ZOOMS.length ? null : PAGE_ZOOMS[at];
+}
+/** Always within reach over the page itself, as a reader of a printed page expects. */
+export function pageZoomControl(zoom) {
+  return '<div class="page-zoom" role="group" aria-label="Sivun koko">' +
+    '<button type="button" data-zoom="-1" aria-label="Pienennä sivua" title="Pienennä sivua"' + (zoomStep(zoom, -1) === null ? ' disabled' : '') + '>−</button>' +
+    '<output class="page-zoom-label" aria-live="polite">' + e(zoomLabel(zoom)) + '</output>' +
+    '<button type="button" data-zoom="1" aria-label="Suurenna sivua" title="Suurenna sivua"' + (zoomStep(zoom, 1) === null ? ' disabled' : '') + '>+</button>' +
+    '<button type="button" data-zoom="fit" class="page-zoom-fit" aria-pressed="' + (zoom === 'fit') + '">Sovita leveyteen</button></div>';
 }

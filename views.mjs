@@ -11,7 +11,7 @@ import {examLink} from './exam-ui.mjs';
 import {languageName, capitalize} from './language-names.mjs';
 import {chapterBrowserView} from './reader-previews.mjs';
 import {returnMarksEnabled,returnMarkControl} from './return-marks.mjs';
-import {printedSpreadHtml,printedNavigation,printedPosition,sectionTitles,printedPages,spreadPages,pageLabel,printedThumbnailHtml,workbookPosition} from './printed-spread.mjs';
+import {printedSpreadHtml,printedNavigation,printedPosition,sectionTitles,printedPages,spreadPages,pageLabel,printedThumbnailHtml,workbookPosition,workbookTaskAreas,workbookTaskUrl,printedTaskImage,pageZoomControl} from './printed-spread.mjs';
 
 // The book page's centre: each chapter's textbook, workbook pages and practice in one row.
 // Only attached materials are shown; a plain web copy keeps the simple contents list.
@@ -303,11 +303,11 @@ function chapterForPage(book,kind,page) {
 }
 export function workbookChapterForPage(book,page) { return chapterForPage(book,'workbook',page); }
 // Tasks printed on one workbook page, with the same route label as the paper.
-export function workbookPageTasks(proof,page) {
+export function workbookPageTasks(proof,page,link=null) {
   const groups=new Map();
   for(const [id,task] of Object.entries(proof?.tasks||{})) if(task.page===page) groups.set(task.number,task.route??'base');
   if(!groups.size)return '';
-  const items=[...groups].sort((a,b)=>a[0]-b[0]).map(([number,route])=>'<li>Tehtävä '+e(number)+routeTag(route)+'</li>');
+  const items=[...groups].sort((a,b)=>a[0]-b[0]).map(([number,route])=>'<li>'+(link?'<a class="task-link" href="'+e(workbookTaskUrl(link.bookId,page,number))+'">Tehtävä '+e(number)+'</a>':'Tehtävä '+e(number))+routeTag(route)+'</li>');
   const optional=[...groups.values()].some(route=>route!=='base');
   return '<h2 class="workbook-task-title">Tämän sivun tehtävät</h2><ul class="workbook-task-routes">'+items.join('')+'</ul>'+
     (optional?'<p class="muted">Valittava tehtävä tehdään opettajan valinnan tai oman tarpeen mukaan. Paperilla sen numero on valkoisessa pallossa.</p>':'');
@@ -546,10 +546,7 @@ export function readerView(book, chapter, sections, index, mode, fontSize, selec
     [['auto','Automaattinen · ikkunan mukaan'],['spread','Aukeama · kaksi sivua'],['single','Yksi sivu'],['chapter','Koko luku']].map(([value,label]) =>
       '<option value="'+value+'"'+((isSpread ? pageLayout : 'chapter')===value?' selected':'')+'>'+label+'</option>').join('')+'</select>' +
     // A printed page is enlarged as a whole; text size belongs to the text view.
-    (printed ? '<div class="reader-setting"><span id="page-zoom-title">Sivun koko</span><div class="control-group" role="group" aria-labelledby="page-zoom-title"><button type="button" data-zoom="-1" aria-label="Pienennä sivua"' +
-      (pageZoom === 100 ? ' disabled' : '') + '>−</button><output id="page-zoom-label" aria-live="polite">' + pageZoom +
-      '%</output><button type="button" data-zoom="1" aria-label="Suurenna sivua"' + (pageZoom === 200 ? ' disabled' : '') + '>+</button></div>' +
-      '<p class="setting-note">Tekstikoko ja sanakortit: Lue tekstinä.</p></div>'
+    (printed ? '<p class="setting-note">Sivun koko on alapalkissa. Tekstikoko ja sanakortit: Lue tekstinä.</p>'
     : '<div class="reader-setting"><span id="text-size-title">Tekstikoko</span><div class="control-group" role="group" aria-labelledby="text-size-title"><button type="button" data-font="-1" aria-label="Pienennä tekstiä"' +
     (fontSize === 16 ? ' disabled' : '') + '>A−</button><output id="font-size-label" aria-live="polite">' + Math.round(fontSize / 16 * 100) +
     '%</output><button type="button" data-font="1" aria-label="Suurenna tekstiä"' + (fontSize === 24 ? ' disabled' : '') + '>A+</button></div></div>') +
@@ -585,9 +582,10 @@ export function readerView(book, chapter, sections, index, mode, fontSize, selec
     '<a href="' + bookUrl(book.id) + '">Kirjan materiaalit ja tiedot</a><a href="#/library">Kirjastoon</a></div></details></nav>' +
     readerInfoView(book, chapter) + vocabularyView(chapter, book, mode) + workbookPanelView(book, chapter) +
     '<div class="reader-content" id="reader-content" tabindex="-1"><div class="reader-pages ' + (isSpread ? 'is-spread' : 'is-chapter') + (printed ? ' is-printed' : '') + (chapter.supportType === 'contents' ? ' is-contents' : '') + '"' +
-      (printed ? ' data-zoom="' + pageZoom + '"' : '') +
+      (printed ? ' data-zoom="' + e(String(pageZoom)) + '"' : '') +
       (isSpread && !printed && marker !== undefined ? ' data-chapter-tab="' + e(chapter.label ?? 'Luku ' + marker) + '"' : '') + '>' +
-    (printed ? printedSpreadHtml(book, printed, sectionTitles(chapter, sections)) : readerSectionsHtml(book, chapter, sections, visible)) + '</div></div></div>' +
+    (printed ? printedSpreadHtml(book, printed, sectionTitles(chapter, sections)) : readerSectionsHtml(book, chapter, sections, visible)) + '</div></div>' +
+    (printed ? pageZoomControl(pageZoom) : '') + '</div>' +
     (printed ? printedNavigation(book, chapter.id, printed, pageSize === 1) : pageNavigation(book,chapter,sections, index, isSpread, pageSize)) +
     '<dialog class="focused-section" id="focused-section" aria-labelledby="focused-title"></dialog></div>';
 }
@@ -611,6 +609,41 @@ const lowerHeadings = html => html.replace(/<(\/?)h2\b/g, '<$1h4');
  * page turning, chapter browser, page size and full screen. Page tasks, textbook
  * sources and digital practice sit in one panel instead of a separate page.
  */
+/** The printed task id of one page and task number, as the learner proof numbers them. */
+export function workbookTaskId(book, page, number) {
+  const tasks = book.localProofs?.workbook?.tasks || {};
+  return Object.keys(tasks).find(id => tasks[id].page === page && tasks[id].number === String(number)) || '';
+}
+/**
+ * One printed task, enlarged from its own page image. The teacher-written answer
+ * is behind a button and only present in the local materials preview.
+ */
+export function workbookTaskView(book, pages, page, number) {
+  const area = workbookTaskAreas(book, page).find(item => item.number === String(number));
+  if (!area) return '';
+  const id = workbookTaskId(book, page, number);
+  const route = book.localProofs.workbook.tasks[id]?.route;
+  const answer = book.localWorkbookAnswers?.[id];
+  const order = pages.flatMap(item => workbookTaskAreas(book, item).map(task => ({page: item, number: task.number})));
+  const at = order.findIndex(item => item.page === page && item.number === String(number));
+  const step = (target, label, id) => '<a class="button task-link" id="' + id + '" href="' +
+    e(workbookTaskUrl(book.id, target.page, target.number)) + '">' + label + ' · tehtävä ' + e(target.number) + '</a>';
+  const navigation = order.length > 1 ? '<footer class="task-navigation" aria-label="Aukeaman tehtävät">' +
+    (at > 0 ? step(order[at - 1], '←', 'task-previous') : '<span></span>') +
+    (at + 1 < order.length ? step(order[at + 1], '→', 'task-next') : '<span></span>') + '</footer>' : '';
+  const label = 'Työkirjan tehtävä ' + number + ' sivulla ' + page;
+  return '<div class="focused-shell task-shell"><div class="focused-header"><header class="focused-toolbar">' +
+    '<div class="focused-heading"><div class="folio-meta"><span>Työkirja s. ' + page + '</span>' +
+    (route && route !== 'base' ? '<span class="folio-position">valittava</span>' : '') + '</div>' +
+    '<h2 id="focused-title" tabindex="-1">Tehtävä ' + e(number) + (answer?.title ? ' · ' + e(answer.title) : '') + '</h2></div>' +
+    '<button type="button" id="close-focused-section" aria-label="Takaisin aukeamaan" title="Takaisin aukeamaan">' +
+    '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" focusable="false"><path d="m6 6 12 12M18 6 6 18"/></svg></button></header></div>' +
+    '<div class="focused-content task-content">' + printedTaskImage(book, page, area, label) +
+    (answer ? '<details class="task-answer"><summary>Näytä vastaus</summary><div class="task-answer-body">' +
+      renderMarkdown(answer.markdown) + '<p class="muted">Opettajan aineiston vastaus. Vertaa omaa vastaustasi tähän; moneen tehtävään käy useampi vastaus.</p></div></details>'
+      : '<p class="muted">Tälle tehtävälle ei ole vastausta tässä aineistoversiossa.</p>') +
+    '</div>' + navigation + '</div>';
+}
 export function workbookReaderView(book, pages, {single = false, pageZoom = 100, pageLayout = 'auto', page = pages[0]} = {}) {
   const proof = printedPages(book, 'workbook');
   if (!proof) return '';
@@ -626,9 +659,7 @@ export function workbookReaderView(book, pages, {single = false, pageZoom = 100,
     '<label for="reading-mode">Lukutapa</label><select id="reading-mode">' +
     [['auto','Automaattinen · ikkunan mukaan'],['spread','Aukeama · kaksi sivua'],['single','Yksi sivu']].map(([value,label]) =>
       '<option value="'+value+'"'+(pageLayout===value?' selected':'')+'>'+label+'</option>').join('')+'</select>' +
-    '<div class="reader-setting"><span id="page-zoom-title">Sivun koko</span><div class="control-group" role="group" aria-labelledby="page-zoom-title"><button type="button" data-zoom="-1" aria-label="Pienennä sivua"' +
-      (pageZoom === 100 ? ' disabled' : '') + '>−</button><output id="page-zoom-label" aria-live="polite">' + pageZoom +
-      '%</output><button type="button" data-zoom="1" aria-label="Suurenna sivua"' + (pageZoom === 200 ? ' disabled' : '') + '>+</button></div></div>' +
+    '<p class="setting-note">Sivun koko on alapalkissa.</p>' +
     '<div class="reader-option-actions"><button type="button" id="toggle-fullscreen" aria-pressed="false">Koko ruutu</button>' +
     '<a class="button" href="' + e(proof.file + '#page=' + pages[0]) + '" target="_blank" rel="noopener">Avaa sivu PDF:nä<span class="sr-only"> uuteen välilehteen</span></a>' +
     '<a class="button" href="'+bookUrl(book.id)+'">Materiaalit ja lukukohta</a></div></div>';
@@ -652,7 +683,7 @@ export function workbookReaderView(book, pages, {single = false, pageZoom = 100,
   const pagePanel = pages.map(page => {
     const image = proof.pageImages[page - 1];
     return '<section class="workbook-reader-page" aria-labelledby="workbook-panel-page-' + page + '"><h3 id="workbook-panel-page-' + page + '">Sivu ' + page + '</h3>' +
-      '<h4>Tekstikirjasta tähän sivuun</h4>' + workbookSourceList(book, proof, page) + lowerHeadings(workbookPageTasks(proof, page) + drillPageLinks(book, page)) +
+      '<h4>Tekstikirjasta tähän sivuun</h4>' + workbookSourceList(book, proof, page) + lowerHeadings(workbookPageTasks(proof, page, {bookId: book.id}) + drillPageLinks(book, page)) +
       '<details class="workbook-page-text" data-page-text="' + e(image.textFile) + '" data-page-number="' + page + '"><summary>Sivun teksti</summary>' +
       '<div data-page-text-content aria-live="polite"></div></details></section>';
   }).join('');
@@ -677,9 +708,10 @@ export function workbookReaderView(book, pages, {single = false, pageZoom = 100,
     '<div class="panel-heading"><h2>Sisällysluettelo</h2><button type="button" id="close-contents" aria-label="Sulje sisällysluettelo">Sulje</button>' + pageForm + '</div>' +
     browser + '<details class="contents-group"><summary>Materiaalit</summary><div class="contents-materials">' +
     '<a href="' + e(bookUrl(book.id)) + '">Kirjan materiaalit ja tiedot</a><a href="#/library">Kirjastoon</a></div></details></nav>' + panel +
-    '<div class="reader-content" id="reader-content" tabindex="-1"><div class="reader-pages is-spread is-printed" data-zoom="' + pageZoom + '">' +
-    printedSpreadHtml(book, pages, {}, 'workbook') + '</div></div></div>' +
-    printedNavigation(book, chapter?.id || '', pages, single, 'workbook') + '</div>';
+    '<div class="reader-content" id="reader-content" tabindex="-1"><div class="reader-pages is-spread is-printed" data-zoom="' + e(String(pageZoom)) + '">' +
+    printedSpreadHtml(book, pages, {}, 'workbook') + '</div></div>' + pageZoomControl(pageZoom) + '</div>' +
+    printedNavigation(book, chapter?.id || '', pages, single, 'workbook') +
+    '<dialog class="focused-section" id="focused-section" aria-labelledby="focused-title"></dialog></div>';
 }
 export function focusedSectionView(section, chapter, mode = 'spread', sections = [section], {book,practiceReturn = ''} = {}) {
   const title = section.title === 'Avausaukeama' ? chapter.title : section.title;

@@ -1402,6 +1402,30 @@ a.button .drill-progress { display: block; margin: 2px 0 0; font-weight: 400; }
 .printed-page-link:is(:hover, :focus-visible) rect { fill: rgb(47 79 158 / .12); stroke: #2f4f9e; stroke-width: 2; }
 .printed-page-link:focus { outline: none; }
 
+/* Printed workbook tasks: each numbered task is its own area, enlarged when opened. */
+.printed-task rect { fill: rgb(29 111 115 / .02); }
+.printed-task:hover rect { fill: rgb(29 111 115 / .1); stroke: var(--accent); stroke-width: 2; }
+.printed-task:focus-visible rect { fill: rgb(29 111 115 / .12); stroke: var(--accent); stroke-width: 3; }
+/* The window's width, for pages whose text is too small when the whole page fits. */
+.reader-pages.is-printed[data-zoom="fit"] .printed-spread { width: 100cqw; }
+.reader-pages.is-printed[data-zoom="fit"] { align-items: safe start; }
+.page-zoom { position: absolute; right: 16px; bottom: 16px; z-index: 4; display: flex; align-items: center; gap: 4px;
+  padding: 4px; border: 1px solid var(--control-line); border-radius: 10px; background: rgb(255 255 255 / .94); }
+.page-zoom button { min-width: 44px; min-height: 44px; padding: 4px 8px; }
+.page-zoom .page-zoom-label { min-width: 62px; text-align: center; font-size: 14px; color: var(--muted); }
+.page-zoom .page-zoom-fit { min-width: 0; padding-inline: 12px; }
+.page-zoom .page-zoom-fit[aria-pressed="true"] { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
+@media (max-width: 899px) { .page-zoom .page-zoom-fit { display: none; } .page-zoom .page-zoom-label { min-width: 54px; } }
+.task-shell .focused-content { display: block; height: 100%; overflow-y: auto; overscroll-behavior: contain; padding: 20px 24px; }
+.printed-task-image { display: block; width: 100%; max-height: 72vh; background: white; }
+.task-answer { margin-top: 16px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); }
+.task-answer > summary { padding: 12px 16px; font-weight: 600; cursor: pointer; border-radius: 8px; }
+.task-answer[open] > summary { border-bottom: 1px solid var(--line); }
+.task-answer-body { padding: 4px 16px 12px; }
+.task-answer-body > :first-child { margin-top: 8px; }
+.focused-shell:has(.task-navigation) { grid-template-rows: auto minmax(0,1fr) auto; }
+.task-navigation { display: flex; justify-content: space-between; gap: 12px; padding: 12px 16px; border-top: 1px solid var(--line); background: white; }
+
 .edition-map-talon-kartta-ja-opastus .edition-map-room[data-map-row="5"]{left:0%;top:0%;width:100%;height:20%}
 .edition-map-talon-kartta-ja-opastus .edition-map-room[data-map-row="3"]{left:30%;top:23%;width:40%;height:30%}
 .edition-map-talon-kartta-ja-opastus .edition-map-room[data-map-row="4"]{left:74%;top:23%;width:26%;height:30%}

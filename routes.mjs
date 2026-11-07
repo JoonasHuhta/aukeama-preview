@@ -55,10 +55,12 @@ export function parseRoute(hash) {
     if (parts[0] === 'books' && parts[2] === 'opettaja' && parts.length === 4 && !params.size && /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(parts[3]))
       return {view:'teacher-guide', bookId:parts[1], guideId:parts[3]};
     if (parts[0] === 'books' && ['workbook', 'textbook'].includes(parts[2]) && parts.length === 3) {
-      const page = params.get('sivu');
-      if ([...params.keys()].some(key => key !== 'sivu') || params.getAll('sivu').length > 1 ||
-          (page !== null && !/^[1-9]\d{0,5}$/.test(page))) return {view:'not-found'};
-      return {view:parts[2], bookId:parts[1], ...(page ? {page:Number(page)} : {})};
+      const page = params.get('sivu'), task = params.get('tehtava');
+      // A task is always read on its own page, so it is named only beside one.
+      if ([...params.keys()].some(key => !['sivu', 'tehtava'].includes(key)) || params.getAll('sivu').length > 1 ||
+          params.getAll('tehtava').length > 1 || (page !== null && !/^[1-9]\d{0,5}$/.test(page)) ||
+          (task !== null && (parts[2] !== 'workbook' || page === null || !/^[1-9]\d?$/.test(task)))) return {view:'not-found'};
+      return {view:parts[2], bookId:parts[1], ...(page ? {page:Number(page)} : {}), ...(task ? {task} : {})};
     }
     if (parts[0] === 'books' && parts[2] === 'drill' && parts.length === 4) {
       const set = params.get('sarja');
