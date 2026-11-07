@@ -81,3 +81,24 @@ export function createWorkbookPageViewer(root, {fetch: load = globalThis.fetch} 
     }
   };
 }
+
+/** "Sivun teksti" in the workbook reader panel: the page's text, loaded when first opened. */
+export function installPageTextLoader(root, {fetch: load = globalThis.fetch} = {}) {
+  root.addEventListener('toggle', async event => {
+    const details = event.target;
+    if (!details?.matches?.('.workbook-panel details[data-page-text]') || !details.open || details.dataset.loaded) return;
+    const text = details.querySelector('[data-page-text-content]');
+    details.dataset.loaded = 'loading'; text.textContent = 'Tekstiä ladataan…';
+    try {
+      const response = await load(details.dataset.pageText);
+      if (!response.ok) throw new Error('Page text unavailable');
+      const data = await response.json();
+      if (data.page !== Number(details.dataset.pageNumber) || typeof data.text !== 'string' || data.text.length > 100000) throw new Error('Page text mismatch');
+      if (!details.isConnected) return;
+      text.textContent = data.text; details.dataset.loaded = 'true';
+    } catch {
+      delete details.dataset.loaded;
+      if (details.isConnected) text.textContent = 'Tekstiä ei saatu ladattua. Sulje tämä kohta ja avaa se uudelleen.';
+    }
+  }, true);
+}

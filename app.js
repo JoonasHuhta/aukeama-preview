@@ -1,6 +1,6 @@
 import {createContentLoader, fetchCatalog} from './content-loader.mjs';
 import { parseRoute, libraryUrl, bookUrl, readerUrl, readerReferenceUrl, readerPageSize, findSectionIndex, readingOrder, textbookPageTarget, workbookUrl, textbookUrl, textbookPageSpan, textbookSectionPages } from './routes.mjs';
-import { libraryView, resultList, resumeView, helpView, bookView, readerView, focusedSectionView, errorView, vocabularyResultsView, paperPageView, readerSectionsHtml, readerNavigationView, teacherGuideView } from './views.mjs';
+import { libraryView, resultList, resumeView, helpView, bookView, readerView, focusedSectionView, errorView, vocabularyResultsView, paperPageView, readerSectionsHtml, readerNavigationView, teacherGuideView, workbookReaderView, workbookChapterRanges } from './views.mjs';
 import { createReadingState, readingSourcePosition } from './reading-state.mjs';
 import { createPreviewGuard } from './preview-updates.mjs';
 import { closeOtherRoleCards } from './role-cards.mjs';
@@ -15,13 +15,14 @@ import {paginateSpread,printedFolio} from './page-flow.mjs';
 import {practiceActivities} from './practice-state.mjs';
 import {createExamWorkspace} from './exam-ui.mjs';
 import {createChapterBrowser} from './reader-previews.mjs';
-import {createWorkbookPageViewer} from './workbook-page.mjs';
+import {createWorkbookPageViewer,installPageTextLoader} from './workbook-page.mjs';
 import {createReturnMarks} from './return-marks.mjs';
 import {printedPages,hasPrintedSpreads,spreadPages,turnedPage,printedSpreadUrl,partOfPage,sectionPage,sectionsOnPages} from './printed-spread.mjs';
 
 const drillStorages={getLocal:()=>localStorage,getSession:()=>sessionStorage};
 const main = document.querySelector('#main');
 const workbookPageViewer = createWorkbookPageViewer(main);
+installPageTextLoader(main);
 const examWorkspace = createExamWorkspace(main,{window});
 installReaderSourceRepeats(main);
 const printSupport = installPrintSupport(main, window);
@@ -228,6 +229,19 @@ async function renderRoute({ initial = false } = {}) {
       const page = Math.min(Math.max(route.page || 1, 1), printedPages(book).pages);
       location.replace(printedSpreadUrl(book.id, partOfPage(book, page) || readingOrder(book)[0].id, page));
       return;
+    } else if (route.view === 'workbook' && printedPages(book, 'workbook')) {
+      // The workbook opens in the same reader as the textbook: printed spreads, same controls.
+      const proof = printedPages(book, 'workbook'), single = readerPageSize(null, singlePage.matches, pageLayout) === 1;
+      const first = Object.values(proof.chapterPages || {}).sort((a, b) => a - b)[0] || 1;
+      const pages = spreadPages(proof.pages, Math.min(Math.max(route.page || first, 1), proof.pages), single);
+      const opened = pages.includes(route.page) ? route.page : pages[0];
+      const range = workbookChapterRanges(book).find(item => item.from <= opened && opened <= item.to);
+      reader = { kind: 'workbook', book, chapter: range?.chapter || readingOrder(book)[0], sections: [], index: 0, section: '', part: 1, mode: 'spread', point: '', printed: pages };
+      document.body.classList.add('is-reader');
+      main.innerHTML = workbookReaderView(book, pages, {single, pageZoom, pageLayout, page: opened});
+      fillDrillProgress(main, book, drillStorages);
+      syncFullscreenControls();
+      setTitle('Työkirja s. ' + pages.join('–') + ' – ' + book.series + ' ' + book.grade);
     } else if (route.view === 'workbook' || route.view === 'textbook') {
       const html = paperPageView(book, route.view, route.page);
       const name = route.view === 'workbook' ? 'Työkirja' : 'Tekstikirja';
@@ -416,6 +430,16 @@ function goToReader(chapter, section = '', mode = reader.mode, part = 1) {
 async function turnPage(direction) {
   if (!reader) return;
   const current = reader;
+  if (current.kind === 'workbook') {
+    const total = printedPages(current.book, 'workbook').pages;
+    const single = pageSize() === 1, first = turnedPage(total, current.printed, direction, single);
+    if (!first) return;
+    // Like the textbook: a spread shared by two chapters stays in the current chapter.
+    const range = workbookChapterRanges(current.book).find(item => item.chapter.id === current.chapter.id);
+    const pages = spreadPages(total, first, single);
+    location.hash = workbookUrl(current.book.id, pages.find(page => range && range.from <= page && page <= range.to) || pages[0]);
+    return;
+  }
   if (current.printed) {
     const total = printedPages(current.book).pages, single = pageSize() === 1;
     const first = turnedPage(total, current.printed, direction, single);
@@ -446,6 +470,7 @@ function changeReadingMode(value, focus = 'toggle-options') {
   }
   const mode = value === 'chapter' ? 'chapter' : 'spread';
   focusAfterRoute = focus;
+  if (reader.kind === 'workbook') { renderRoute(); return; }
   if (reader.mode === mode) renderRoute();
   else goToReader(reader.chapter, reader.section, mode);
 }
@@ -457,6 +482,15 @@ main.addEventListener('submit', event => {
     const url = bookUrl(book.id,page,book.localProofs.workbook.sha256);
     if (location.hash === url) main.querySelector('#workbook-page-result').focus();
     else location.hash = url;
+    return;
+  }
+  if (event.target.id === 'workbook-reader-page') {
+    event.preventDefault();
+    const page = event.target.elements.sivu.valueAsNumber;
+    if (!reader || !Number.isInteger(page) || page < 1) return;
+    toggleReaderPanel('contents', false);
+    focusAfterRoute = 'reader-content';
+    location.hash = workbookUrl(reader.book.id, page);
     return;
   }
   if (event.target.dataset?.paperKind) {
@@ -514,7 +548,8 @@ main.addEventListener('input', event => {
 });
 main.addEventListener('change', event => {
   if (['vocabulary-scope','vocabulary-quiz'].includes(event.target.id)) updateVocabularySearch();
-  if (event.target.id === 'section-select' && reader) goToReader(reader.chapter, event.target.value);
+  if (event.target.id === 'section-select' && reader?.kind === 'workbook') location.hash = workbookUrl(reader.book.id, Number(event.target.value));
+  else if (event.target.id === 'section-select' && reader) goToReader(reader.chapter, event.target.value);
   if (event.target.id === 'reading-mode' && reader) {
     changeReadingMode(event.target.value);
   }

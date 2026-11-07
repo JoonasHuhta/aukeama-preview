@@ -11,7 +11,7 @@ import {examLink} from './exam-ui.mjs';
 import {languageName, capitalize} from './language-names.mjs';
 import {chapterBrowserView} from './reader-previews.mjs';
 import {returnMarksEnabled,returnMarkControl} from './return-marks.mjs';
-import {printedSpreadHtml,printedNavigation,printedPosition,sectionTitles} from './printed-spread.mjs';
+import {printedSpreadHtml,printedNavigation,printedPosition,sectionTitles,printedPages,spreadPages,pageLabel,printedThumbnailHtml,workbookPosition} from './printed-spread.mjs';
 
 // The book page's centre: each chapter's textbook, workbook pages and practice in one row.
 // Only attached materials are shown; a plain web copy keeps the simple contents list.
@@ -590,6 +590,96 @@ export function readerView(book, chapter, sections, index, mode, fontSize, selec
     (printed ? printedSpreadHtml(book, printed, sectionTitles(chapter, sections)) : readerSectionsHtml(book, chapter, sections, visible)) + '</div></div></div>' +
     (printed ? printedNavigation(book, chapter.id, printed, pageSize === 1) : pageNavigation(book,chapter,sections, index, isSpread, pageSize)) +
     '<dialog class="focused-section" id="focused-section" aria-labelledby="focused-title"></dialog></div>';
+}
+/** Workbook chapters as printed: the first chapter also holds the opening pages. */
+export function workbookChapterRanges(book) {
+  const proof = book.localProofs?.workbook, order = readingOrder(book);
+  const starts = Object.entries(proof?.chapterPages || {}).map(([id, from]) => ({chapter: order.find(item => item.id === id), from}))
+    .filter(item => item.chapter && Number.isInteger(item.from)).sort((a, b) => a.from - b.from);
+  return starts.map((item, index) => ({...item, from: index ? item.from : 1, start: item.from,
+    to: (starts[index + 1]?.from ?? (proof.pages + 1)) - 1}));
+}
+function workbookTaskLabel(proof, pages) {
+  const numbers = [...new Set(Object.values(proof.tasks || {}).filter(task => pages.includes(task.page)).map(task => Number(task.number)))]
+    .filter(Number.isFinite).sort((a, b) => a - b);
+  if (!numbers.length) return '';
+  return numbers.length === 1 ? 'Tehtävä ' + numbers[0] : 'Tehtävät ' + numbers[0] + '–' + numbers.at(-1);
+}
+const lowerHeadings = html => html.replace(/<(\/?)h2\b/g, '<$1h4');
+/**
+ * The workbook in the same reader as the textbook: printed spreads, the same top bar,
+ * page turning, chapter browser, page size and full screen. Page tasks, textbook
+ * sources and digital practice sit in one panel instead of a separate page.
+ */
+export function workbookReaderView(book, pages, {single = false, pageZoom = 100, pageLayout = 'auto', page = pages[0]} = {}) {
+  const proof = printedPages(book, 'workbook');
+  if (!proof) return '';
+  const ranges = workbookChapterRanges(book);
+  // A spread shared by two chapters belongs to the chapter of the page that was opened.
+  const at = pages.includes(page) ? page : pages[0];
+  const current = ranges.find(range => range.from <= at && at <= range.to) || ranges[0];
+  const chapter = current?.chapter, marker = chapter ? chapter.label ?? chapter.number : undefined;
+  const title = chapter ? (marker !== undefined ? marker + ' · ' : '') + chapter.title : 'Työkirja';
+  const accent = Math.max(0, readingOrder(book).findIndex(item => item.id === chapter?.id)) % 4;
+  const options = '<div class="reader-options" id="reader-options" role="region" aria-labelledby="reader-options-title" hidden>' +
+    '<div class="panel-heading"><h2 id="reader-options-title">Lukuasetukset</h2><button type="button" id="close-options" aria-label="Sulje lukuasetukset">Sulje</button></div>' +
+    '<label for="reading-mode">Lukutapa</label><select id="reading-mode">' +
+    [['auto','Automaattinen · ikkunan mukaan'],['spread','Aukeama · kaksi sivua'],['single','Yksi sivu']].map(([value,label]) =>
+      '<option value="'+value+'"'+(pageLayout===value?' selected':'')+'>'+label+'</option>').join('')+'</select>' +
+    '<div class="reader-setting"><span id="page-zoom-title">Sivun koko</span><div class="control-group" role="group" aria-labelledby="page-zoom-title"><button type="button" data-zoom="-1" aria-label="Pienennä sivua"' +
+      (pageZoom === 100 ? ' disabled' : '') + '>−</button><output id="page-zoom-label" aria-live="polite">' + pageZoom +
+      '%</output><button type="button" data-zoom="1" aria-label="Suurenna sivua"' + (pageZoom === 200 ? ' disabled' : '') + '>+</button></div></div>' +
+    '<div class="reader-option-actions"><button type="button" id="toggle-fullscreen" aria-pressed="false">Koko ruutu</button>' +
+    '<a class="button" href="' + e(proof.file + '#page=' + pages[0]) + '" target="_blank" rel="noopener">Avaa sivu PDF:nä<span class="sr-only"> uuteen välilehteen</span></a>' +
+    '<a class="button" href="'+bookUrl(book.id)+'">Materiaalit ja lukukohta</a></div></div>';
+  const browser = '<p class="contents-eyebrow">Työkirjan kaikki luvut</p><div class="chapter-browser">' + ranges.map(range => {
+    const active = range === current, own = range.chapter.label ?? range.chapter.number;
+    const cards = [];
+    for (let page = range.from; page <= range.to;) {
+      const spread = spreadPages(proof.pages, page, single), label = workbookTaskLabel(proof, spread);
+      cards.push('<li class="spread-preview-card"><div class="spread-preview printed-preview">' + printedThumbnailHtml(book, spread, 'workbook') + '</div>' +
+        '<a class="spread-preview-link" href="' + e(workbookUrl(book.id, spread[0])) + '"' + (spread.includes(pages[0]) ? ' aria-current="location"' : '') + '>' +
+        '<span class="preview-position">' + e(pageLabel(spread)) + '</span><strong>' + e(label || 'Sivut ilman tehtäviä') + '</strong></a></li>');
+      page = spread.at(-1) + 1;
+    }
+    return '<details class="preview-chapter" name="reader-chapters"' + (active ? ' open' : '') + '><summary' + (active ? ' aria-current="page"' : '') + '>' +
+      (own !== undefined ? '<span class="contents-marker">' + e(own) + '</span> ' : '') + e(range.chapter.title) + '</summary>' +
+      '<div class="preview-chapter-body"><a class="chapter-start" href="' + e(workbookUrl(book.id, range.start)) + '">Avaa luvun alku · s. ' + range.start + '</a>' +
+      '<ol class="spread-previews printed-previews">' + cards.join('') + '</ol></div></details>';
+  }).join('') + '</div>';
+  const pageForm = '<form id="workbook-reader-page" class="page-search"><label for="workbook-reader-input">Työkirjan sivu (1–' + proof.pages + ')</label><div>' +
+    '<input id="workbook-reader-input" name="sivu" type="number" inputmode="numeric" required min="1" max="' + proof.pages + '"><button type="submit">Avaa</button></div></form>';
+  const pagePanel = pages.map(page => {
+    const image = proof.pageImages[page - 1];
+    return '<section class="workbook-reader-page" aria-labelledby="workbook-panel-page-' + page + '"><h3 id="workbook-panel-page-' + page + '">Sivu ' + page + '</h3>' +
+      '<h4>Tekstikirjasta tähän sivuun</h4>' + workbookSourceList(book, proof, page) + lowerHeadings(workbookPageTasks(proof, page) + drillPageLinks(book, page)) +
+      '<details class="workbook-page-text" data-page-text="' + e(image.textFile) + '" data-page-number="' + page + '"><summary>Sivun teksti</summary>' +
+      '<div data-page-text-content aria-live="polite"></div></details></section>';
+  }).join('');
+  const panel = '<aside class="workbook-panel" id="workbook-panel" aria-labelledby="workbook-panel-title" hidden>' +
+    '<div class="panel-heading"><h2 id="workbook-panel-title">Tällä aukeamalla</h2><button type="button" id="close-workbook" aria-label="Sulje paneeli">Sulje</button></div>' +
+    pagePanel + (chapter ? lowerHeadings(practiceLink(book, chapter)) : '') +
+    '<p class="muted">Tekstikirjan linkki avaa saman kohdan tekstikirjan aukeamalla. Selaimen Takaisin palaa työkirjaan. Vastaa paperille tai vihkoon.</p></aside>';
+  return '<div class="reader-page reader-workbook" data-page-size="' + (single ? 1 : 2) + '" data-accent="' + accent + '"' + themeStyle(book) + '>' +
+    '<h1 class="sr-only" id="workbook-view-title" tabindex="-1">Työkirja ' + e(pageLabel(pages)) + (chapter ? ' – ' + e(chapter.title) : '') + '</h1>' +
+    '<header class="reader-controls"><a class="reader-book-link" href="' + e(bookUrl(book.id)) + '" aria-label="' + e('Materiaalit ja kirjan tiedot: ' + book.title) +
+    '"><span>' + e('← ' + book.series + ' ' + book.grade + ' · Työkirja') + '</span><strong>' + e(title) + '</strong><span class="reader-book-short" aria-hidden="true">Kirja</span></a>' +
+    '<button type="button" id="toggle-contents" aria-controls="chapter-nav" aria-expanded="false">Luvut</button>' +
+    '<label class="sr-only" for="section-select">Työkirjan luku</label><select id="section-select" data-workbook-chapters>' +
+    ranges.map(range => '<option value="' + range.start + '"' + (range === current ? ' selected' : '') + '>' +
+      e(((range.chapter.label ?? range.chapter.number) !== undefined ? (range.chapter.label ?? range.chapter.number) + ' · ' : '') + range.chapter.title) + '</option>').join('') + '</select>' +
+    '<div class="reader-position-slot">' + workbookPosition(pages) + '</div>' +
+    '<button type="button" id="toggle-workbook" aria-expanded="false" aria-controls="workbook-panel">Tekstikirja ja tehtävät</button>' +
+    '<button type="button" id="toggle-options" aria-label="Lukuasetukset" title="Lukuasetukset" aria-expanded="false" aria-controls="reader-options">' +
+    '<span>Lukuasetukset</span><svg class="settings-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false"><path d="M3 6h18M3 18h18"/><circle cx="8" cy="6" r="3" fill="white"/><circle cx="16" cy="18" r="3" fill="white"/></svg></button>' + options + '</header>' +
+    '<p class="reader-status sr-only" id="reader-status" role="status"></p>' +
+    '<div class="reader-layout"><nav class="chapter-nav" id="chapter-nav" aria-label="Työkirjan sisällysluettelo" hidden>' +
+    '<div class="panel-heading"><h2>Sisällysluettelo</h2><button type="button" id="close-contents" aria-label="Sulje sisällysluettelo">Sulje</button>' + pageForm + '</div>' +
+    browser + '<details class="contents-group"><summary>Materiaalit</summary><div class="contents-materials">' +
+    '<a href="' + e(bookUrl(book.id)) + '">Kirjan materiaalit ja tiedot</a><a href="#/library">Kirjastoon</a></div></details></nav>' + panel +
+    '<div class="reader-content" id="reader-content" tabindex="-1"><div class="reader-pages is-spread is-printed" data-zoom="' + pageZoom + '">' +
+    printedSpreadHtml(book, pages, {}, 'workbook') + '</div></div></div>' +
+    printedNavigation(book, chapter?.id || '', pages, single, 'workbook') + '</div>';
 }
 export function focusedSectionView(section, chapter, mode = 'spread', sections = [section], {book,practiceReturn = ''} = {}) {
   const title = section.title === 'Avausaukeama' ? chapter.title : section.title;

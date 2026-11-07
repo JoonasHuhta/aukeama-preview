@@ -1,13 +1,13 @@
 import { escapeHtml as e } from './html.mjs';
-import { readingOrder, textbookSectionPages, textbookPageTarget, readerUrl, bookUrl } from './routes.mjs';
+import { readingOrder, textbookSectionPages, textbookPageTarget, readerUrl, bookUrl, workbookUrl } from './routes.mjs';
 
 /*
  * The reader's Aukeama view as the printed textbook: a spread is a printed spread
  * (even page left, odd page right) and the only page numbers are the printed ones,
  * on the page images themselves. Interactive text lives in the text view (Koko luku).
  */
-export function printedPages(book) {
-  const proof = book?.localProofs?.textbook;
+export function printedPages(book, kind = 'textbook') {
+  const proof = book?.localProofs?.[kind];
   return Array.isArray(proof?.pageImages) && proof.pageImages.length === proof.pages ? proof : null;
 }
 export const hasPrintedSpreads = book => !!printedPages(book);
@@ -70,10 +70,11 @@ export function pageLabel(pages) {
   return 's. ' + (pages.length > 1 ? pages[0] + '–' + pages.at(-1) : pages[0]);
 }
 
-function image(proof, page, side, lazy = false) {
+const bookName = kind => kind === 'workbook' ? 'Työkirjan' : 'Tekstikirjan';
+function image(proof, page, side, lazy = false, kind = 'textbook') {
   const item = proof.pageImages[page - 1];
   return '<img class="printed-page-image" src="' + e(item.file) + '" width="' + item.width + '" height="' + item.height + '"' +
-    (lazy ? ' loading="lazy"' : '') + ' decoding="async" alt="' + (lazy ? '' : 'Tekstikirjan sivu ' + page) + '"' +
+    (lazy ? ' loading="lazy"' : '') + ' decoding="async" alt="' + (lazy ? '' : bookName(kind) + ' sivu ' + page) + '"' +
     (side ? ' data-side="' + side + '"' : '') + '>';
 }
 
@@ -81,16 +82,16 @@ function image(proof, page, side, lazy = false) {
  * Links over the printed page: each area where a reader section is printed opens
  * the same section as text. Pages without a reliable match get no links.
  */
-export function printedRegionsHtml(book, page, titles = {}) {
-  const proof = printedPages(book);
-  const regions = Array.isArray(proof?.pageRegions?.[page]) ? proof.pageRegions[page] : [];
+export function printedRegionsHtml(book, page, titles = {}, kind = 'textbook') {
+  const proof = printedPages(book, kind);
+  const regions = kind === 'textbook' && Array.isArray(proof?.pageRegions?.[page]) ? proof.pageRegions[page] : [];
   const links = Array.isArray(proof?.pageLinks?.[page]) ? proof.pageLinks[page] : [];
   if (!regions.length && !links.length) return '';
   // The printed page's own page references ("s. 84") stay links, on top of the section areas.
   const pageLinks = links.map(link => {
-    const owner = partOfPage(book, link.page) || readingOrder(book)[0]?.id;
     const label = 'Siirry sivulle ' + link.page;
-    return '<a class="printed-page-link" href="' + e(printedSpreadUrl(book.id, owner, link.page)) + '" aria-label="' + e(label) + '"><title>' + e(label) + '</title>' +
+    const href = kind === 'workbook' ? workbookUrl(book.id, link.page) : printedSpreadUrl(book.id, partOfPage(book, link.page) || readingOrder(book)[0]?.id, link.page);
+    return '<a class="printed-page-link" href="' + e(href) + '" aria-label="' + e(label) + '"><title>' + e(label) + '</title>' +
       '<rect x="' + Math.round(link.left * 1000) + '" y="' + Math.round(link.top * 1000) + '" width="' + Math.max(1, Math.round(link.width * 1000)) +
       '" height="' + Math.max(1, Math.round(link.height * 1000)) + '"/></a>';
   }).join('');
@@ -103,12 +104,12 @@ export function printedRegionsHtml(book, page, titles = {}) {
 }
 
 /** The printed spread itself; the page numbers are those printed on the pages. */
-export function printedSpreadHtml(book, pages, titles = {}) {
-  const proof = printedPages(book);
+export function printedSpreadHtml(book, pages, titles = {}, kind = 'textbook') {
+  const proof = printedPages(book, kind);
   const sides = pages.length === 1 ? (pages[0] % 2 ? ['right'] : ['left']) : ['left', 'right'];
-  return '<div class="printed-spread' + (pages.length === 1 ? ' is-single' : '') + '" role="group" aria-label="Tekstikirjan ' + e(pageLabel(pages)) + '">' +
-    pages.map((page, index) => '<figure class="printed-page" data-page="' + page + '" data-side="' + sides[index] + '">' + image(proof, page) +
-      printedRegionsHtml(book, page, titles) + '</figure>').join('') + '</div>';
+  return '<div class="printed-spread' + (pages.length === 1 ? ' is-single' : '') + '" role="group" aria-label="' + bookName(kind) + ' ' + e(pageLabel(pages)) + '">' +
+    pages.map((page, index) => '<figure class="printed-page" data-page="' + page + '" data-side="' + sides[index] + '">' + image(proof, page, '', false, kind) +
+      printedRegionsHtml(book, page, titles, kind) + '</figure>').join('') + '</div>';
 }
 /** Plain section titles of a loaded chapter for link names. */
 export function sectionTitles(chapter, sections) {
@@ -116,10 +117,10 @@ export function sectionTitles(chapter, sections) {
     String(section.title).replace(/[*_`]/g, '').replace(/^Avausaukeama$/, 'Aloitus')]));
 }
 /** Small copies for the chapter browser: the very spread the link opens. */
-export function printedThumbnailHtml(book, pages) {
-  const proof = printedPages(book);
+export function printedThumbnailHtml(book, pages, kind = 'textbook') {
+  const proof = printedPages(book, kind);
   return '<div class="printed-thumbnail' + (pages.length === 1 ? ' is-single' : '') + '" aria-hidden="true">' +
-    pages.map(page => image(proof, page, '', true)).join('') + '</div>';
+    pages.map(page => image(proof, page, '', true, kind)).join('') + '</div>';
 }
 
 /** Text links for the sections on this spread: the interactive text view of the same content. */
@@ -130,8 +131,8 @@ export function printedTextLinks(book, pages, titles = {}) {
     e(titles[row.chapter + '/' + row.section] || 'Teksti') + '</a></li>').join('') + '</ul>';
 }
 
-export function printedNavigation(book, chapterId, pages, single = false) {
-  const proof = printedPages(book);
+export function printedNavigation(book, chapterId, pages, single = false, kind = 'textbook') {
+  const proof = printedPages(book, kind);
   const previous = turnedPage(proof.pages, pages, -1, single), next = turnedPage(proof.pages, pages, 1, single);
   const unit = single ? 'sivu' : 'aukeama';
   const arrow = (direction, target) => '<button type="button" class="page-turn" data-turn="' + direction + '" id="' + (direction < 0 ? 'previous' : 'next') +
@@ -139,7 +140,11 @@ export function printedNavigation(book, chapterId, pages, single = false) {
     (target ? '' : ' disabled') + '><svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="' +
     (direction < 0 ? 'm15 6-6 6 6 6' : 'm9 6 6 6-6 6') + '"/></svg></button>';
   return '<footer class="reader-navigation printed-navigation">' + arrow(-1, previous) +
-    '<div class="reading-position">' + printedPosition(book, chapterId, pages) + '</div>' + arrow(1, next) + '</footer>';
+    '<div class="reading-position">' + (kind === 'workbook' ? workbookPosition(pages) : printedPosition(book, chapterId, pages)) + '</div>' + arrow(1, next) + '</footer>';
+}
+/** "Työkirja s. 12–13": the same top-bar position as in the textbook. */
+export function workbookPosition(pages) {
+  return '<p><span class="printed-position">Työkirja ' + e(pageLabel(pages)) + '</span></p>';
 }
 /** "s. 18–19 · Lue tekstinä": the printed pages and the way to the same content as text. */
 export function printedPosition(book, chapterId, pages) {
