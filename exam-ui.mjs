@@ -1,6 +1,6 @@
 import {escapeHtml as e} from './html.mjs';
 import {bookUrl,examUrl} from './routes.mjs';
-import {validateEditorBank,newExamDraft,validateExamDraft,importExamDraft,editExamDraft,composeExamProof,skillLabels} from './assessment-editor.mjs';
+import {validateEditorBank,newExamDraft,validateExamDraft,reviewExamImport,editExamDraft,composeExamProof,examBalance,skillLabels} from './assessment-editor.mjs';
 
 export function examLink(book) {
   return book.localAssessment ? '<section class="exam-invitation"><h2>Kokoa koe</h2><p>Valitse tehtävät, järjestä koepaperi ja säädä vastaustilaa. Paikallinen kokeilu sisältää '+book.localAssessment.tasks.length+' tehtäväluonnosta.</p><a class="button" href="'+examUrl(book.id)+'">Avaa koetyökalu</a></section>' : '';
@@ -15,9 +15,20 @@ export function examPaper(proof, book) {
     (proof.items.length?proof.items.map((item,index)=>'<section class="exam-paper-task'+(item.pageBreakBefore&&index?' exam-page-break':'')+'">'+
       '<h3><span class="exam-number">'+(index+1)+'</span> '+e(item.title)+' <span class="exam-points">/ '+item.points+' p</span></h3><p>'+e(item.instruction)+'</p>'+
       (item.stimulus?'<div class="exam-stimulus" lang="'+e(book.language||'sv')+'">'+e(item.stimulus)+'</div>':'')+
-      '<ol class="exam-questions">'+item.questions.map((question,questionIndex)=>'<li><p><strong class="exam-question-number">'+(index+1)+'.'+(questionIndex+1)+'</strong> '+e(question)+'</p>'+(!teacher?'<div class="exam-answer-space" aria-label="'+item.answerLines+' vastausriviä">'+Array.from({length:item.answerLines},()=>'<div class="exam-answer-line" aria-hidden="true"></div>').join('')+'</div>':'')+'</li>').join('')+'</ol>'+
+      '<ol class="exam-questions">'+item.questions.map((question,questionIndex)=>'<li><p><strong class="exam-question-number">'+(index+1)+'.'+(questionIndex+1)+'</strong> '+e(question)+'</p>'+(!teacher?'<div class="exam-answer-space" role="img" aria-label="'+item.answerLines+(item.answerLines===1?' vastausrivi':' vastausriviä')+'">'+Array.from({length:item.answerLines},()=>'<div class="exam-answer-line" aria-hidden="true"></div>').join('')+'</div>':'')+'</li>').join('')+'</ol>'+
       (teacher?'<div class="exam-scoring"><h4>Arviointiperuste · tehtävä '+(index+1)+'</h4><p>'+e(item.scoringGuide)+'</p><p><strong>Tavoite:</strong> '+e(item.goal)+'</p><p><strong>Tuki:</strong> '+e(item.support)+'</p><p><strong>Vaativuus:</strong> '+e(item.demand)+'</p></div>':'')+'</section>').join(''):
       '<p class="exam-empty">Lisää ensimmäinen tehtävä vasemman puolen valikoimasta. Koepaperi rakentuu tähän.</p>')+'</article>';
+}
+/** Coverage of the chosen tasks and composition warnings. Sums and counts only. */
+export function balanceHtml(balance, book) {
+  if (!balance.chapters.length) return '<p>Valitse ensin tehtäviä.</p>';
+  const chapterName = id => { const c = book.chapters.find(item => item.id === id); return (c.label ?? c.number ?? '') + ' · ' + c.title; };
+  const count = n => n + (n === 1 ? ' tehtävä' : ' tehtävää');
+  return '<h3 class="exam-balance-title">Mitä koe kattaa</h3><ul class="exam-balance">' +
+    balance.chapters.map(row => '<li><span>' + e(chapterName(row.chapterId)) + '</span><span>' + count(row.tasks) + ' · ' + row.points + ' p</span></li>').join('') + '</ul>' +
+    '<ul class="exam-balance">' + balance.skills.map(row => '<li><span>' + e(skillLabels[row.skill]) + '</span><span>' + row.points + ' p</span></li>').join('') + '</ul>' +
+    (balance.warnings.length ? '<div class="exam-warnings" role="note"><p><strong>Tarkista koosteesta</strong></p><ul>' +
+      balance.warnings.map(w => '<li data-warning="' + e(w.kind) + '">' + e(w.text) + '</li>').join('') + '</ul></div>' : '');
 }
 function taskCard(task, selected, book) {
   const chapter=book.chapters.find(c=>c.id===task.chapterId);
@@ -37,7 +48,7 @@ export function createExamWorkspace(root,{window:win}) {
     const result=proof();
     root.querySelector('#exam-paper-slot').innerHTML=examPaper(result,book);
     root.querySelector('#exam-total').textContent=result.items.length+(result.items.length===1?' tehtävä':' tehtävää')+' · '+result.totalPoints+' p · työarvio '+result.estimatedMinutes+' min';
-    root.querySelector('#exam-coverage').textContent=result.skills.length?'Mukana: '+result.skills.map(s=>skillLabels[s]).join(', ')+'.':'Valitse ensin tehtäviä.';
+    root.querySelector('#exam-coverage').innerHTML=balanceHtml(examBalance(state.draft,bank),book);
     root.querySelector('#exam-print').disabled=!result.items.length;
     root.querySelector('#exam-learner').setAttribute('aria-pressed',String(state.audience==='learner'));
     root.querySelector('#exam-teacher').setAttribute('aria-pressed',String(state.audience==='teacher'));
@@ -88,7 +99,7 @@ export function createExamWorkspace(root,{window:win}) {
       '<p class="muted">Työ säilyy tämän välilehden sisällä. Tallenna tiedosto ennen sivun päivittämistä tai sulkemista. Tiedosto sisältää tehtävävalinnat ja asettelun, ei oppilasvastauksia.</p><div id="exam-import-review"></div><p id="exam-status" role="status" aria-live="polite"></p></div>'+
       '<div class="exam-layout"><aside class="exam-sidebar exam-screen-only" aria-label="Tehtävien valinta"><div class="exam-panel-switch actions" role="group" aria-label="Tehtävävalikoima tai valittu koe"><button type="button" data-exam-action="bank-panel" id="exam-panel-bank">Tehtävävalikoima</button><button type="button" data-exam-action="selection-panel" id="exam-panel-selection">Valitut tehtävät</button></div><section id="exam-bank-panel"><h2>1. Valitse tehtävät</h2><div class="exam-filters"><label>Luku<select id="exam-chapter"><option value="">Kaikki kokeilun luvut</option>'+book.chapters.filter(c=>bank.tasks.some(t=>t.chapterId===c.id)).map(c=>'<option value="'+e(c.id)+'"'+(state.chapter===c.id?' selected':'')+'>'+e((c.label??c.number??'')+' · '+c.title)+'</option>').join('')+'</select></label><label>Taito<select id="exam-skill"><option value="">Kaikki taidot</option>'+Object.entries(skillLabels).map(([k,v])=>'<option value="'+k+'"'+(state.skill===k?' selected':'')+'>'+v+'</option>').join('')+'</select></label></div><p id="exam-count" role="status"></p><div id="exam-task-list"></div></section>'+
       '<section id="exam-selection-panel"><h2 id="exam-selection-title" tabindex="-1">2. Järjestys ja vastaustila</h2><p>Pisteet seuraavat tehtävän arviointiohjetta. Vastausrivit ovat 10 mm korkeat tulosteessa.</p><div id="exam-selected"></div></section></aside>'+
-      '<section class="exam-preview" aria-label="Kokeen esikatselu"><div class="exam-preview-tools exam-screen-only"><h2>3. Tarkista ja tulosta</h2><p id="exam-total"></p><p id="exam-coverage"></p><p class="muted">Ajat ovat testaamattomia työarvioita. Tämä valikoima ei arvioi kuuntelua tai suullista vuorovaikutusta.</p><div class="actions" role="group" aria-label="Tulosteen sisältö"><button type="button" id="exam-learner" data-exam-action="learner">Oppilaan koe</button><button type="button" id="exam-teacher" data-exam-action="teacher">Opettajan ohje</button></div><button type="button" id="exam-print" data-exam-action="print"></button><p class="muted">A4 pysty, mittakaava 100 %. Lopulliset sivunvaihdot ja PDF-tallennus näet selaimen tulostusikkunassa. Tarkista pitkien tehtävien sijoittuminen ja poista selaimen omat ylä- ja alatunnisteet tarvittaessa.</p></div><div id="exam-paper-slot"></div></section></div></div>';
+      '<section class="exam-preview" aria-label="Kokeen esikatselu"><div class="exam-preview-tools exam-screen-only"><h2>3. Tarkista ja tulosta</h2><p id="exam-total"></p><div id="exam-coverage"></div><p class="muted">Ajat ovat testaamattomia työarvioita. Tämä valikoima ei arvioi kuuntelua tai suullista vuorovaikutusta.</p><div class="actions" role="group" aria-label="Tulosteen sisältö"><button type="button" id="exam-learner" data-exam-action="learner">Oppilaan koe</button><button type="button" id="exam-teacher" data-exam-action="teacher">Opettajan ohje</button></div><button type="button" id="exam-print" data-exam-action="print"></button><p class="muted">A4 pysty, mittakaava 100 %. Lopulliset sivunvaihdot ja PDF-tallennus näet selaimen tulostusikkunassa. Tarkista pitkien tehtävien sijoittuminen ja poista selaimen omat ylä- ja alatunnisteet tarvittaessa.</p></div><div id="exam-paper-slot"></div></section></div></div>';
     showBank();showSelection();showPanel();root.querySelector('h1')?.setAttribute('tabindex','-1');root.querySelector('h1')?.focus();return true;
   }
   function showPanel() {
@@ -116,8 +127,9 @@ export function createExamWorkspace(root,{window:win}) {
         if(file.size>50000)throw new Error('Koetiedosto on liian suuri. Nykyinen koe säilyi.');
         const raw=await file.text();
         if(token!==loadToken||!active()||bank.revision!==revision)return;
-        pending=importExamDraft(raw,bank);
-        root.querySelector('#exam-import-review').innerHTML='<p><strong>'+e(pending.title)+'</strong> · '+pending.items.length+' tehtävää. Korvaako tämä nykyisen koeluonnoksen?</p>'+buttons('accept-import','Ota käyttöön')+buttons('cancel-import','Peruuta');
+        const review=reviewExamImport(raw,bank);pending=review.draft;
+        const skipped=review.skipped.length?'<p>'+review.skipped.length+(review.skipped.length===1?' tehtävä on':' tehtävää on')+' muuttunut tallennuksen jälkeen, eikä '+(review.skipped.length===1?'sitä':'niitä')+' avata: '+e(review.skipped.join(', '))+'. Lisää korvaava tehtävä valikoimasta.</p>':'';
+        root.querySelector('#exam-import-review').innerHTML='<p><strong>'+e(pending.title)+'</strong> · '+pending.items.length+' tehtävää. Korvaako tämä nykyisen koeluonnoksen?</p>'+skipped+buttons('accept-import','Ota käyttöön')+buttons('cancel-import','Peruuta');
         root.querySelector('[data-exam-action="accept-import"]')?.focus();say('Tiedosto tarkistettu. Nykyistä koetta ei ole vielä muutettu.');
       } catch(error){if(token!==loadToken||!active()||bank.revision!==revision)return;pending=undefined;root.querySelector('#exam-import-review').innerHTML='';say(error.message);}
     }

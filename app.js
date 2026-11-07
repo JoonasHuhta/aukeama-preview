@@ -16,7 +16,7 @@ import {practiceActivities} from './practice-state.mjs';
 import {createExamWorkspace} from './exam-ui.mjs';
 import {createChapterBrowser} from './reader-previews.mjs';
 import {createWorkbookPageViewer,installPageTextLoader} from './workbook-page.mjs';
-import {authorsView} from './site-info.mjs';
+import {authorsView,feedbackClipboardText} from './site-info.mjs';
 import {createReturnMarks} from './return-marks.mjs';
 import {printedPages,hasPrintedSpreads,spreadPages,turnedPage,printedSpreadUrl,partOfPage,sectionPage,sectionsOnPages,PAGE_ZOOMS,zoomStep,zoomLabel,workbookTaskUrl} from './printed-spread.mjs';
 
@@ -595,7 +595,20 @@ document.addEventListener('focusin', event => {
   if (!event.target.closest('#reader-options, #toggle-options')) closeOptions();
   readerPanels.dismissOutside(event.target);
 });
+// Feedback opens Discord in a new tab; the spot it concerns goes to the clipboard first.
+function copyFeedbackReference(link) {
+  const status = document.querySelector('#reader-status');
+  try {
+    navigator.clipboard?.writeText(feedbackClipboardText(link.dataset.feedback, location.href))
+      .then(() => {
+        link.classList.add('is-copied');
+        if (status) status.textContent = 'Kohdan tiedot kopioitu. Liitä ne palauteviestiin.';
+      }, () => {});
+  } catch { /* Clipboard is optional; the link still opens. */ }
+}
 document.addEventListener('click', event => {
+  const feedback = event.target.closest?.('a[data-feedback]');
+  if (feedback && event.button === 0) copyFeedbackReference(feedback);
   if (!event.target.closest('#reader-options, #toggle-options')) closeOptions();
   readerPanels.dismissOutside(event.target, { restore: true });
   const anchor = event.target.closest('a');

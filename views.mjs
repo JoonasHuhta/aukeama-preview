@@ -11,7 +11,7 @@ import {examLink} from './exam-ui.mjs';
 import {languageName, capitalize} from './language-names.mjs';
 import {chapterBrowserView} from './reader-previews.mjs';
 import {returnMarksEnabled,returnMarkControl} from './return-marks.mjs';
-import {FEEDBACK_URL,external} from './site-info.mjs';
+import {FEEDBACK_URL,external,feedbackLink,feedbackReference} from './site-info.mjs';
 import {printedSpreadHtml,printedNavigation,printedPosition,sectionTitles,printedPages,spreadPages,pageLabel,printedThumbnailHtml,workbookPosition,workbookTaskAreas,workbookTaskUrl,printedTaskImage,pageZoomControl,printedSpreadUrl,partOfPage,sectionPage} from './printed-spread.mjs';
 
 // The book page's centre: each chapter's textbook, workbook pages and practice in one row.
@@ -603,6 +603,10 @@ export function readerView(book, chapter, sections, index, mode, fontSize, selec
   } : {href: bookUrl(book.id), label: 'Materiaalit ja kirjan tiedot: ' + book.title,
     subtitle: '← ' + book.series + ' ' + book.grade,
     title: (marker !== undefined ? marker + ' · ' : '') + chapter.title, short: 'Kirja'};
+  const feedback = feedbackReference(book.series + ' ' + book.grade, 'Tekstikirja',
+    marker !== undefined ? marker + ' ' + chapter.title : chapter.title,
+    (sections.find(section => section.id === selectedSection)?.title || '').replace(/[*]/g, ''),
+    printed ? pageLabel(printed) : '');
   const options = '<div class="reader-options" id="reader-options" role="region" aria-labelledby="reader-options-title" hidden>' +
     '<div class="panel-heading"><h2 id="reader-options-title">Lukuasetukset</h2><button type="button" id="close-options" aria-label="Sulje lukuasetukset">Sulje</button></div>' +
     '<label for="reading-mode">Lukutapa</label><select id="reading-mode">' +
@@ -615,6 +619,7 @@ export function readerView(book, chapter, sections, index, mode, fontSize, selec
     '%</output><button type="button" data-font="1" aria-label="Suurenna tekstiä"' + (fontSize === 24 ? ' disabled' : '') + '>A+</button></div></div>') +
     '<div class="reader-option-actions"><button type="button" id="toggle-fullscreen" aria-pressed="false">Koko ruutu</button>' +
     '<a class="button" href="'+bookUrl(book.id)+'">Materiaalit ja lukukohta</a>'+
+    feedbackLink(feedback, {place: 'options', label: 'Anna palautetta tästä kohdasta'}) +
     '<button type="button" id="toggle-info" aria-expanded="false" aria-controls="reader-info">Ohjeet ja tiedot</button>' +
     (book.pdf ? '<a class="button" href="' + e(book.pdf.file) + '" download="' + e(book.pdf.filename) + '">Lataa kirja (PDF)</a>' : '') + '</div></div>';
   // Each chapter gets one of four accent colours in reading order (subject-neutral).
@@ -632,6 +637,7 @@ export function readerView(book, chapter, sections, index, mode, fontSize, selec
     (printed ? pageZoomControl(pageZoom, 'top') : '') +
     (book.chapters.some(item => item.vocabulary) ? '<button type="button" id="toggle-vocabulary" aria-expanded="false" aria-controls="vocabulary-panel">Sanasto</button>' : '') +
     (workbookPanelView(book,chapter) ? '<button type="button" id="toggle-workbook" aria-expanded="false" aria-controls="workbook-panel">Työkirja</button>' : '') +
+    feedbackLink(feedback) +
     '<button type="button" id="toggle-options" aria-label="Lukuasetukset" title="Lukuasetukset" aria-expanded="false" aria-controls="reader-options">' +
     '<span>Lukuasetukset</span><svg class="settings-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false"><path d="M3 6h18M3 18h18"/><circle cx="8" cy="6" r="3" fill="white"/><circle cx="16" cy="18" r="3" fill="white"/></svg></button>' + options + '</header>' +
     '<p class="reader-status sr-only" id="reader-status" role="status"></p>' +
@@ -705,6 +711,8 @@ export function workbookTaskView(book, pages, page, number) {
     (answer ? '<details class="task-answer"><summary>Näytä vastaus</summary><div class="task-answer-body">' +
       renderMarkdown(answer.markdown) + '<p class="muted">Opettajan aineiston vastaus. Vertaa omaa vastaustasi tähän; moneen tehtävään käy useampi vastaus.</p></div></details>'
       : '<p class="muted">Tälle tehtävälle ei ole vastausta tässä aineistoversiossa.</p>') +
+    '<p class="task-feedback">Virhe tai epäselvä ohje? ' + feedbackLink(feedbackReference(book.series + ' ' + book.grade, 'Työkirja', 's. ' + page, 'tehtävä ' + number),
+      {place: 'inline', label: 'Kerro siitä'}) + '</p>' +
     '</div>' + navigation + '</div>';
 }
 export function workbookReaderView(book, pages, {single = false, pageZoom = 100, pageLayout = 'auto', page = pages[0]} = {}) {
@@ -716,6 +724,7 @@ export function workbookReaderView(book, pages, {single = false, pageZoom = 100,
   const current = ranges.find(range => range.from <= at && at <= range.to) || ranges[0];
   const chapter = current?.chapter, marker = chapter ? chapter.label ?? chapter.number : undefined;
   const title = chapter ? (marker !== undefined ? marker + ' · ' : '') + chapter.title : 'Työkirja';
+  const feedback = feedbackReference(book.series + ' ' + book.grade, 'Työkirja', chapter ? title : '', pageLabel(pages));
   const accent = Math.max(0, readingOrder(book).findIndex(item => item.id === chapter?.id)) % 4;
   const options = '<div class="reader-options" id="reader-options" role="region" aria-labelledby="reader-options-title" hidden>' +
     '<div class="panel-heading"><h2 id="reader-options-title">Lukuasetukset</h2><button type="button" id="close-options" aria-label="Sulje lukuasetukset">Sulje</button></div>' +
@@ -725,7 +734,8 @@ export function workbookReaderView(book, pages, {single = false, pageZoom = 100,
     '<p class="setting-note">Sivun koko on alapalkissa.</p>' +
     '<div class="reader-option-actions"><button type="button" id="toggle-fullscreen" aria-pressed="false">Koko ruutu</button>' +
     '<a class="button" href="' + e(proof.file + '#page=' + pages[0]) + '" target="_blank" rel="noopener">Avaa sivu PDF:nä<span class="sr-only"> uuteen välilehteen</span></a>' +
-    '<a class="button" href="'+bookUrl(book.id)+'">Materiaalit ja lukukohta</a></div></div>';
+    '<a class="button" href="'+bookUrl(book.id)+'">Materiaalit ja lukukohta</a>' +
+    feedbackLink(feedback, {place: 'options', label: 'Anna palautetta tästä kohdasta'}) + '</div></div>';
   const browser = '<p class="contents-eyebrow">Työkirjan kaikki luvut</p><div class="chapter-browser">' + ranges.map(range => {
     const active = range === current, own = range.chapter.label ?? range.chapter.number;
     const cards = [];
@@ -764,6 +774,7 @@ export function workbookReaderView(book, pages, {single = false, pageZoom = 100,
       e(((range.chapter.label ?? range.chapter.number) !== undefined ? (range.chapter.label ?? range.chapter.number) + ' · ' : '') + range.chapter.title) + '</option>').join('') + '</select>' +
     '<div class="reader-position-slot">' + workbookPosition(pages) + '</div>' + pageZoomControl(pageZoom, 'top') +
     '<button type="button" id="toggle-workbook" aria-expanded="false" aria-controls="workbook-panel">Tekstikirja ja tehtävät</button>' +
+    feedbackLink(feedback) +
     '<button type="button" id="toggle-options" aria-label="Lukuasetukset" title="Lukuasetukset" aria-expanded="false" aria-controls="reader-options">' +
     '<span>Lukuasetukset</span><svg class="settings-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false"><path d="M3 6h18M3 18h18"/><circle cx="8" cy="6" r="3" fill="white"/><circle cx="16" cy="18" r="3" fill="white"/></svg></button>' + options + '</header>' +
     '<p class="reader-status sr-only" id="reader-status" role="status"></p>' +

@@ -20,6 +20,23 @@ export const AUTHORS = [{
 export const external = (label, href, className = '') => '<a' + (className ? ' class="' + className + '"' : '') +
   ' href="' + e(href) + '" target="_blank" rel="noopener">' + e(label) + '<span class="sr-only"> (avautuu uuteen välilehteen)</span></a>';
 
+/*
+ * A quiet way to send feedback from where the reader is. The reference (book,
+ * page, task) travels in data-feedback; the app copies it with the address to the
+ * clipboard before Discord opens, so the message can say exactly which spot is meant.
+ * Without script it is an ordinary link to the feedback channel.
+ */
+export const feedbackReference = (...parts) => parts.filter(Boolean).join(' · ');
+const FEEDBACK_ICON = '<svg class="feedback-icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" ' +
+  'stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 5h16v11H9l-5 4z"/></svg>';
+export function feedbackLink(reference, {place = 'bar', label = 'Palaute'} = {}) {
+  return '<a class="feedback-link feedback-' + e(place) + '" href="' + e(FEEDBACK_URL) + '" target="_blank" rel="noopener" data-feedback="' + e(reference) + '"' +
+    ' title="Anna palautetta tästä kohdasta">' + FEEDBACK_ICON + '<span class="feedback-label">' + e(label) + '</span>' +
+    '<span class="sr-only"> tästä kohdasta (Discord avautuu uuteen välilehteen, kohdan tiedot kopioidaan leikepöydälle)</span></a>';
+}
+/** Text copied for the feedback message: the reference and the exact address. */
+export const feedbackClipboardText = (reference, href) => reference + '\n' + href + '\n\n';
+
 export function authorsView() {
   return '<div class="page authors-page"><p class="hero-eyebrow">Opettajalta opettajille</p><h1>Tekijät</h1>' +
     '<p class="authors-lead">Aukeama on opettajan aloittama oppikirjahanke. Painopiste on nyt kuudennen luokan ruotsissa; ' +
