@@ -648,7 +648,7 @@ export function readerView(book, chapter, sections, index, mode, fontSize, selec
     '<div class="reader-content" id="reader-content" tabindex="-1"><div class="reader-pages ' + (isSpread ? 'is-spread' : 'is-chapter') + (printed ? ' is-printed' : '') + (!printed && chapter.supportType === 'contents' ? ' is-contents' : '') + '"' +
       (printed ? ' data-zoom="' + e(String(pageZoom)) + '"' : '') +
       (isSpread && !printed && marker !== undefined ? ' data-chapter-tab="' + e(chapter.label ?? 'Luku ' + marker) + '"' : '') + '>' +
-    (printed ? printedSpreadHtml(book, printed, sectionTitles(chapter, sections)) : readerSectionsHtml(book, chapter, sections, visible)) + '</div></div></div>' +
+    (printed ? printedSpreadHtml(book, printed, sectionTitles(chapter, sections), 'textbook', marker !== undefined ? chapter.label ?? 'Luku ' + marker : '') : readerSectionsHtml(book, chapter, sections, visible)) + '</div></div></div>' +
     (printed ? printedNavigation(book, chapter.id, printed, pageSize === 1, 'textbook', pageZoom) : pageNavigation(book,chapter,sections, index, isSpread, pageSize)) +
     '<dialog class="focused-section" id="focused-section" aria-labelledby="focused-title"></dialog></div>';
 }
@@ -772,7 +772,7 @@ export function workbookReaderView(book, pages, {single = false, pageZoom = 100,
     browser + '<details class="contents-group"><summary>Materiaalit</summary><div class="contents-materials">' +
     '<a href="' + e(bookUrl(book.id)) + '">Kirjan materiaalit ja tiedot</a><a href="#/library">Kirjastoon</a></div></details></nav>' + panel +
     '<div class="reader-content" id="reader-content" tabindex="-1"><div class="reader-pages is-spread is-printed" data-zoom="' + e(String(pageZoom)) + '">' +
-    printedSpreadHtml(book, pages, {}, 'workbook') + '</div></div></div>' +
+    printedSpreadHtml(book, pages, {}, 'workbook', marker !== undefined ? chapter.label ?? 'Luku ' + marker : '') + '</div></div></div>' +
     printedNavigation(book, chapter?.id || '', pages, single, 'workbook', pageZoom) +
     '<dialog class="focused-section" id="focused-section" aria-labelledby="focused-title"></dialog></div>';
 }

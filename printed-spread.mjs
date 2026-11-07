@@ -120,10 +120,12 @@ export function printedRegionsHtml(book, page, titles = {}, kind = 'textbook') {
 }
 
 /** The printed spread itself; the page numbers are those printed on the pages. */
-export function printedSpreadHtml(book, pages, titles = {}, kind = 'textbook') {
+export function printedSpreadHtml(book, pages, titles = {}, kind = 'textbook', tab = '') {
   const proof = printedPages(book, kind);
   const sides = pages.length === 1 ? (pages[0] % 2 ? ['right'] : ['left']) : ['left', 'right'];
-  return '<div class="printed-spread' + (pages.length === 1 ? ' is-single' : '') + '" role="group" aria-label="' + bookName(kind) + ' ' + e(pageLabel(pages)) + '">' +
+  // The chapter tab sits on the outer edge like a printed thumb index; the top bar names the chapter too.
+  return '<div class="printed-spread' + (pages.length === 1 ? ' is-single' : '') + '" role="group" aria-label="' + bookName(kind) + ' ' + e(pageLabel(pages)) + '"' +
+    (tab ? ' data-chapter-tab="' + e(tab) + '"' : '') + '>' +
     pages.map((page, index) => '<figure class="printed-page" data-page="' + page + '" data-side="' + sides[index] + '">' + image(proof, page, '', false, kind) +
       printedRegionsHtml(book, page, titles, kind) + '</figure>').join('') + '</div>';
 }
