@@ -11,7 +11,7 @@ import {examLink} from './exam-ui.mjs';
 import {languageName, capitalize} from './language-names.mjs';
 import {chapterBrowserView} from './reader-previews.mjs';
 import {returnMarksEnabled,returnMarkControl} from './return-marks.mjs';
-import {printedSpreadHtml,printedNavigation,printedPosition,sectionTitles,printedPages,spreadPages,pageLabel,printedThumbnailHtml,workbookPosition,workbookTaskAreas,workbookTaskUrl,printedTaskImage,pageZoomControl} from './printed-spread.mjs';
+import {printedSpreadHtml,printedNavigation,printedPosition,sectionTitles,printedPages,spreadPages,pageLabel,printedThumbnailHtml,workbookPosition,workbookTaskAreas,workbookTaskUrl,printedTaskImage,pageZoomControl,printedSpreadUrl,partOfPage,sectionPage} from './printed-spread.mjs';
 
 // The book page's centre: each chapter's textbook, workbook pages and practice in one row.
 // Only attached materials are shown; a plain web copy keeps the simple contents list.
@@ -91,8 +91,8 @@ export function readerNavigationView(book, chapter, sections, flow, pageSize = 2
 }
 export function resultList(books, query) {
   const result = filterBooks(books, query);
-  return '<div class="results-heading"><h2>Kirjat</h2><p class="muted" role="status">' + result.length +
-    (result.length === 1 ? ' kirja' : ' kirjaa') + '</p></div>' +
+  return '<p class="results-count muted" role="status">' + result.length +
+    (result.length === 1 ? ' kirja' : ' kirjaa') + '</p>' +
     (result.length ? '<ul class="book-list">' + result.map(book =>
       '<li><article class="book-row"' + themeStyle(book) + '>' + cover(book) + '<div class="book-summary"><h3><a href="' + bookUrl(book.id) + '">' + e(book.title) +
       '</a></h3><p class="muted">' + e(book.subjectLabel) + ' · ' + e(book.grade) + '. luokka · ' + e(book.statusLabel) +
@@ -198,23 +198,61 @@ export function resumeView(books, state = {}) {
   if (!resume) return '';
   const { book, chapter, sectionId, mode } = resume;
   const marker = chapter.label ?? chapter.number;
-  return '<section class="resume-reading" aria-labelledby="resume-title"><div><h2 id="resume-title">Jatka lukemista</h2>' +
-    '<h3>' + e(book.title) + '</h3><p>' + (marker !== undefined ? e(marker) + ' · ' : '') + e(chapter.title) +
-    ' · Osio ' + (chapter.sectionIds.indexOf(sectionId) + 1) + ' / ' + chapter.sectionIds.length + '</p>' +
+  return '<section class="resume-reading" aria-labelledby="resume-title"><h2 id="resume-title">Jatka lukemista</h2>' +
+    '<p class="resume-where"><strong>' + e(book.title) + '</strong><span>' + (marker !== undefined ? e(marker) + ' · ' : '') + e(chapter.title) +
+    ' · Osio ' + (chapter.sectionIds.indexOf(sectionId) + 1) + ' / ' + chapter.sectionIds.length + '</span></p>' +
+    '<div class="resume-actions"><a class="button primary" href="' + readerUrl(book.id, chapter.id, sectionId, mode) +
+    '">Jatka tästä</a><button type="button" id="clear-reading-position">Tyhjennä lukukohta</button></div>' +
     '<p class="muted resume-note">' + (state.persistent === false ?
       'Selain ei salli lukukohdan tallentamista. Kohta säilyy vain tämän välilehden ajan.' :
-      'Lukukohta säilyy vain tässä selaimessa. Tyhjennä se yhteiskäyttöisellä koneella.') + '</p></div>' +
-    '<div class="resume-actions"><a class="button primary" href="' + readerUrl(book.id, chapter.id, sectionId, mode) +
-    '">Jatka tästä</a><button type="button" id="clear-reading-position">Tyhjennä lukukohta</button></div></section>';
+      'Lukukohta säilyy vain tässä selaimessa. Tyhjennä se yhteiskäyttöisellä koneella.') + '</p></section>';
+}
+/** The spread the front page shows: where the reader is, else where the book begins. */
+export function frontSpread(book, resume) {
+  const proof = printedPages(book);
+  if (!proof) return null;
+  const page = (resume && sectionPage(book, resume.chapter.id, resume.sectionId)) ||
+    Math.min(...readingOrder(book).map(chapter => proof.chapterPages?.[chapter.id]).filter(Number.isInteger).concat(proof.pages));
+  return spreadPages(proof.pages, page);
+}
+/**
+ * The front page is itself an aukeama: the left page says what this is and where to
+ * continue, the right page is a real spread of the book, opening where it is shown.
+ */
+export function libraryHero(books, state = {}) {
+  const book = resolveReadingPosition(books, state.position)?.book || books[0];
+  if (!book) return '';
+  const resume = resolveReadingPosition(books, state.position);
+  const pages = frontSpread(book, resume);
+  const chapter = readingOrder(book)[0];
+  const facts = ['Ei kirjautumista', 'Puhelimella ja tietokoneella']
+    .concat(drillsOf(book).length || practiceActivities(book).length ? ['Tehtävät tarkistuvat heti'] : []);
+  const right = pages
+    ? '<a class="hero-spread" href="' + e(printedSpreadUrl(book.id, partOfPage(book, pages[0]) || chapter.id, pages[0])) + '">' +
+      printedThumbnailHtml(book, pages) + '<span class="hero-spread-label">Selaa tekstikirjaa<small>' + e(pageLabel(pages)) + '</small></span></a>'
+    : '<a class="hero-spread hero-spread-cover" href="' + e(readerUrl(book.id, chapter.id)) + '">' + cover(book) +
+      '<span class="hero-spread-label">Selaa tekstikirjaa<small>' + e(book.title) + '</small></span></a>';
+  return '<section class="library-hero"' + themeStyle(book) + ' aria-labelledby="hero-title">' +
+    '<div class="hero-page hero-text"><p class="hero-eyebrow">Aukeama</p>' +
+    '<h1 id="hero-title">Oppikirja aukeaa selaimessa</h1>' +
+    '<p class="hero-lead">Tekstikirja ja työkirja samoina aukeamina kuin painettuna, ja saman sivun tehtävät sähköisinä. Avaa linkistä ja lue.</p>' +
+    '<ul class="hero-facts">' + facts.map(fact => '<li>' + e(fact) + '</li>').join('') + '</ul>' +
+    '<div id="resume-slot">' + resumeView(books, state) + '</div>' +
+    '<div class="hero-actions"><a class="button primary" href="' + e(readerUrl(book.id, chapter.id)) + '">Avaa tekstikirja</a>' +
+    (book.localProofs?.workbook ? '<a class="button" href="' + e(workbookUrl(book.id)) + '">Avaa työkirja</a>' : '') +
+    '<a href="' + e(bookUrl(book.id)) + '">Kaikki materiaalit</a></div>' +
+    '<p class="hero-stage muted">' + e(book.series + ' ' + book.grade + ' · ' + book.statusLabel) + '</p></div>' +
+    '<div class="hero-page hero-figure">' + right + '</div></section>';
 }
 export function libraryView(books, query, state) {
   const compactSearch = books.length <= 1;
-  return '<div class="page"><h1>Kirjasto</h1><div id="resume-slot">' + resumeView(books, state) + '</div>' +
+  return '<div class="page library-page">' + libraryHero(books, state) +
+    '<div class="shelf-heading"><h2 id="library-books">Kirjasto</h2>' +
     (compactSearch ? '<details class="library-search"' + (query ? ' open' : '') + '><summary>Hae kirjastosta</summary>' : '') +
     '<form class="search-form" role="search" id="book-search"><label for="search">Hae kirjoja</label>' +
     '<div class="search-row"><input type="search" id="search" name="q" value="' + e(query) +
     '" placeholder="Kirjan nimi, oppiaine tai luokka"><button class="primary" type="submit">Hae</button></div></form>' +
-    (compactSearch ? '</details>' : '') + '<p id="library-status" class="muted" role="status"></p>' +
+    (compactSearch ? '</details>' : '') + '</div><p id="library-status" class="muted" role="status"></p>' +
     '<div id="book-results">' + resultList(books, query) + '</div></div>';
 }
 export function helpView() {
@@ -566,6 +604,7 @@ export function readerView(book, chapter, sections, index, mode, fontSize, selec
       e(section.title.replace(/[*]/g, '').replace(/^Avausaukeama$/, 'Aloitus')) + '</option>').join('') + '</select>' +
     // On wide book pages the reading position sits here and the spread gets the bottom bar's height.
     (isSpread ? '<div class="reader-position-slot">' + (printed ? printedPosition(book, chapter.id, printed) : '') + '</div>' : '') +
+    (printed ? pageZoomControl(pageZoom, 'top') : '') +
     (book.chapters.some(item => item.vocabulary) ? '<button type="button" id="toggle-vocabulary" aria-expanded="false" aria-controls="vocabulary-panel">Sanasto</button>' : '') +
     (workbookPanelView(book,chapter) ? '<button type="button" id="toggle-workbook" aria-expanded="false" aria-controls="workbook-panel">Työkirja</button>' : '') +
     '<button type="button" id="toggle-options" aria-label="Lukuasetukset" title="Lukuasetukset" aria-expanded="false" aria-controls="reader-options">' +
@@ -584,9 +623,8 @@ export function readerView(book, chapter, sections, index, mode, fontSize, selec
     '<div class="reader-content" id="reader-content" tabindex="-1"><div class="reader-pages ' + (isSpread ? 'is-spread' : 'is-chapter') + (printed ? ' is-printed' : '') + (chapter.supportType === 'contents' ? ' is-contents' : '') + '"' +
       (printed ? ' data-zoom="' + e(String(pageZoom)) + '"' : '') +
       (isSpread && !printed && marker !== undefined ? ' data-chapter-tab="' + e(chapter.label ?? 'Luku ' + marker) + '"' : '') + '>' +
-    (printed ? printedSpreadHtml(book, printed, sectionTitles(chapter, sections)) : readerSectionsHtml(book, chapter, sections, visible)) + '</div></div>' +
-    (printed ? pageZoomControl(pageZoom) : '') + '</div>' +
-    (printed ? printedNavigation(book, chapter.id, printed, pageSize === 1) : pageNavigation(book,chapter,sections, index, isSpread, pageSize)) +
+    (printed ? printedSpreadHtml(book, printed, sectionTitles(chapter, sections)) : readerSectionsHtml(book, chapter, sections, visible)) + '</div></div></div>' +
+    (printed ? printedNavigation(book, chapter.id, printed, pageSize === 1, 'textbook', pageZoom) : pageNavigation(book,chapter,sections, index, isSpread, pageSize)) +
     '<dialog class="focused-section" id="focused-section" aria-labelledby="focused-title"></dialog></div>';
 }
 /** Workbook chapters as printed: the first chapter also holds the opening pages. */
@@ -699,7 +737,7 @@ export function workbookReaderView(book, pages, {single = false, pageZoom = 100,
     '<label class="sr-only" for="section-select">Työkirjan luku</label><select id="section-select" data-workbook-chapters>' +
     ranges.map(range => '<option value="' + range.start + '"' + (range === current ? ' selected' : '') + '>' +
       e(((range.chapter.label ?? range.chapter.number) !== undefined ? (range.chapter.label ?? range.chapter.number) + ' · ' : '') + range.chapter.title) + '</option>').join('') + '</select>' +
-    '<div class="reader-position-slot">' + workbookPosition(pages) + '</div>' +
+    '<div class="reader-position-slot">' + workbookPosition(pages) + '</div>' + pageZoomControl(pageZoom, 'top') +
     '<button type="button" id="toggle-workbook" aria-expanded="false" aria-controls="workbook-panel">Tekstikirja ja tehtävät</button>' +
     '<button type="button" id="toggle-options" aria-label="Lukuasetukset" title="Lukuasetukset" aria-expanded="false" aria-controls="reader-options">' +
     '<span>Lukuasetukset</span><svg class="settings-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false"><path d="M3 6h18M3 18h18"/><circle cx="8" cy="6" r="3" fill="white"/><circle cx="16" cy="18" r="3" fill="white"/></svg></button>' + options + '</header>' +
@@ -709,8 +747,8 @@ export function workbookReaderView(book, pages, {single = false, pageZoom = 100,
     browser + '<details class="contents-group"><summary>Materiaalit</summary><div class="contents-materials">' +
     '<a href="' + e(bookUrl(book.id)) + '">Kirjan materiaalit ja tiedot</a><a href="#/library">Kirjastoon</a></div></details></nav>' + panel +
     '<div class="reader-content" id="reader-content" tabindex="-1"><div class="reader-pages is-spread is-printed" data-zoom="' + e(String(pageZoom)) + '">' +
-    printedSpreadHtml(book, pages, {}, 'workbook') + '</div></div>' + pageZoomControl(pageZoom) + '</div>' +
-    printedNavigation(book, chapter?.id || '', pages, single, 'workbook') +
+    printedSpreadHtml(book, pages, {}, 'workbook') + '</div></div></div>' +
+    printedNavigation(book, chapter?.id || '', pages, single, 'workbook', pageZoom) +
     '<dialog class="focused-section" id="focused-section" aria-labelledby="focused-title"></dialog></div>';
 }
 export function focusedSectionView(section, chapter, mode = 'spread', sections = [section], {book,practiceReturn = ''} = {}) {

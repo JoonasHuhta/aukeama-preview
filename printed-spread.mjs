@@ -147,7 +147,7 @@ export function printedTextLinks(book, pages, titles = {}) {
     e(titles[row.chapter + '/' + row.section] || 'Teksti') + '</a></li>').join('') + '</ul>';
 }
 
-export function printedNavigation(book, chapterId, pages, single = false, kind = 'textbook') {
+export function printedNavigation(book, chapterId, pages, single = false, kind = 'textbook', zoom = 100) {
   const proof = printedPages(book, kind);
   const previous = turnedPage(proof.pages, pages, -1, single), next = turnedPage(proof.pages, pages, 1, single);
   const unit = single ? 'sivu' : 'aukeama';
@@ -157,7 +157,7 @@ export function printedNavigation(book, chapterId, pages, single = false, kind =
     (direction < 0 ? 'm15 6-6 6 6 6' : 'm9 6 6 6-6 6') + '"/></svg></button>';
   return '<footer class="reader-navigation printed-navigation">' + arrow(-1, previous) +
     '<div class="reading-position">' + (kind === 'workbook' ? workbookPosition(pages) : printedPosition(book, chapterId, pages)) + '</div>' +
-    arrow(1, next) + '</footer>';
+    pageZoomControl(zoom, 'bottom') + arrow(1, next) + '</footer>';
 }
 /** "Työkirja s. 12–13": the same top-bar position as in the textbook. */
 export function workbookPosition(pages) {
@@ -190,11 +190,16 @@ export function zoomStep(zoom, direction) {
   const at = zoom === 'fit' ? (direction > 0 ? base + 1 : base) : base + direction;
   return at < 0 || at >= PAGE_ZOOMS.length ? null : PAGE_ZOOMS[at];
 }
-/** Always within reach over the page itself, as a reader of a printed page expects. */
-export function pageZoomControl(zoom) {
-  return '<div class="page-zoom" role="group" aria-label="Sivun koko">' +
+/**
+ * Page size beside the reading position, never over the page: a wide window shows
+ * it in the top bar, a narrow one in the bottom bar, so it cannot cover the task.
+ */
+export function pageZoomControl(zoom, place = 'bottom') {
+  const fit = '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">' +
+    '<path d="M4 5v14M20 5v14M9 9l-3 3 3 3M15 9l3 3-3 3M7 12h10"/></svg>';
+  return '<div class="page-zoom page-zoom-' + place + '" role="group" aria-label="Sivun koko">' +
     '<button type="button" data-zoom="-1" aria-label="Pienennä sivua" title="Pienennä sivua"' + (zoomStep(zoom, -1) === null ? ' disabled' : '') + '>−</button>' +
     '<output class="page-zoom-label" aria-live="polite">' + e(zoomLabel(zoom)) + '</output>' +
     '<button type="button" data-zoom="1" aria-label="Suurenna sivua" title="Suurenna sivua"' + (zoomStep(zoom, 1) === null ? ' disabled' : '') + '>+</button>' +
-    '<button type="button" data-zoom="fit" class="page-zoom-fit" aria-pressed="' + (zoom === 'fit') + '">Sovita leveyteen</button></div>';
+    '<button type="button" data-zoom="fit" class="page-zoom-fit" aria-label="Sovita leveyteen" title="Sovita leveyteen" aria-pressed="' + (zoom === 'fit') + '">' + fit + '</button></div>';
 }

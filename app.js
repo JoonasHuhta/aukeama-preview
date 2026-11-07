@@ -740,11 +740,12 @@ main.addEventListener('click', event => {
     pageZoom = next;
     try { localStorage.setItem('aukeama.printed-zoom', String(pageZoom)); } catch { /* Optional preference. */ }
     document.querySelector('.reader-pages.is-printed')?.setAttribute('data-zoom', String(pageZoom));
-    document.querySelector('.page-zoom-label').textContent = zoomLabel(pageZoom);
-    document.querySelector('[data-zoom="-1"]').disabled = zoomStep(pageZoom, -1) === null;
-    document.querySelector('[data-zoom="1"]').disabled = zoomStep(pageZoom, 1) === null;
-    document.querySelector('[data-zoom="fit"]').setAttribute('aria-pressed', String(pageZoom === 'fit'));
-    if (button.disabled) document.querySelector('[data-zoom="' + (button.dataset.zoom === '1' ? '-1' : '1') + '"]').focus();
+    // The control exists for both bars; only one of them is shown at a time.
+    for (const label of document.querySelectorAll('.page-zoom-label')) label.textContent = zoomLabel(pageZoom);
+    for (const step of [-1, 1]) for (const control of document.querySelectorAll('[data-zoom="' + step + '"]'))
+      control.disabled = zoomStep(pageZoom, step) === null;
+    for (const control of document.querySelectorAll('[data-zoom="fit"]')) control.setAttribute('aria-pressed', String(pageZoom === 'fit'));
+    if (button.disabled) button.closest('.page-zoom')?.querySelector('[data-zoom="' + (button.dataset.zoom === '1' ? '-1' : '1') + '"]')?.focus();
   } else if (button.dataset.font) {
     fontSize = Math.max(16, Math.min(24, fontSize + Number(button.dataset.font) * 2));
     document.documentElement.style.setProperty('--reader-zoom', fontSize / 16);

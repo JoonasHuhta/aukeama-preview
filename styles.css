@@ -194,12 +194,44 @@ input::placeholder { color: var(--muted); opacity: 1; }
 .cover-sound { fill: none; stroke: var(--book-marker); stroke-width: 3; stroke-linejoin: round; }
 .cover-subject { fill: var(--ink); font-size: 18px; }
 .cover-publisher { fill: var(--muted); font-size: 12px; }
-.resume-reading { display: grid; grid-template-columns: minmax(0,1fr) auto; align-items: center; gap: 24px; padding: 24px; margin-bottom: 32px; border: 1px solid var(--support-line); border-left: 4px solid var(--support-edge); background: var(--accent-soft); }
-.resume-reading h2 { margin: 0 0 8px; }
-.resume-reading h3 { margin: 0 0 8px; }
-.resume-reading p { margin: 0 0 8px; }
-.resume-reading .resume-note { margin: 0; font-size: 14px; }
-.resume-actions { display: grid; gap: 8px; }
+.resume-reading { padding: 16px 20px; margin: 0 0 20px; border: 1px solid var(--support-line); border-left: 4px solid var(--support-edge); border-radius: 8px; background: white; }
+.resume-reading h2 { margin: 0 0 4px; font-size: 18px; }
+.resume-where { display: grid; gap: 2px; margin: 0 0 12px; }
+.resume-where span { font-size: 15px; color: var(--muted); }
+.resume-reading .resume-note { margin: 10px 0 0; font-size: 13px; }
+.resume-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+
+/* The front page is an aukeama: the promise on the left page, the book itself on the right. */
+.library-page { max-width: 1180px; }
+.library-hero { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,46%); gap: 0;
+  margin-bottom: 40px; border: 1px solid var(--book-cover-line, var(--line)); border-radius: 10px; overflow: hidden; }
+.hero-page { padding: 32px; min-width: 0; }
+.hero-text { background: var(--book-cover, #fff5df); border-right: 1px solid var(--book-cover-line, var(--line)); }
+.hero-eyebrow { margin: 0 0 6px; font-size: 14px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--book-color, var(--accent)); }
+.library-hero h1 { margin: 0 0 12px; font-size: clamp(30px, 3.4vw, 44px); line-height: 1.1; }
+.hero-lead { margin: 0 0 16px; font-size: 18px; max-width: 42ch; }
+.hero-facts { display: flex; flex-wrap: wrap; gap: 6px 8px; list-style: none; padding: 0; margin: 0 0 24px; }
+.hero-facts li { padding: 4px 12px; font-size: 14px; font-weight: 600; color: var(--book-color, var(--accent));
+  border: 1px solid var(--book-cover-line, var(--line)); border-radius: 999px; background: white; }
+.hero-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+.hero-stage { margin: 16px 0 0; font-size: 14px; }
+.hero-figure { display: flex; align-items: center; justify-content: center; padding: 28px; background: var(--surface); }
+.hero-spread { display: grid; gap: 12px; justify-items: center; width: 100%; max-width: 420px; color: var(--ink); text-decoration: none; }
+.hero-spread .printed-thumbnail { width: 100%; border: 1px solid var(--line); border-radius: 2px; background: white; }
+.hero-spread .book-cover { width: 150px; }
+.hero-spread-label { display: grid; justify-items: center; gap: 2px; font-weight: 600; text-decoration: underline; }
+.hero-spread-label small { font-weight: 400; font-size: 14px; color: var(--muted); text-decoration: none; }
+.hero-spread:hover .printed-thumbnail { border-color: var(--book-color, var(--accent)); }
+.shelf-heading { display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 8px 24px; border-bottom: 1px solid var(--line); padding-bottom: 12px; }
+.shelf-heading h2 { margin: 0; }
+.shelf-heading .library-search { margin: 0; }
+.results-count { margin: 12px 0 0; }
+@media (max-width: 899px) {
+  .library-hero { grid-template-columns: minmax(0,1fr); }
+  .hero-page { padding: 24px; }
+  .hero-text { border-right: 0; border-bottom: 1px solid var(--book-cover-line, var(--line)); }
+  .hero-figure { padding: 20px; }
+}
 #library-status:empty { display: none; }
 .help-page { max-width: 800px; }
 .help-page h2:not(:first-child) { margin-top: 32px; }
@@ -1409,13 +1441,21 @@ a.button .drill-progress { display: block; margin: 2px 0 0; font-weight: 400; }
 /* The window's width, for pages whose text is too small when the whole page fits. */
 .reader-pages.is-printed[data-zoom="fit"] .printed-spread { width: 100cqw; }
 .reader-pages.is-printed[data-zoom="fit"] { align-items: safe start; }
-.page-zoom { position: absolute; right: 16px; bottom: 16px; z-index: 4; display: flex; align-items: center; gap: 4px;
-  padding: 4px; border: 1px solid var(--control-line); border-radius: 10px; background: rgb(255 255 255 / .94); }
+.page-zoom { display: flex; align-items: center; gap: 4px; flex: 0 0 auto; }
+/* Beside the position: in the top bar when there is room, otherwise in the bottom bar. */
+.page-zoom-top { display: none; }
+@media (min-width: 1100px) { .page-zoom-top { display: flex; } .page-zoom-bottom { display: none; } }
+.reader-controls .page-zoom button { color: white; border-color: transparent; background: transparent; }
+.reader-controls .page-zoom button:hover:not(:disabled) { background: #25656b; }
+.reader-controls .page-zoom button:disabled { color: #9fc4c0; }
+.reader-controls .page-zoom .page-zoom-label { color: white; }
+.reader-controls .page-zoom [aria-pressed="true"] { color: #103f44; background: #b8e8d7; }
 .page-zoom button { min-width: 44px; min-height: 44px; padding: 4px 8px; }
 .page-zoom .page-zoom-label { min-width: 62px; text-align: center; font-size: 14px; color: var(--muted); }
-.page-zoom .page-zoom-fit { min-width: 0; padding-inline: 12px; }
-.page-zoom .page-zoom-fit[aria-pressed="true"] { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
+.page-zoom .page-zoom-fit[aria-pressed="true"] { color: #103f44; background: var(--accent-soft); border-color: var(--accent); }
+
 @media (max-width: 899px) { .page-zoom .page-zoom-fit { display: none; } .page-zoom .page-zoom-label { min-width: 54px; } }
+.page-zoom .page-zoom-fit svg { display: block; }
 .task-shell .focused-content { display: block; height: 100%; overflow-y: auto; overscroll-behavior: contain; padding: 20px 24px; }
 .printed-task-image { display: block; width: 100%; max-height: 72vh; background: white; }
 .task-answer { margin-top: 16px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); }
