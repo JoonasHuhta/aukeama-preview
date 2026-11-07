@@ -232,13 +232,14 @@ export function libraryHero(books, state = {}) {
       printedThumbnailHtml(book, pages) + '<span class="hero-spread-label">Selaa tekstikirjaa<small>' + e(pageLabel(pages)) + '</small></span></a>'
     : '<a class="hero-spread hero-spread-cover" href="' + e(readerUrl(book.id, chapter.id)) + '">' + cover(book) +
       '<span class="hero-spread-label">Selaa tekstikirjaa<small>' + e(book.title) + '</small></span></a>';
-  return '<section class="library-hero"' + themeStyle(book) + ' aria-labelledby="hero-title">' +
-    '<div class="hero-page hero-text"><p class="hero-eyebrow">Aukeama</p>' +
+  return '<section class="library-hero" aria-labelledby="hero-title">' +
+    '<div class="hero-page hero-text">' +
     '<h1 id="hero-title">Oppikirja aukeaa selaimessa</h1>' +
     '<p class="hero-lead">Tekstikirja ja työkirja samoina aukeamina kuin painettuna, ja saman sivun tehtävät sähköisinä. Avaa linkistä ja lue.</p>' +
     '<ul class="hero-facts">' + facts.map(fact => '<li>' + e(fact) + '</li>').join('') + '</ul>' +
     '<div id="resume-slot">' + resumeView(books, state) + '</div>' +
-    '<div class="hero-actions"><a class="button primary" href="' + e(readerUrl(book.id, chapter.id)) + '">Avaa tekstikirja</a>' +
+    // With a reading position, "Jatka tästä" is the one main action on the page.
+    '<div class="hero-actions"><a class="button' + (resume ? '' : ' primary') + '" href="' + e(readerUrl(book.id, chapter.id)) + '">Avaa tekstikirja</a>' +
     (book.localProofs?.workbook ? '<a class="button" href="' + e(workbookUrl(book.id)) + '">Avaa työkirja</a>' : '') +
     '<a href="' + e(bookUrl(book.id)) + '">Kaikki materiaalit</a></div>' +
     '<p class="hero-stage muted">' + e(book.series + ' ' + book.grade + ' · ' + book.statusLabel) + '</p></div>' +
@@ -565,7 +566,7 @@ export function readerSectionsHtml(book, chapter, sections, list = sections) {
   })).join('');
 }
 export function readerView(book, chapter, sections, index, mode, fontSize, selectedSection = sections[index].id, pageSize = 2, returnTo = null, pageLayout = 'auto', printed = null, pageZoom = 100) {
-  pageSize = readerPageSize(chapter, pageSize === 1, pageLayout);
+  pageSize = readerPageSize(chapter, pageSize === 1, pageLayout, !!printed);
   const isSpread = mode === 'spread';
   const visible = isSpread ? sections.slice(index, index + pageSize) : sections;
   // A printed spread is an image of the book; the chapter heading stays for assistive technology.
@@ -620,7 +621,7 @@ export function readerView(book, chapter, sections, index, mode, fontSize, selec
     supportLinks(book,mode) +
     '<a href="' + bookUrl(book.id) + '">Kirjan materiaalit ja tiedot</a><a href="#/library">Kirjastoon</a></div></details></nav>' +
     readerInfoView(book, chapter) + vocabularyView(chapter, book, mode) + workbookPanelView(book, chapter) +
-    '<div class="reader-content" id="reader-content" tabindex="-1"><div class="reader-pages ' + (isSpread ? 'is-spread' : 'is-chapter') + (printed ? ' is-printed' : '') + (chapter.supportType === 'contents' ? ' is-contents' : '') + '"' +
+    '<div class="reader-content" id="reader-content" tabindex="-1"><div class="reader-pages ' + (isSpread ? 'is-spread' : 'is-chapter') + (printed ? ' is-printed' : '') + (!printed && chapter.supportType === 'contents' ? ' is-contents' : '') + '"' +
       (printed ? ' data-zoom="' + e(String(pageZoom)) + '"' : '') +
       (isSpread && !printed && marker !== undefined ? ' data-chapter-tab="' + e(chapter.label ?? 'Luku ' + marker) + '"' : '') + '>' +
     (printed ? printedSpreadHtml(book, printed, sectionTitles(chapter, sections)) : readerSectionsHtml(book, chapter, sections, visible)) + '</div></div></div>' +

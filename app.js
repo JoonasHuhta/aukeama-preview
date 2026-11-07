@@ -147,7 +147,7 @@ try { const saved = localStorage.getItem('aukeama.printed-zoom'); if (saved === 
 let fullscreenReading = false;
 let pageLayout = 'auto';
 const singlePage = window.matchMedia('(max-width: 899px)');
-const pageSize = (chapter = reader?.chapter) => readerPageSize(chapter, singlePage.matches, pageLayout);
+const pageSize = (chapter = reader?.chapter, book = reader?.book) => readerPageSize(chapter, singlePage.matches, pageLayout, hasPrintedSpreads(book));
 function focusControl(id) {
   const control = document.getElementById(id);
   (control?.getClientRects().length ? control : document.querySelector('#toggle-options'))?.focus({ preventScroll: true });
@@ -337,7 +337,7 @@ async function renderRoute({ initial = false } = {}) {
           if (printedAt) {
             const page = Math.min(Math.max(printedAt, 1), proof.pages), owner = partOfPage(book, page);
             if (route.page && owner && owner !== chapter.id) { location.replace(printedSpreadUrl(book.id, owner, page)); return; }
-            printed = spreadPages(proof.pages, page, pageSize(chapter) === 1);
+            printed = spreadPages(proof.pages, page, pageSize(chapter, book) === 1);
             const url = printedSpreadUrl(book.id, chapter.id, page);
             if (location.hash !== url) history.replaceState(null, '', url);
             const here = sectionsOnPages(book, printed).find(row => row.chapter === chapter.id);
@@ -349,13 +349,13 @@ async function renderRoute({ initial = false } = {}) {
           }
           const sections = loaded.sections;
           const section = sections.find(item => item.id === route.section) || sections[0];
-          const index = findSectionIndex(sections, section.id, route.mode, pageSize(chapter));
+          const index = findSectionIndex(sections, section.id, route.mode, pageSize(chapter, book));
           reader = { book, chapter, sections, index, section: section.id, part: route.part || 1, mode: route.mode, point:route.point || '', printed };
           const returnTo = readingState.visit(books, { schemaVersion: 1, bookId: book.id, version: book.version,
             chapterId: chapter.id, sectionId: section.id, mode: route.mode });
-          main.innerHTML = readerView(book, chapter, sections, index, route.mode, fontSize, section.id, pageSize(chapter), returnTo, pageLayout, printed, pageZoom);
+          main.innerHTML = readerView(book, chapter, sections, index, route.mode, fontSize, section.id, pageSize(chapter, book), returnTo, pageLayout, printed, pageZoom);
           fillDrillProgress(main, book, drillStorages);
-          chapterBrowser.mount(book,chapter,sections,section.id,route.mode,pageSize(chapter),printed);
+          chapterBrowser.mount(book,chapter,sections,section.id,route.mode,pageSize(chapter, book),printed);
           // Own marks belong to the text: their links open the text view.
           returnMarks.mount(book,chapter,sections,printed ? 'chapter' : route.mode);
           const practiceReturn=practiceWorkspace.returnLink(book);

@@ -3,6 +3,8 @@
   --ink: #20252b;
   --muted: #555e68;
   --accent: #214780;
+  --brand: #15386d;
+  --brand-soft: #f1f4f9;
   --accent-hover: #17345f;
   --line: #d4d8dd;
   --control-line: #7c858e;
@@ -145,8 +147,9 @@ p { margin: 0 0 16px; max-width: 70ch; }
 .muted, small { color: var(--muted); }
 .skip-link { position: absolute; top: -80px; left: 16px; padding: 12px; background: white; z-index: 10; }
 .skip-link:focus { top: 8px; }
-.site-header { border-top: 4px solid var(--support-edge); border-bottom: 1px solid var(--line); background: white; }
-.header-inner { max-width: 1100px; margin: auto; padding: 0 24px; min-height: 64px; display: flex; gap: 40px; align-items: center; }
+/* One quiet white bar: the wordmark carries the brand, nothing decorates it. */
+.site-header { border-bottom: 1px solid var(--line); background: white; }
+.header-inner { max-width: 1100px; margin: auto; padding: 0 24px; min-height: 72px; display: flex; gap: 40px; align-items: center; }
 .brand { position: relative; display: block; flex: 0 0 232px; width: 232px; height: 44px; overflow: hidden; text-decoration: none; color: var(--ink); }
 /* Preserve the selected logo; its white margins fit inside the white header. */
 .brand img { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); display: block; width: 100%; height: auto; pointer-events: none; }
@@ -154,9 +157,10 @@ p { margin: 0 0 16px; max-width: 70ch; }
   .site-header .header-inner { gap: 16px; }
   .site-header .brand { flex-basis: 156px; width: 156px; }
 }
-.site-header nav { display: flex; gap: 24px; }
-.site-header nav a { display: inline-flex; align-items: center; min-height: 64px; color: var(--ink); text-decoration: none; border-bottom: 3px solid transparent; padding-top: 3px; }
-.site-header nav a[aria-current="page"] { border-bottom-color: var(--accent); }
+.site-header nav { display: flex; gap: 28px; margin-left: auto; }
+.site-header nav a { display: inline-flex; align-items: center; min-height: 72px; color: var(--brand); font-weight: 600; text-decoration: none; border-bottom: 3px solid transparent; padding-top: 3px; }
+.site-header nav a:hover { border-bottom-color: var(--line); }
+.site-header nav a[aria-current="page"] { border-bottom-color: var(--brand); }
 .site-footer { border-top: 1px solid var(--line); color: var(--muted); font-size: 14px; }
 .site-footer > div { max-width: 1100px; margin: auto; padding: 24px; display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
 .site-footer a { display: inline-flex; align-items: center; min-height: 44px; }
@@ -194,44 +198,40 @@ input::placeholder { color: var(--muted); opacity: 1; }
 .cover-sound { fill: none; stroke: var(--book-marker); stroke-width: 3; stroke-linejoin: round; }
 .cover-subject { fill: var(--ink); font-size: 18px; }
 .cover-publisher { fill: var(--muted); font-size: 12px; }
-.resume-reading { padding: 16px 20px; margin: 0 0 20px; border: 1px solid var(--support-line); border-left: 4px solid var(--support-edge); border-radius: 8px; background: white; }
+.resume-reading { padding: 16px 20px; margin: 0 0 24px; border: 1px solid var(--line); border-left: 4px solid var(--brand); border-radius: 8px; background: white; }
 .resume-reading h2 { margin: 0 0 4px; font-size: 18px; }
 .resume-where { display: grid; gap: 2px; margin: 0 0 12px; }
 .resume-where span { font-size: 15px; color: var(--muted); }
 .resume-reading .resume-note { margin: 10px 0 0; font-size: 13px; }
 .resume-actions { display: flex; flex-wrap: wrap; gap: 8px; }
 
-/* The front page is an aukeama: the promise on the left page, the book itself on the right. */
-.library-page { max-width: 1180px; }
-.library-hero { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,46%); gap: 0;
-  margin-bottom: 40px; border: 1px solid var(--book-cover-line, var(--line)); border-radius: 10px; overflow: hidden; }
-.hero-page { padding: 32px; min-width: 0; }
-.hero-text { background: var(--book-cover, #fff5df); border-right: 1px solid var(--book-cover-line, var(--line)); }
-.hero-eyebrow { margin: 0 0 6px; font-size: 14px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--book-color, var(--accent)); }
-.library-hero h1 { margin: 0 0 12px; font-size: clamp(30px, 3.4vw, 44px); line-height: 1.1; }
-.hero-lead { margin: 0 0 16px; font-size: 18px; max-width: 42ch; }
-.hero-facts { display: flex; flex-wrap: wrap; gap: 6px 8px; list-style: none; padding: 0; margin: 0 0 24px; }
-.hero-facts li { padding: 4px 12px; font-size: 14px; font-weight: 600; color: var(--book-color, var(--accent));
-  border: 1px solid var(--book-cover-line, var(--line)); border-radius: 999px; background: white; }
-.hero-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
-.hero-stage { margin: 16px 0 0; font-size: 14px; }
-.hero-figure { display: flex; align-items: center; justify-content: center; padding: 28px; background: var(--surface); }
-.hero-spread { display: grid; gap: 12px; justify-items: center; width: 100%; max-width: 420px; color: var(--ink); text-decoration: none; }
-.hero-spread .printed-thumbnail { width: 100%; border: 1px solid var(--line); border-radius: 2px; background: white; }
-.hero-spread .book-cover { width: 150px; }
-.hero-spread-label { display: grid; justify-items: center; gap: 2px; font-weight: 600; text-decoration: underline; }
+/* Front page: the promise on white, the book's own spread beside it. One brand colour. */
+.library-hero { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,45%); gap: 48px; align-items: center; margin: 8px 0 56px; }
+.hero-page { min-width: 0; }
+.library-hero h1 { margin: 0 0 16px; font-size: clamp(32px, 3.6vw, 46px); line-height: 1.1; font-weight: 700; color: var(--brand); letter-spacing: -.01em; }
+.hero-lead { margin: 0 0 20px; font-size: 19px; line-height: 1.55; max-width: 40ch; }
+.hero-facts { display: grid; gap: 8px; list-style: none; padding: 0; margin: 0 0 28px; }
+.hero-facts li { display: flex; align-items: baseline; gap: 10px; font-size: 16px; }
+.hero-facts li::before { content: "✓"; flex: 0 0 auto; font-weight: 700; color: var(--brand); }
+.hero-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 16px; }
+.hero-actions .button.primary { background: var(--brand); border-color: var(--brand); }
+.hero-stage { margin: 20px 0 0; font-size: 14px; }
+.hero-figure { display: flex; justify-content: center; padding: 32px; border-radius: 12px; background: var(--brand-soft); }
+.hero-spread { display: grid; gap: 14px; justify-items: center; width: 100%; max-width: 460px; color: var(--brand); text-decoration: none; }
+.hero-spread .printed-thumbnail { width: 100%; border: 1px solid #d6dce5; border-radius: 3px; background: white; }
+.hero-spread .book-cover { width: 160px; }
+.hero-spread-label { display: grid; justify-items: center; gap: 2px; font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
 .hero-spread-label small { font-weight: 400; font-size: 14px; color: var(--muted); text-decoration: none; }
-.hero-spread:hover .printed-thumbnail { border-color: var(--book-color, var(--accent)); }
+.hero-spread:hover .printed-thumbnail { border-color: var(--brand); }
 .shelf-heading { display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 8px 24px; border-bottom: 1px solid var(--line); padding-bottom: 12px; }
-.shelf-heading h2 { margin: 0; }
+.shelf-heading h2 { margin: 0; color: var(--brand); }
 .shelf-heading .library-search { margin: 0; }
 .results-count { margin: 12px 0 0; }
 @media (max-width: 899px) {
-  .library-hero { grid-template-columns: minmax(0,1fr); }
-  .hero-page { padding: 24px; }
-  .hero-text { border-right: 0; border-bottom: 1px solid var(--book-cover-line, var(--line)); }
+  .library-hero { grid-template-columns: minmax(0,1fr); gap: 28px; margin-bottom: 40px; }
   .hero-figure { padding: 20px; }
 }
+
 #library-status:empty { display: none; }
 .help-page { max-width: 800px; }
 .help-page h2:not(:first-child) { margin-top: 32px; }
@@ -1465,13 +1465,5 @@ a.button .drill-progress { display: block; margin: 2px 0 0; font-weight: 400; }
 .task-answer-body > :first-child { margin-top: 8px; }
 .focused-shell:has(.task-navigation) { grid-template-rows: auto minmax(0,1fr) auto; }
 .task-navigation { display: flex; justify-content: space-between; gap: 12px; padding: 12px 16px; border-top: 1px solid var(--line); background: white; }
-
-.edition-map-talon-kartta-ja-opastus .edition-map-room[data-map-row="5"]{left:0%;top:0%;width:100%;height:20%}
-.edition-map-talon-kartta-ja-opastus .edition-map-room[data-map-row="3"]{left:30%;top:23%;width:40%;height:30%}
-.edition-map-talon-kartta-ja-opastus .edition-map-room[data-map-row="4"]{left:74%;top:23%;width:26%;height:30%}
-.edition-map-talon-kartta-ja-opastus .edition-map-room[data-map-row="0"]{left:30%;top:60%;width:40%;height:30%}
-.edition-map-talon-kartta-ja-opastus .edition-map-room[data-map-row="2"]{left:0%;top:60%;width:26%;height:30%}
-.edition-map-talon-kartta-ja-opastus .edition-map-room[data-map-row="1"]{left:74%;top:60%;width:26%;height:30%}
-.edition-map-talon-kartta-ja-opastus .edition-map-entry{left:50%}
 
 [data-book-theme="tuta-kor-6"] { --book-color: #1d6f73; --book-marker: #b73276; --book-edge: #ed9700; --book-art: #43b4b9; --book-cover: #fff5df; --book-cover-line: #cdb78f; --chapter-accent-0: #b94a1a; --chapter-accent-1: #b0175a; --chapter-accent-2: #2f4f9e; --chapter-accent-3: #1d6f73; }

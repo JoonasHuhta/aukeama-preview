@@ -118,8 +118,10 @@ export function findSectionIndex(sections, id, mode, pageSize = 2) {
   const index = Math.max(0, sections.findIndex(section => section.id === id));
   return mode === 'spread' ? index - index % pageSize : index;
 }
-export function readerPageSize(chapter, singlePage = false, layout = 'auto') {
-  if (chapter?.supportType === 'contents' || layout === 'single') return 1;
+export function readerPageSize(chapter, singlePage = false, layout = 'auto', printed = false) {
+  // The wide HTML contents table needs one panel. Printed contents are ordinary
+  // facing pages and must follow the same layout preference as the rest of the book.
+  if ((!printed && chapter?.supportType === 'contents') || layout === 'single') return 1;
   return layout === 'spread' ? 2 : singlePage ? 1 : 2;
 }
 // Printed textbook pages of the current local proof. The web spread and the paper
