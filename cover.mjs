@@ -20,6 +20,10 @@ export function coverTitleLines(title) {
   return lines;
 }
 
+// Book colours come from a generated stylesheet rule keyed by the book ID (no inline styles).
+export function themeStyle(book) {
+  return book?.theme && /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(book.id || '') ? ' data-book-theme="' + book.id + '"' : '';
+}
 export function coverView(book) {
   if(!book.cover) return '<div class="book-cover" aria-hidden="true"><span>'+e(book.series)+
     '</span><strong>'+e(book.grade)+'</strong><small>'+e(book.subjectLabel)+'</small></div>';

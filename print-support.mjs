@@ -4,7 +4,7 @@ export function installPrintSupport(root, events) {
   let saved;
   function beforePrint() {
     if (saved) return;
-    saved = [...root.querySelectorAll('.extra-help, .role-card')].map(element => [element, element.open]);
+    saved = [...root.querySelectorAll('.extra-help, .role-card, .role-private, .scene-support, .map-grid, .visual-source-table, .reader-source-repeat')].map(element => [element, element.open]);
     for (const [element] of saved) element.open = true;
   }
   function afterPrint() {

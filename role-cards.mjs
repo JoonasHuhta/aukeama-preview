@@ -1,5 +1,10 @@
 /** One visible role per local card group. No answers or learner state are stored. */
 export function closeOtherRoleCards(card) {
+  if (card?.matches?.('details.role-private[open]')) {
+    const table=card.closest('table');
+    for(const other of table?.querySelectorAll('details.role-private[open]')||[])if(other!==card)other.open=false;
+    return;
+  }
   if (!card?.matches?.('details.role-card[open]')) return;
   const group = card.parentElement;
   if (!group?.classList.contains('role-cards')) return;

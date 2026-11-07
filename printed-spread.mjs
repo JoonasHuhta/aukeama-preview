@@ -1,0 +1,150 @@
+import { escapeHtml as e } from './html.mjs';
+import { readingOrder, textbookSectionPages, textbookPageTarget, readerUrl, bookUrl } from './routes.mjs';
+
+/*
+ * The reader's Aukeama view as the printed textbook: a spread is a printed spread
+ * (even page left, odd page right) and the only page numbers are the printed ones,
+ * on the page images themselves. Interactive text lives in the text view (Koko luku).
+ */
+export function printedPages(book) {
+  const proof = book?.localProofs?.textbook;
+  return Array.isArray(proof?.pageImages) && proof.pageImages.length === proof.pages ? proof : null;
+}
+export const hasPrintedSpreads = book => !!printedPages(book);
+
+/** Pages shown together: page 1 alone, then 2–3, 4–5 …; one page on narrow screens. */
+export function spreadPages(total, page, single = false) {
+  const at = Math.min(Math.max(1, Math.trunc(page) || 1), total);
+  if (single) return [at];
+  if (at === 1) return [1];
+  const left = at % 2 === 0 ? at : at - 1;
+  return left + 1 <= total ? [left, left + 1] : [left];
+}
+/** The first page of the next or previous spread, or null at either end. */
+export function turnedPage(total, pages, direction, single = false) {
+  const page = direction > 0 ? pages.at(-1) + 1 : pages[0] - 1;
+  if (page < 1 || page > total) return null;
+  return spreadPages(total, page, single)[0];
+}
+export function printedSpreadUrl(bookId, chapterId, page) {
+  return bookUrl(bookId) + '/read/' + encodeURIComponent(chapterId) + '?sivu=' + page;
+}
+
+/** First and last printed page of each reader part, as the printed book lays them out. */
+export function partPageRanges(book) {
+  const proof = printedPages(book) || book?.localProofs?.textbook;
+  const rows = textbookSectionPages(book);
+  const starts = readingOrder(book).map(part => {
+    const own = rows.filter(row => row.chapter === part.id);
+    return own.length ? { id: part.id, from: Math.min(...own.map(row => row.page)) } : null;
+  }).filter(Boolean).sort((a, b) => a.from - b.from);
+  return starts.map((part, index) => ({ ...part, to: (starts[index + 1]?.from ?? (proof?.pages || part.from) + 1) - 1 }));
+}
+export function partOfPage(book, page) {
+  return partPageRanges(book).find(part => part.from <= page && page <= part.to)?.id || textbookPageTarget(book, page)?.chapterId || null;
+}
+/** The printed page a reader section starts on, or the part's first page. */
+export function sectionPage(book, chapterId, sectionId = '') {
+  const rows = textbookSectionPages(book).filter(row => row.chapter === chapterId);
+  const row = rows.find(item => item.section === sectionId) || rows[0];
+  return row ? row.page : null;
+}
+/** Reader sections printed on these pages, in reading order. */
+export function sectionsOnPages(book, pages) {
+  const from = Math.min(...pages), to = Math.max(...pages);
+  return textbookSectionPages(book).filter(row => row.page <= to && row.endPage >= from);
+}
+/** Spreads that show at least one page of a part, for the chapter thumbnails. */
+export function partSpreads(book, partId, single = false) {
+  const proof = printedPages(book), range = partPageRanges(book).find(part => part.id === partId);
+  if (!proof || !range) return [];
+  const spreads = [];
+  for (let page = range.from; page <= range.to;) {
+    const pages = spreadPages(proof.pages, page, single);
+    spreads.push(pages);
+    page = pages.at(-1) + 1;
+  }
+  return spreads;
+}
+export function pageLabel(pages) {
+  return 's. ' + (pages.length > 1 ? pages[0] + '–' + pages.at(-1) : pages[0]);
+}
+
+function image(proof, page, side, lazy = false) {
+  const item = proof.pageImages[page - 1];
+  return '<img class="printed-page-image" src="' + e(item.file) + '" width="' + item.width + '" height="' + item.height + '"' +
+    (lazy ? ' loading="lazy"' : '') + ' decoding="async" alt="' + (lazy ? '' : 'Tekstikirjan sivu ' + page) + '"' +
+    (side ? ' data-side="' + side + '"' : '') + '>';
+}
+
+/**
+ * Links over the printed page: each area where a reader section is printed opens
+ * the same section as text. Pages without a reliable match get no links.
+ */
+export function printedRegionsHtml(book, page, titles = {}) {
+  const proof = printedPages(book);
+  const regions = Array.isArray(proof?.pageRegions?.[page]) ? proof.pageRegions[page] : [];
+  const links = Array.isArray(proof?.pageLinks?.[page]) ? proof.pageLinks[page] : [];
+  if (!regions.length && !links.length) return '';
+  // The printed page's own page references ("s. 84") stay links, on top of the section areas.
+  const pageLinks = links.map(link => {
+    const owner = partOfPage(book, link.page) || readingOrder(book)[0]?.id;
+    const label = 'Siirry sivulle ' + link.page;
+    return '<a class="printed-page-link" href="' + e(printedSpreadUrl(book.id, owner, link.page)) + '" aria-label="' + e(label) + '"><title>' + e(label) + '</title>' +
+      '<rect x="' + Math.round(link.left * 1000) + '" y="' + Math.round(link.top * 1000) + '" width="' + Math.max(1, Math.round(link.width * 1000)) +
+      '" height="' + Math.max(1, Math.round(link.height * 1000)) + '"/></a>';
+  }).join('');
+  return '<svg class="printed-regions" viewBox="0 0 1000 1000" preserveAspectRatio="none" focusable="false">' + regions.map(region => {
+    const label = 'Lue tekstinä: ' + (titles[region.chapter + '/' + region.section] || 'tämä kohta') + ' (s. ' + page + ')';
+    const top = Math.round(region.top * 1000), bottom = Math.round(region.bottom * 1000);
+    return '<a class="printed-region" href="' + e(readerUrl(book.id, region.chapter, region.section, 'chapter')) + '" aria-label="' + e(label) + '">' +
+      '<title>' + e(label) + '</title><rect x="30" y="' + Math.max(top, 8) + '" width="940" height="' + Math.max(1, Math.min(bottom, 992) - Math.max(top, 8)) + '" rx="6"/></a>';
+  }).join('') + pageLinks + '</svg>';
+}
+
+/** The printed spread itself; the page numbers are those printed on the pages. */
+export function printedSpreadHtml(book, pages, titles = {}) {
+  const proof = printedPages(book);
+  const sides = pages.length === 1 ? (pages[0] % 2 ? ['right'] : ['left']) : ['left', 'right'];
+  return '<div class="printed-spread' + (pages.length === 1 ? ' is-single' : '') + '" role="group" aria-label="Tekstikirjan ' + e(pageLabel(pages)) + '">' +
+    pages.map((page, index) => '<figure class="printed-page" data-page="' + page + '" data-side="' + sides[index] + '">' + image(proof, page) +
+      printedRegionsHtml(book, page, titles) + '</figure>').join('') + '</div>';
+}
+/** Plain section titles of a loaded chapter for link names. */
+export function sectionTitles(chapter, sections) {
+  return Object.fromEntries(sections.map(section => [chapter.id + '/' + section.id,
+    String(section.title).replace(/[*_`]/g, '').replace(/^Avausaukeama$/, 'Aloitus')]));
+}
+/** Small copies for the chapter browser: the very spread the link opens. */
+export function printedThumbnailHtml(book, pages) {
+  const proof = printedPages(book);
+  return '<div class="printed-thumbnail' + (pages.length === 1 ? ' is-single' : '') + '" aria-hidden="true">' +
+    pages.map(page => image(proof, page, '', true)).join('') + '</div>';
+}
+
+/** Text links for the sections on this spread: the interactive text view of the same content. */
+export function printedTextLinks(book, pages, titles = {}) {
+  const rows = sectionsOnPages(book, pages);
+  if (!rows.length) return '';
+  return '<ul class="printed-text-links">' + rows.map(row => '<li><a href="' + e(readerUrl(book.id, row.chapter, row.section, 'chapter')) + '">' +
+    e(titles[row.chapter + '/' + row.section] || 'Teksti') + '</a></li>').join('') + '</ul>';
+}
+
+export function printedNavigation(book, chapterId, pages, single = false) {
+  const proof = printedPages(book);
+  const previous = turnedPage(proof.pages, pages, -1, single), next = turnedPage(proof.pages, pages, 1, single);
+  const unit = single ? 'sivu' : 'aukeama';
+  const arrow = (direction, target) => '<button type="button" class="page-turn" data-turn="' + direction + '" id="' + (direction < 0 ? 'previous' : 'next') +
+    '" aria-label="' + (direction < 0 ? 'Edellinen ' : 'Seuraava ') + unit + '" title="' + (direction < 0 ? 'Edellinen ' : 'Seuraava ') + unit + '"' +
+    (target ? '' : ' disabled') + '><svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="' +
+    (direction < 0 ? 'm15 6-6 6 6 6' : 'm9 6 6 6-6 6') + '"/></svg></button>';
+  return '<footer class="reader-navigation printed-navigation">' + arrow(-1, previous) +
+    '<div class="reading-position">' + printedPosition(book, chapterId, pages) + '</div>' + arrow(1, next) + '</footer>';
+}
+/** "s. 18–19 · Lue tekstinä": the printed pages and the way to the same content as text. */
+export function printedPosition(book, chapterId, pages) {
+  const rows = sectionsOnPages(book, pages), first = rows.find(row => row.chapter === chapterId) || rows[0];
+  const text = first ? '<a class="printed-text-link" href="' + e(readerUrl(book.id, first.chapter, first.section, 'chapter')) + '">Lue tekstinä</a>' : '';
+  return '<p><span class="printed-position">' + e(pageLabel(pages)) + '</span>' +
+    (text ? '<span class="paper-separator" aria-hidden="true"> · </span>' + text : '') + '</p>';
+}

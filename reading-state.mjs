@@ -19,10 +19,19 @@ export function resolveReadingPosition(books, position) {
   return { book, chapter, sectionId: position.sectionId, mode: position.mode };
 }
 
+/** A link's rendered source section can differ from the selected spread/chapter anchor. */
+export function readingSourcePosition(book, chapterId, sectionId, mode) {
+  const value = { schemaVersion: 1, bookId: book.id, version: book.version,
+    chapterId, sectionId, mode };
+  return resolveReadingPosition([book], value) ? fields(value) : null;
+}
+
 /** Only a single navigation location is retained, never answers or learner data. */
 export function createReadingState(getStorage) {
   let position = null;
   let persistent = true;
+  // A model in another chapter is a temporary lookup, not the new main task.
+  let reference = null;
   try {
     const raw = getStorage().getItem(readingPositionKey);
     if (raw && raw.length <= 2048) {
@@ -40,12 +49,32 @@ export function createReadingState(getStorage) {
   return {
     get: () => ({ position, persistent }),
     save,
+    followReference(books, from, to) {
+      const source = resolveReadingPosition(books, from);
+      const target = resolveReadingPosition(books, to);
+      if (!source || !target || source.book.id !== target.book.id ||
+          source.book.version !== target.book.version || source.chapter.id === target.chapter.id) return false;
+      const origin = reference && reference.targetChapterId === source.chapter.id
+        ? resolveReadingPosition(books, reference.origin) : source;
+      if (!origin || origin.book.id !== source.book.id || origin.book.version !== source.book.version ||
+          !origin.book.chapters.some(chapter => chapter.id === origin.chapter.id)) return false;
+      const home = readingSourcePosition(origin.book, origin.chapter.id, origin.sectionId, origin.mode);
+      reference = target.chapter.id === origin.chapter.id ? null : { origin: home, targetChapterId: target.chapter.id };
+      save(home);
+      return true;
+    },
     visit(books, value) {
       const current = resolveReadingPosition(books, value);
       if (!current) return null;
       const previous = resolveReadingPosition(books, position);
       const support = [...(current.book.frontMatter || []), ...(current.book.backMatter || [])]
         .some(part => part.id === current.chapter.id);
+      if (reference) {
+        const origin = resolveReadingPosition(books, reference.origin);
+        if (origin?.book.id === current.book.id && origin.book.version === current.book.version &&
+            (reference.targetChapterId === current.chapter.id || support)) return origin;
+        reference = null;
+      }
       if (support && previous?.book.id === current.book.id &&
           current.book.chapters.some(part => part.id === previous.chapter.id)) return previous;
       save(value);
@@ -53,6 +82,7 @@ export function createReadingState(getStorage) {
     },
     clear() {
       position = null;
+      reference = null;
       try { getStorage().removeItem(readingPositionKey); return true; }
       catch { persistent = false; return false; }
     }
