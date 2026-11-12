@@ -1035,19 +1035,23 @@ progress::-moz-progress-bar { background: var(--accent); }
 #exam-print { margin: 16px 0; }
 .exam-paper { background: white; border: 1px solid var(--line); padding: 40px; overflow-wrap: anywhere; }
 .exam-proof-label { color: var(--muted); font-size: .85em; }
-.exam-paper-heading { border-bottom: 1px solid var(--line); padding-bottom: 12px; margin-bottom: 32px; }
+.exam-paper-heading { border-bottom: 1px solid var(--line); padding-bottom: 8px; margin-bottom: 20px; }
 .exam-paper-heading h2 { font-size: 1.6em; }
-.exam-name-lines { line-height: 2.2; }
+.exam-name-lines { display: flex; flex-wrap: wrap; gap: 4px 20px; line-height: 2; }
 .exam-paper-task { margin: 0 0 40px; }
 .exam-paper-task h3 { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; margin: 0 0 16px; color: #2b6e76; }
 .exam-number { display: inline-flex; align-items: center; justify-content: center; border: 1px solid currentColor; border-radius: 50%; width: 2em; height: 2em; flex: 0 0 2em; }
 .exam-points { margin-left: auto; font-size: .85em; color: var(--ink); white-space: nowrap; }
 .exam-stimulus { white-space: pre-line; background: #f2f6f6; border-left: 3px solid #72989c; padding: 16px 20px; margin-bottom: 20px; line-height: 1.7; }
 .exam-questions { list-style: none; padding-left: 0; }
-.exam-questions > li { padding-left: 4px; margin-bottom: 20px; }
+.exam-questions > li { padding-left: 4px; margin-bottom: 12px; }
+/* Short answer on the question's own row; the line takes the remaining width. */
+.exam-questions > li.exam-inline { display: flex; align-items: flex-end; gap: 12px; }
+.exam-inline > p { flex: 0 1 auto; max-width: 62%; margin: 0; }
+.exam-inline > .exam-answer-space { flex: 1 1 35%; min-width: 35%; }
 .exam-questions p { margin-bottom: 4px; }
 .exam-question-number { display: inline-block; margin-right: .4em; }
-.exam-answer-line { height: 10mm; border-bottom: 1px solid #7c858e; }
+.exam-answer-line { height: 9mm; border-bottom: 1px solid #7c858e; }
 .exam-scoring { border-top: 1px solid var(--line); padding-top: 16px; }
 .exam-scoring h4 { margin: 0 0 12px; }
 .exam-page-break { border-top: 2px dashed var(--line); padding-top: 28px; }
@@ -1067,13 +1071,24 @@ progress::-moz-progress-bar { background: var(--accent); }
   .exam-workspace { page: exam-proof; }
   .exam-screen-only { display: none !important; }
   .page.exam-workspace, .exam-layout, .exam-preview, #exam-paper-slot { display: block; max-width: none; margin: 0; padding: 0; }
-  .exam-paper { border: 0; padding: 0; color: #111; font-size: 12pt; }
-  .exam-paper-heading { break-inside: avoid; margin-bottom: 10mm; }
-  .exam-paper-task { break-inside: auto; margin-bottom: 12mm; }
-  .exam-paper-task h3 { color: #111; break-after: avoid; }
-  .exam-paper-task > p, .exam-stimulus { break-after: avoid; }
+  /* A 6th-grade exam is two to three pages: compact type and spacing, answer lines stay writable. */
+  .exam-paper { border: 0; padding: 0; color: #111; font-size: 11pt; line-height: 1.35; }
+  .exam-paper-heading { break-inside: avoid; margin-bottom: 5mm; padding-bottom: 2mm; }
+  .exam-paper-heading h2 { font-size: 16pt; margin: 0 0 1mm; }
+  .exam-paper-heading p { margin: 0 0 1mm; }
+  .exam-paper-task { break-inside: auto; margin-bottom: 6mm; }
+  .exam-paper-task h3 { color: #111; break-after: avoid; font-size: 12pt; margin: 0 0 1.5mm; gap: 3mm; }
+  .exam-number { width: 1.7em; height: 1.7em; flex-basis: 1.7em; }
+  .exam-task-start > p { margin: 0 0 2mm; }
+  .exam-stimulus { padding: 2mm 4mm; margin-bottom: 2.5mm; line-height: 1.4; }
+  .exam-questions { margin: 0; }
+  .exam-questions p { margin-bottom: 0; }
+  .exam-answer-line { height: 8mm; }
+  /* Heading, instruction and material stay together and with the first question. */
+  .exam-task-start { break-inside: avoid; break-after: avoid; }
+  .exam-task-start h3, .exam-number { break-inside: avoid; }
   .exam-stimulus { background: transparent; border-color: #777; break-inside: avoid; }
-  .exam-questions > li { break-inside: avoid; margin-bottom: 6mm; }
+  .exam-questions > li { break-inside: avoid; margin-bottom: 2mm; }
   .exam-answer-line { border-color: #666; }
   .exam-page-break { break-before: page; border: 0; padding: 0; }
   .exam-scoring { break-inside: avoid; orphans: 3; widows: 3; }
@@ -1424,10 +1439,20 @@ a.button .drill-progress { display: block; margin: 2px 0 0; font-weight: 400; }
 
 /* Aukeama view of a printed book: the printed spread as images, sized to fit the
  * window. Page numbers are the ones printed on the pages; nothing is added on top. */
-.reader-pages.is-spread.is-printed { display: flex; justify-content: center; align-items: center; height: 100%; padding: 0; overflow: auto;
-  border: 0; border-radius: 0; background: transparent; container-type: size; }
-.printed-spread { display: flex; flex: none; width: min(100cqw, 100cqh * 1190 / 842); aspect-ratio: 1190 / 842; margin: auto; }
-.printed-spread.is-single { width: min(100cqw, 100cqh * 595 / 842); aspect-ratio: 595 / 842; }
+.reader-pages.is-spread.is-printed { display: flex; justify-content: center; align-items: center; height: 100%; min-height: 1px; padding: 0; overflow: auto;
+  border: 0; border-radius: 0; background: transparent; container-type: inline-size;
+  /* Do not derive this width from the container's block-size. In a grid item the
+   * percentage height may be indefinite on narrow windows; size containment then
+   * collapses the printed page to 0 x 0. The viewport budget is definite. */
+  --printed-spread-fit: min(100cqw, (100dvh - 152px) * 1190 / 842);
+  --printed-single-fit: min(100cqw, (100dvh - 152px) * 595 / 842); }
+@media (min-width: 1100px) and (min-height: 561px) {
+  .reader-pages.is-spread.is-printed {
+    --printed-spread-fit: min(100cqw, (100dvh - 80px) * 1190 / 842);
+    --printed-single-fit: min(100cqw, (100dvh - 80px) * 595 / 842); }
+}
+.printed-spread { display: flex; flex: none; width: var(--printed-spread-fit); aspect-ratio: 1190 / 842; margin: auto; }
+.printed-spread.is-single { width: var(--printed-single-fit); aspect-ratio: 595 / 842; }
 .printed-page { flex: 1 1 0; min-width: 0; margin: 0; background: white; outline: 1px solid var(--line); }
 .printed-spread.is-single .printed-page[data-side="right"], .printed-page[data-side="right"] { border-left: 1px solid #d9dde1; }
 .printed-spread.is-single .printed-page { border-left: 0; }
@@ -1450,14 +1475,14 @@ a.button .drill-progress { display: block; margin: 2px 0 0; font-weight: 400; }
 @media (forced-colors: active) { .printed-region:is(:hover, :focus-visible) rect { stroke: Highlight; } }
 /* Enlarged printed pages scroll in both directions; "safe" keeps the left edge reachable. */
 .reader-pages.is-spread.is-printed { justify-content: safe center; align-items: safe center; }
-.reader-pages.is-printed[data-zoom="125"] .printed-spread { width: calc(min(100cqw, 100cqh * 1190 / 842) * 1.25); }
-.reader-pages.is-printed[data-zoom="150"] .printed-spread { width: calc(min(100cqw, 100cqh * 1190 / 842) * 1.5); }
-.reader-pages.is-printed[data-zoom="175"] .printed-spread { width: calc(min(100cqw, 100cqh * 1190 / 842) * 1.75); }
-.reader-pages.is-printed[data-zoom="200"] .printed-spread { width: calc(min(100cqw, 100cqh * 1190 / 842) * 2); }
-.reader-pages.is-printed[data-zoom="125"] .printed-spread.is-single { width: calc(min(100cqw, 100cqh * 595 / 842) * 1.25); }
-.reader-pages.is-printed[data-zoom="150"] .printed-spread.is-single { width: calc(min(100cqw, 100cqh * 595 / 842) * 1.5); }
-.reader-pages.is-printed[data-zoom="175"] .printed-spread.is-single { width: calc(min(100cqw, 100cqh * 595 / 842) * 1.75); }
-.reader-pages.is-printed[data-zoom="200"] .printed-spread.is-single { width: calc(min(100cqw, 100cqh * 595 / 842) * 2); }
+.reader-pages.is-printed[data-zoom="125"] .printed-spread { width: calc(var(--printed-spread-fit) * 1.25); }
+.reader-pages.is-printed[data-zoom="150"] .printed-spread { width: calc(var(--printed-spread-fit) * 1.5); }
+.reader-pages.is-printed[data-zoom="175"] .printed-spread { width: calc(var(--printed-spread-fit) * 1.75); }
+.reader-pages.is-printed[data-zoom="200"] .printed-spread { width: calc(var(--printed-spread-fit) * 2); }
+.reader-pages.is-printed[data-zoom="125"] .printed-spread.is-single { width: calc(var(--printed-single-fit) * 1.25); }
+.reader-pages.is-printed[data-zoom="150"] .printed-spread.is-single { width: calc(var(--printed-single-fit) * 1.5); }
+.reader-pages.is-printed[data-zoom="175"] .printed-spread.is-single { width: calc(var(--printed-single-fit) * 1.75); }
+.reader-pages.is-printed[data-zoom="200"] .printed-spread.is-single { width: calc(var(--printed-single-fit) * 2); }
 .reader-pages.is-printed .printed-spread { margin: 0; }
 .reader-setting .setting-note { margin: 6px 0 0; color: var(--muted); font-size: 14px; }
 .printed-page-link { cursor: pointer; }

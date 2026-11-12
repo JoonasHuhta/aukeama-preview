@@ -93,9 +93,23 @@ export function editExamDraft(draft, bank, action) {
       if (target >= 0 && target < next.items.length) [next.items[index],next.items[target]] = [next.items[target],next.items[index]];
     } else if (action.type === 'lines') next.items[index].answerLines = action.value;
     else if (action.type === 'break') next.items[index].pageBreakBefore = action.value;
+    else if (action.type === 'swap') {
+      const current = bank.tasks.find(t => t.id === action.taskId), task = bank.tasks.find(t => t.id === action.to);
+      need(task && swapCandidates(next, bank, current.id).includes(task), 'Tehtävää ei voi vaihtaa tähän.');
+      // Same place and page break; answer space follows the new task's own default.
+      next.items[index] = {taskId:task.id,taskVersion:task.version,taskRevision:bank.taskRevisions[task.id],answerLines:task.answerLines,pageBreakBefore:next.items[index].pageBreakBefore};
+    }
     else throw new Error('Tuntematon toiminto.');
   }
   return validateExamDraft(next, bank);
+}
+/**
+ * Tasks that can replace a chosen one: same chapter and same skill, not yet in the
+ * exam. They are other drafts for the same chapter, not verified parallel versions.
+ */
+export function swapCandidates(draft, bank, taskId) {
+  const current = bank.tasks.find(t => t.id === taskId), chosen = new Set(draft.items.map(i => i.taskId));
+  return current ? bank.tasks.filter(t => t.id !== current.id && !chosen.has(t.id) && t.chapterId === current.chapterId && t.skill === current.skill) : [];
 }
 export function composeExamProof(draft, bank, audience = 'learner') {
   need(['learner','teacher'].includes(audience), 'Tuntematon tulosteen tyyppi.');
@@ -103,7 +117,7 @@ export function composeExamProof(draft, bank, audience = 'learner') {
   const items = valid.items.map(item => {
     const task = bank.tasks.find(t => t.id === item.taskId);
     // Explicit allowlist keeps answers out of the learner view model and DOM.
-    const result = {...item,title:task.title,instruction:task.instruction,stimulus:task.stimulus,questions:[...task.questions],points:task.points};
+    const result = {...item,title:task.title,instruction:task.instruction,stimulus:task.stimulus,questions:[...task.questions],points:task.points,skill:task.skill};
     if (audience === 'teacher') Object.assign(result,{goal:task.goal,support:task.support,demand:task.demand,scoringGuide:task.scoringGuide});
     return result;
   });
@@ -112,6 +126,13 @@ export function composeExamProof(draft, bank, audience = 'learner') {
 }
 
 export const LESSON_MINUTES = 45;
+/*
+ * A sixth-grade exam is two to three printed pages. Of a 45-minute lesson,
+ * handing out, instructions and collecting take time, so the pupils' own working
+ * time is about 35 minutes. Six tasks of the local selection print on about three
+ * A4 pages (print trial 7.11.2026).
+ */
+export const WORK_MINUTES = 35, LONG_EXAM_TASKS = 6;
 /**
  * What the chosen tasks cover, and plain warnings about the composition. Counts
  * and sums only: no difficulty level, no recommendation of what pupils should know.
@@ -130,7 +151,9 @@ export function examBalance(draft, bank) {
   // With two tasks one is always the larger; the note matters once a paper has several.
   if (tasks.length >= 3 && largest.points * 2 > total)
     warnings.push({kind:'one-task',text:'Tehtävä ”'+largest.title+'” tuo yli puolet pisteistä ('+largest.points+'/'+total+' p).'});
-  if (minutes > LESSON_MINUTES)
-    warnings.push({kind:'time',text:'Työarvio '+minutes+' min ylittää '+LESSON_MINUTES+' minuutin oppitunnin.'});
+  if (minutes > WORK_MINUTES)
+    warnings.push({kind:'time',text:'Työarvio '+minutes+' min on yli '+WORK_MINUTES+' minuuttia. '+LESSON_MINUTES+' minuutin tunnista kuluu aikaa myös jakamiseen ja ohjeisiin.'});
+  if (tasks.length > LONG_EXAM_TASKS)
+    warnings.push({kind:'length',text:'Kokeessa on '+tasks.length+' tehtävää. Yli '+LONG_EXAM_TASKS+' tehtävää tulostuu yleensä yli kolmelle sivulle.'});
   return {chapters, skills, totalPoints:total, estimatedMinutes:minutes, warnings};
 }
